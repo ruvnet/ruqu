@@ -126,7 +126,37 @@ Think of it like a car dashboard:
 
 ## Try It in 5 Minutes
 
-Get a latency histogram and risk signal immediately:
+### Option 1: Add to Your Project (Recommended)
+
+```bash
+# Install from crates.io
+cargo add ruqu --features structural
+```
+
+Then use it in your code:
+
+```rust
+use ruqu::{QuantumFabric, FabricBuilder, GateDecision};
+
+fn main() -> Result<(), ruqu::RuQuError> {
+    let mut fabric = FabricBuilder::new()
+        .num_tiles(256)
+        .syndrome_buffer_depth(1024)
+        .build()?;
+
+    let syndrome_data = [0u8; 64]; // From your quantum hardware
+    let decision = fabric.process_cycle(&syndrome_data)?;
+
+    match decision {
+        GateDecision::Permit => println!("✅ Safe to proceed"),
+        GateDecision::Defer => println!("⚠️ Proceed with caution"),
+        GateDecision::Deny => println!("🛑 Region unsafe"),
+    }
+    Ok(())
+}
+```
+
+### Option 2: Run the Interactive Demo
 
 ```bash
 # Clone and build
@@ -135,8 +165,6 @@ cd ruvector
 
 # Run the demo with live metrics
 cargo run -p ruqu --bin ruqu_demo --release -- --distance 5 --rounds 1000 --error-rate 0.01
-
-# Output: Latency histogram, throughput, decision breakdown
 ```
 
 <details>
@@ -157,11 +185,18 @@ Latency: P50=3.9μs  P99=26μs  Mean=4.5μs
 Decisions: 100% PERMIT (low error rate)
 ```
 
-**Try with higher error rate to see DENY decisions:**
+</details>
+
+<details>
+<summary><strong>🔥 Try Higher Error Rates</strong></summary>
 
 ```bash
+# See DENY decisions at 10% error rate
 cargo run -p ruqu --bin ruqu_demo --release -- --distance 3 --rounds 200 --error-rate 0.10
-# Output: 62% DENY, 38% DEFER at 10% error rate
+# Output: 62% DENY, 38% DEFER
+
+# Run predictive evaluation
+cargo run -p ruqu --bin ruqu_predictive_eval --release -- --distance 5 --error-rate 0.01 --runs 50
 ```
 
 **Metrics file generated:** `ruqu_metrics.json` with full histogram data for analysis.
