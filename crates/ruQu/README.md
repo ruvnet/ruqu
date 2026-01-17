@@ -1,6 +1,12 @@
 # ruQu: Classical Nervous System for Quantum Machines
 
 <p align="center">
+  <a href="https://crates.io/crates/ruqu"><img src="https://img.shields.io/crates/v/ruqu?style=for-the-badge&logo=rust&color=orange" alt="Crates.io"></a>
+  <a href="https://docs.rs/ruqu"><img src="https://img.shields.io/docsrs/ruqu?style=for-the-badge&logo=docs.rs" alt="docs.rs"></a>
+  <a href="https://crates.io/crates/ruqu"><img src="https://img.shields.io/crates/d/ruqu?style=for-the-badge" alt="Downloads"></a>
+</p>
+
+<p align="center">
   <a href="https://ruv.io"><img src="https://img.shields.io/badge/ruv.io-quantum_computing-blueviolet?style=for-the-badge" alt="ruv.io"></a>
   <a href="https://github.com/ruvnet/ruvector"><img src="https://img.shields.io/badge/RuVector-monorepo-orange?style=for-the-badge&logo=github" alt="RuVector"></a>
 </p>
@@ -10,7 +16,7 @@
   <img src="https://img.shields.io/badge/latency-468ns_P99-blue" alt="P99 Latency">
   <img src="https://img.shields.io/badge/throughput-3.8M%2Fsec-blue" alt="Throughput">
   <img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-green" alt="License">
-  <img src="https://img.shields.io/badge/rust-1.75%2B-orange?logo=rust" alt="Rust">
+  <img src="https://img.shields.io/badge/rust-1.77%2B-orange?logo=rust" alt="Rust">
 </p>
 
 <p align="center">
@@ -246,6 +252,18 @@ cargo run --bin ruqu_predictive_eval --release -- --distance 5 --error-rate 0.01
 <details>
 <summary><strong>📦 Installation</strong></summary>
 
+### From crates.io
+
+```bash
+# Add to your project
+cargo add ruqu
+
+# With all features
+cargo add ruqu --features full
+```
+
+### In Cargo.toml
+
 ```toml
 [dependencies]
 ruqu = "0.1"
@@ -253,6 +271,11 @@ ruqu = "0.1"
 # Enable all features for full capability
 ruqu = { version = "0.1", features = ["full"] }
 ```
+
+**Links:**
+- **crates.io**: [crates.io/crates/ruqu](https://crates.io/crates/ruqu)
+- **Documentation**: [docs.rs/ruqu](https://docs.rs/ruqu)
+- **Source**: [github.com/ruvnet/ruvector/tree/main/crates/ruQu](https://github.com/ruvnet/ruvector/tree/main/crates/ruQu)
 
 ### Feature Flags
 
