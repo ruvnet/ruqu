@@ -8,16 +8,12 @@
 //!
 //! Run with: `cargo bench -p ruqu --bench scaling_bench`
 
-use criterion::{
-    black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput,
-};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use std::hint::black_box as hint_black_box;
 
 use ruqu::filters::{FilterConfig, FilterPipeline, SystemState};
 use ruqu::syndrome::{DetectorBitmap, SyndromeBuffer, SyndromeRound};
-use ruqu::tile::{
-    GateThresholds, PatchGraph, SyndromeDelta, TileReport, TileZero, WorkerTile,
-};
+use ruqu::tile::{GateThresholds, PatchGraph, SyndromeDelta, TileReport, TileZero, WorkerTile};
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -51,10 +47,7 @@ fn create_scaled_worker_tile(tile_id: u8, qubit_count: usize) -> WorkerTile {
 
     'outer: for i in 0..vertices.saturating_sub(1) {
         // Lattice-like connectivity
-        let neighbors = [
-            i + 1,
-            i.wrapping_add(vertices / 10),
-        ];
+        let neighbors = [i + 1, i.wrapping_add(vertices / 10)];
         for &neighbor in &neighbors {
             if neighbor < vertices && neighbor != i && edges_added < max_edges {
                 if tile.patch_graph.add_edge(i, neighbor, 1000).is_some() {
@@ -356,7 +349,8 @@ fn bench_throughput_vs_size(c: &mut Criterion) {
                         for i in 0..detector_count / 10 {
                             bitmap.set(i * 10, true);
                         }
-                        let round = SyndromeRound::new(round_id, round_id, round_id * 1000, bitmap, 0);
+                        let round =
+                            SyndromeRound::new(round_id, round_id, round_id * 1000, bitmap, 0);
                         buffer.push(round);
                         round_id += 1;
                     }
@@ -537,7 +531,13 @@ fn bench_memory_pressure(c: &mut Criterion) {
                 let mut round_id = size as u64;
                 b.iter(|| {
                     for _ in 0..1000 {
-                        let round = SyndromeRound::new(round_id, round_id, round_id * 1000, DetectorBitmap::new(64), 0);
+                        let round = SyndromeRound::new(
+                            round_id,
+                            round_id,
+                            round_id * 1000,
+                            DetectorBitmap::new(64),
+                            0,
+                        );
                         buffer.push(round);
                         round_id += 1;
                     }

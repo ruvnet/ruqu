@@ -44,7 +44,7 @@ pub struct DynamicMinCutEngine {
 impl DynamicMinCutEngine {
     /// Create a new dynamic min-cut engine
     pub fn new() -> Self {
-        use ruvector_mincut::subpolynomial::{SubpolynomialMinCut, SubpolyConfig};
+        use ruvector_mincut::subpolynomial::{SubpolyConfig, SubpolynomialMinCut};
 
         let config = SubpolyConfig {
             phi: 0.01,
@@ -110,14 +110,19 @@ impl DynamicMinCutEngine {
         let mut hasher = blake3::Hasher::new();
         hasher.update(&result.value.to_le_bytes());
         hasher.update(if result.is_exact { &[1u8] } else { &[0u8] });
-        hasher.update(if result.complexity_verified { &[1u8] } else { &[0u8] });
+        hasher.update(if result.complexity_verified {
+            &[1u8]
+        } else {
+            &[0u8]
+        });
         let witness_hash = Some(*hasher.finalize().as_bytes());
 
         MinCutResult {
             value: result.value,
             is_exact: result.is_exact,
             cut_edges: result.cut_edges.map(|edges| {
-                edges.into_iter()
+                edges
+                    .into_iter()
                     .map(|(u, v)| (u as VertexId, v as VertexId))
                     .collect()
             }),

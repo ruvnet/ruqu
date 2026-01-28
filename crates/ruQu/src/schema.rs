@@ -333,25 +333,22 @@ impl<W: Write> LogWriter<W> {
 
     /// Write a syndrome round
     pub fn write_syndrome(&mut self, round: &SyndromeRound) -> std::io::Result<()> {
-        let payload = serde_json::to_vec(round).map_err(|e| {
-            std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-        })?;
+        let payload = serde_json::to_vec(round)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         self.write_record(RecordType::SyndromeRound, &payload)
     }
 
     /// Write a gate decision
     pub fn write_decision(&mut self, decision: &GateDecision) -> std::io::Result<()> {
-        let payload = serde_json::to_vec(decision).map_err(|e| {
-            std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-        })?;
+        let payload = serde_json::to_vec(decision)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         self.write_record(RecordType::GateDecision, &payload)
     }
 
     /// Write a mitigation action
     pub fn write_action(&mut self, action: &MitigationAction) -> std::io::Result<()> {
-        let payload = serde_json::to_vec(action).map_err(|e| {
-            std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-        })?;
+        let payload = serde_json::to_vec(action)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         self.write_record(RecordType::MitigationAction, &payload)
     }
 
@@ -453,21 +450,18 @@ impl<R: Read> LogReader<R> {
         // Parse payload
         let record = match record_type {
             RecordType::SyndromeRound => {
-                let round: SyndromeRound = serde_json::from_slice(&payload).map_err(|e| {
-                    std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-                })?;
+                let round: SyndromeRound = serde_json::from_slice(&payload)
+                    .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
                 LogRecord::Syndrome(round)
             }
             RecordType::GateDecision => {
-                let decision: GateDecision = serde_json::from_slice(&payload).map_err(|e| {
-                    std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-                })?;
+                let decision: GateDecision = serde_json::from_slice(&payload)
+                    .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
                 LogRecord::Decision(decision)
             }
             RecordType::MitigationAction => {
-                let action: MitigationAction = serde_json::from_slice(&payload).map_err(|e| {
-                    std::io::Error::new(std::io::ErrorKind::InvalidData, e)
-                })?;
+                let action: MitigationAction = serde_json::from_slice(&payload)
+                    .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
                 LogRecord::Action(action)
             }
             _ => LogRecord::Unknown(payload),

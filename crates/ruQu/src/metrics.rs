@@ -112,7 +112,8 @@ impl Gauge {
 
     /// Set gauge from f64 (stored as fixed-point)
     pub fn set_f64(&self, val: f64) {
-        self.value.store((val * 1_000_000.0) as u64, Ordering::Relaxed);
+        self.value
+            .store((val * 1_000_000.0) as u64, Ordering::Relaxed);
     }
 
     /// Get current value
@@ -138,9 +139,7 @@ pub struct Histogram {
 impl Histogram {
     /// Create a new histogram with bucket boundaries
     pub fn new(buckets: Vec<u64>) -> Self {
-        let counts = (0..=buckets.len())
-            .map(|_| AtomicU64::new(0))
-            .collect();
+        let counts = (0..=buckets.len()).map(|_| AtomicU64::new(0)).collect();
 
         Self {
             buckets,
@@ -156,7 +155,8 @@ impl Histogram {
         self.count.fetch_add(1, Ordering::Relaxed);
 
         // Find bucket
-        let idx = self.buckets
+        let idx = self
+            .buckets
             .iter()
             .position(|&b| value <= b)
             .unwrap_or(self.buckets.len());
@@ -166,7 +166,10 @@ impl Histogram {
 
     /// Get bucket counts
     pub fn bucket_counts(&self) -> Vec<u64> {
-        self.counts.iter().map(|c| c.load(Ordering::Relaxed)).collect()
+        self.counts
+            .iter()
+            .map(|c| c.load(Ordering::Relaxed))
+            .collect()
     }
 
     /// Get total count
@@ -367,18 +370,36 @@ impl MetricsCollector {
         // Help and type declarations
         out.push_str("# HELP ruqu_decisions_total Total gate decisions by type\n");
         out.push_str("# TYPE ruqu_decisions_total counter\n");
-        out.push_str(&format!("ruqu_decisions_total{{type=\"permit\"}} {}\n", snap.permits));
-        out.push_str(&format!("ruqu_decisions_total{{type=\"defer\"}} {}\n", snap.defers));
-        out.push_str(&format!("ruqu_decisions_total{{type=\"deny\"}} {}\n", snap.denies));
+        out.push_str(&format!(
+            "ruqu_decisions_total{{type=\"permit\"}} {}\n",
+            snap.permits
+        ));
+        out.push_str(&format!(
+            "ruqu_decisions_total{{type=\"defer\"}} {}\n",
+            snap.defers
+        ));
+        out.push_str(&format!(
+            "ruqu_decisions_total{{type=\"deny\"}} {}\n",
+            snap.denies
+        ));
 
         out.push_str("\n# HELP ruqu_latency_nanoseconds Latency in nanoseconds\n");
         out.push_str("# TYPE ruqu_latency_nanoseconds summary\n");
-        out.push_str(&format!("ruqu_latency_nanoseconds{{quantile=\"0.5\"}} {}\n", snap.tick_latency_p50_ns));
-        out.push_str(&format!("ruqu_latency_nanoseconds{{quantile=\"0.99\"}} {}\n", snap.tick_latency_p99_ns));
+        out.push_str(&format!(
+            "ruqu_latency_nanoseconds{{quantile=\"0.5\"}} {}\n",
+            snap.tick_latency_p50_ns
+        ));
+        out.push_str(&format!(
+            "ruqu_latency_nanoseconds{{quantile=\"0.99\"}} {}\n",
+            snap.tick_latency_p99_ns
+        ));
 
         out.push_str("\n# HELP ruqu_throughput_syndromes_per_second Current throughput\n");
         out.push_str("# TYPE ruqu_throughput_syndromes_per_second gauge\n");
-        out.push_str(&format!("ruqu_throughput_syndromes_per_second {}\n", snap.throughput));
+        out.push_str(&format!(
+            "ruqu_throughput_syndromes_per_second {}\n",
+            snap.throughput
+        ));
 
         out.push_str("\n# HELP ruqu_coherence_min_cut Current min-cut value\n");
         out.push_str("# TYPE ruqu_coherence_min_cut gauge\n");

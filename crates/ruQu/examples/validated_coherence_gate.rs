@@ -203,7 +203,11 @@ fn build_surface_code_graph(
             if col + 1 < grid_size {
                 let right = (row * grid_size + col + 1) as u32;
                 let right_fired = fired_set.contains(&(right as usize));
-                let weight = if is_fired || right_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || right_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, right, weight);
             }
 
@@ -211,7 +215,11 @@ fn build_surface_code_graph(
             if row + 1 < grid_size {
                 let bottom = ((row + 1) * grid_size + col) as u32;
                 let bottom_fired = fired_set.contains(&(bottom as usize));
-                let weight = if is_fired || bottom_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || bottom_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, bottom, weight);
             }
         }
@@ -240,10 +248,7 @@ fn build_surface_code_graph(
 /// Detect logical error by checking if fired detectors form a connected
 /// path from left boundary to right boundary (spanning cluster).
 /// This is the TRUE criterion for X-type logical errors in surface codes.
-fn detect_logical_error_ground_truth(
-    syndrome: &DetectorBitmap,
-    code_distance: usize,
-) -> bool {
+fn detect_logical_error_ground_truth(syndrome: &DetectorBitmap, code_distance: usize) -> bool {
     let grid_size = code_distance - 1;
     let fired: HashSet<usize> = syndrome.iter_fired().collect();
 
@@ -281,10 +286,26 @@ fn detect_logical_error_ground_truth(
 
         // Check neighbors (4-connected grid)
         let neighbors = [
-            if col > 0 { Some(row * grid_size + col - 1) } else { None },           // left
-            if col + 1 < grid_size { Some(row * grid_size + col + 1) } else { None }, // right
-            if row > 0 { Some((row - 1) * grid_size + col) } else { None },          // up
-            if row + 1 < grid_size { Some((row + 1) * grid_size + col) } else { None }, // down
+            if col > 0 {
+                Some(row * grid_size + col - 1)
+            } else {
+                None
+            }, // left
+            if col + 1 < grid_size {
+                Some(row * grid_size + col + 1)
+            } else {
+                None
+            }, // right
+            if row > 0 {
+                Some((row - 1) * grid_size + col)
+            } else {
+                None
+            }, // up
+            if row + 1 < grid_size {
+                Some((row + 1) * grid_size + col)
+            } else {
+                None
+            }, // down
         ];
 
         for neighbor_opt in neighbors.iter().flatten() {
@@ -320,29 +341,49 @@ impl ValidationStats {
     fn accuracy(&self) -> f64 {
         let correct = self.true_positives + self.true_negatives;
         let total = self.total_rounds;
-        if total == 0 { 0.0 } else { correct as f64 / total as f64 }
+        if total == 0 {
+            0.0
+        } else {
+            correct as f64 / total as f64
+        }
     }
 
     fn precision(&self) -> f64 {
         let denom = self.true_positives + self.false_positives;
-        if denom == 0 { 0.0 } else { self.true_positives as f64 / denom as f64 }
+        if denom == 0 {
+            0.0
+        } else {
+            self.true_positives as f64 / denom as f64
+        }
     }
 
     fn recall(&self) -> f64 {
         let denom = self.true_positives + self.false_negatives;
-        if denom == 0 { 0.0 } else { self.true_positives as f64 / denom as f64 }
+        if denom == 0 {
+            0.0
+        } else {
+            self.true_positives as f64 / denom as f64
+        }
     }
 
     fn f1_score(&self) -> f64 {
         let p = self.precision();
         let r = self.recall();
-        if p + r < 1e-10 { 0.0 } else { 2.0 * p * r / (p + r) }
+        if p + r < 1e-10 {
+            0.0
+        } else {
+            2.0 * p * r / (p + r)
+        }
     }
 
     fn false_negative_rate(&self) -> f64 {
         // Critical metric: how often do we miss a logical error?
         let denom = self.true_positives + self.false_negatives;
-        if denom == 0 { 0.0 } else { self.false_negatives as f64 / denom as f64 }
+        if denom == 0 {
+            0.0
+        } else {
+            self.false_negatives as f64 / denom as f64
+        }
     }
 
     fn avg_min_cut_error(&self) -> f64 {
@@ -365,7 +406,11 @@ impl ValidationStats {
         // How well separated are the min-cut distributions?
         let safe_avg = self.avg_min_cut_safe();
         let error_avg = self.avg_min_cut_error();
-        if error_avg < 1e-10 { f64::INFINITY } else { safe_avg / error_avg }
+        if error_avg < 1e-10 {
+            f64::INFINITY
+        } else {
+            safe_avg / error_avg
+        }
     }
 
     fn throughput(&self) -> f64 {
@@ -388,8 +433,7 @@ fn run_validation(
     let mut stats = ValidationStats::default();
 
     // Initialize syndrome source
-    let surface_config = SurfaceCodeConfig::new(code_distance, error_rate)
-        .with_seed(seed);
+    let surface_config = SurfaceCodeConfig::new(code_distance, error_rate).with_seed(seed);
     let mut syndrome_source = match StimSyndromeSource::new(surface_config) {
         Ok(s) => s,
         Err(_) => return stats,
@@ -495,7 +539,9 @@ fn find_max_recall_threshold(
         let stats = run_validation(code_distance, error_rate, num_rounds, threshold, seed);
         let recall = stats.recall();
 
-        if recall > best_recall || (recall == best_recall && stats.precision() > best_stats.precision()) {
+        if recall > best_recall
+            || (recall == best_recall && stats.precision() > best_stats.precision())
+        {
             best_recall = recall;
             best_threshold = threshold;
             best_stats = stats;
@@ -538,29 +584,62 @@ fn main() {
     let skip_rate = stats.true_negatives as f64 / stats.total_rounds.max(1) as f64;
 
     println!("║ Code Distance: d=5  | Error Rate: 0.05  | Rounds: 10000          ║");
-    println!("║ Threshold: {:.2} (tuned for max recall)                          ║", threshold);
+    println!(
+        "║ Threshold: {:.2} (tuned for max recall)                          ║",
+        threshold
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ PRE-FILTER PERFORMANCE:                                          ║");
-    println!("║   Total Logical Errors:  {:>6}                                  ║", total_errors);
-    println!("║   Errors Caught:         {:>6} ({:.1}% recall)                   ║",
-             stats.true_positives, stats.recall() * 100.0);
-    println!("║   Errors Missed:         {:>6} ({:.2}% FN rate)                  ║",
-             stats.false_negatives, stats.false_negative_rate() * 100.0);
-    println!("║   Safe Rounds Skipped:   {:>6} ({:.1}% of total)                 ║",
-             stats.true_negatives, skip_rate * 100.0);
+    println!(
+        "║   Total Logical Errors:  {:>6}                                  ║",
+        total_errors
+    );
+    println!(
+        "║   Errors Caught:         {:>6} ({:.1}% recall)                   ║",
+        stats.true_positives,
+        stats.recall() * 100.0
+    );
+    println!(
+        "║   Errors Missed:         {:>6} ({:.2}% FN rate)                  ║",
+        stats.false_negatives,
+        stats.false_negative_rate() * 100.0
+    );
+    println!(
+        "║   Safe Rounds Skipped:   {:>6} ({:.1}% of total)                 ║",
+        stats.true_negatives,
+        skip_rate * 100.0
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ DECODER SAVINGS:                                                 ║");
-    println!("║   Rounds requiring decode: {:>6} ({:.1}% of total)               ║",
-             stats.true_positives + stats.false_positives,
-             (stats.true_positives + stats.false_positives) as f64 / stats.total_rounds.max(1) as f64 * 100.0);
-    println!("║   Decode cost reduction:   {:>5.1}%                               ║", skip_rate * 100.0);
+    println!(
+        "║   Rounds requiring decode: {:>6} ({:.1}% of total)               ║",
+        stats.true_positives + stats.false_positives,
+        (stats.true_positives + stats.false_positives) as f64 / stats.total_rounds.max(1) as f64
+            * 100.0
+    );
+    println!(
+        "║   Decode cost reduction:   {:>5.1}%                               ║",
+        skip_rate * 100.0
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ Min-Cut Distribution:                                            ║");
-    println!("║   Avg when SAFE:     {:>8.4}                                    ║", stats.avg_min_cut_safe());
-    println!("║   Avg when ERROR:    {:>8.4}                                    ║", stats.avg_min_cut_error());
-    println!("║   Separation Ratio:  {:>8.2}x                                   ║", stats.separation_ratio());
+    println!(
+        "║   Avg when SAFE:     {:>8.4}                                    ║",
+        stats.avg_min_cut_safe()
+    );
+    println!(
+        "║   Avg when ERROR:    {:>8.4}                                    ║",
+        stats.avg_min_cut_error()
+    );
+    println!(
+        "║   Separation Ratio:  {:>8.2}x                                   ║",
+        stats.separation_ratio()
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║   Throughput:   {:>8.0} rounds/sec                              ║", stats.throughput());
+    println!(
+        "║   Throughput:   {:>8.0} rounds/sec                              ║",
+        stats.throughput()
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 
     // Experiment 2: Scaling with code distance
@@ -574,9 +653,15 @@ fn main() {
         let (_, s) = find_max_recall_threshold(d, 0.05, 3000, 42);
         let total_errors = s.true_positives + s.false_negatives;
         let skip_rate = s.true_negatives as f64 / s.total_rounds.max(1) as f64;
-        println!("║ {:>2}  │ {:>6} │ {:>5.1}% │  {:>5.1}% │   {:>5.1}%  │     {:>5.2}x        ║",
-                 d, total_errors, s.recall() * 100.0, s.false_negative_rate() * 100.0,
-                 skip_rate * 100.0, s.separation_ratio().min(99.99));
+        println!(
+            "║ {:>2}  │ {:>6} │ {:>5.1}% │  {:>5.1}% │   {:>5.1}%  │     {:>5.2}x        ║",
+            d,
+            total_errors,
+            s.recall() * 100.0,
+            s.false_negative_rate() * 100.0,
+            skip_rate * 100.0,
+            s.separation_ratio().min(99.99)
+        );
     }
     println!("╚═════╧════════╧════════╧═════════╧═══════════╧═══════════════════╝");
 
@@ -592,10 +677,15 @@ fn main() {
         let (_, s) = find_max_recall_threshold(5, p, 3000, 42);
         let total_errors = s.true_positives + s.false_negatives;
         let skip_rate = s.true_negatives as f64 / s.total_rounds.max(1) as f64;
-        println!("║   {:.3}    │ {:>6} │ {:>5.1}% │  {:>5.1}% │   {:>5.1}%  │   {:>5.2}x   ║",
-                 p, total_errors, s.recall() * 100.0,
-                 s.false_negative_rate() * 100.0, skip_rate * 100.0,
-                 s.separation_ratio().min(99.99));
+        println!(
+            "║   {:.3}    │ {:>6} │ {:>5.1}% │  {:>5.1}% │   {:>5.1}%  │   {:>5.2}x   ║",
+            p,
+            total_errors,
+            s.recall() * 100.0,
+            s.false_negative_rate() * 100.0,
+            skip_rate * 100.0,
+            s.separation_ratio().min(99.99)
+        );
     }
     println!("╚════════════╧════════╧════════╧═════════╧═══════════╧════════════╝");
 
@@ -643,13 +733,25 @@ fn main() {
     println!("Pre-Filter Metrics:");
     println!("  Recall:           {:.1}% (target: >95%)", recall * 100.0);
     println!("  False Negative:   {:.2}% (target: <5%)", fn_rate * 100.0);
-    println!("  Safe Skip Rate:   {:.1}% (decoder cost savings)", skip_rate * 100.0);
-    println!("  Separation:       {:.2}x (error vs safe min-cut)", separation);
+    println!(
+        "  Safe Skip Rate:   {:.1}% (decoder cost savings)",
+        skip_rate * 100.0
+    );
+    println!(
+        "  Separation:       {:.2}x (error vs safe min-cut)",
+        separation
+    );
     println!();
     println!("Conclusion:");
     if recall >= 0.95 && fn_rate <= 0.05 {
-        println!("  The min-cut pre-filter can SAFELY skip {:.1}% of rounds,", skip_rate * 100.0);
-        println!("  reducing decoder load while maintaining {:.1}% error detection.", recall * 100.0);
+        println!(
+            "  The min-cut pre-filter can SAFELY skip {:.1}% of rounds,",
+            skip_rate * 100.0
+        );
+        println!(
+            "  reducing decoder load while maintaining {:.1}% error detection.",
+            recall * 100.0
+        );
     } else if recall > 0.5 {
         println!("  Min-cut shows promise as a pre-filter but needs refinement.");
         println!("  Consider: graph construction, weight tuning, or hybrid approaches.");

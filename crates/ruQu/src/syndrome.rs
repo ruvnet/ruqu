@@ -175,7 +175,12 @@ impl DetectorBitmap {
     #[inline]
     pub fn set(&mut self, idx: usize, value: bool) {
         // SECURITY: Use assert! not debug_assert! to ensure bounds check in release builds
-        assert!(idx < self.count, "detector index {} out of bounds (count: {})", idx, self.count);
+        assert!(
+            idx < self.count,
+            "detector index {} out of bounds (count: {})",
+            idx,
+            self.count
+        );
         let word = idx / 64;
         let bit = idx % 64;
         if value {
@@ -214,7 +219,12 @@ impl DetectorBitmap {
     #[must_use]
     pub fn get(&self, idx: usize) -> bool {
         // SECURITY: Use assert! not debug_assert! to ensure bounds check in release builds
-        assert!(idx < self.count, "detector index {} out of bounds (count: {})", idx, self.count);
+        assert!(
+            idx < self.count,
+            "detector index {} out of bounds (count: {})",
+            idx,
+            self.count
+        );
         let word = idx / 64;
         let bit = idx % 64;
         (self.bits[word] >> bit) & 1 == 1
@@ -296,8 +306,8 @@ impl DetectorBitmap {
 
         // Lookup table for 4-bit popcount
         let lookup = _mm256_setr_epi8(
-            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
-            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2,
+            3, 3, 4,
         );
         let low_mask = _mm256_set1_epi8(0x0f);
 
@@ -318,7 +328,8 @@ impl DetectorBitmap {
 
             // Sum nibble popcounts (sad accumulates byte sums into u64)
             let popcnt = _mm256_add_epi8(popcnt_lo, popcnt_hi);
-            total_vec = _mm256_add_epi64(total_vec, _mm256_sad_epu8(popcnt, _mm256_setzero_si256()));
+            total_vec =
+                _mm256_add_epi64(total_vec, _mm256_sad_epu8(popcnt, _mm256_setzero_si256()));
 
             i += 4;
         }
@@ -1008,7 +1019,8 @@ impl SyndromeBuffer {
         }
 
         // Try direct index first (assumes sequential round IDs)
-        if let Some(ref newest) = self.rounds[(self.write_index + self.capacity - 1) % self.capacity]
+        if let Some(ref newest) =
+            self.rounds[(self.write_index + self.capacity - 1) % self.capacity]
         {
             if round_id <= newest.round_id {
                 let offset = (newest.round_id - round_id) as usize;

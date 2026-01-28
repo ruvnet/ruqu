@@ -499,16 +499,20 @@ fn main() {
     println!("╔═══════════════════════════════════════════════════════════════════╗");
     println!("║                    ruQu Demo - Proof Artifact                     ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>6}      ║",
-             config.code_distance, config.error_rate, config.num_rounds);
-    println!("║ Threshold: {:.2}     | Seed: {:>10}                          ║",
-             config.threshold, config.seed);
+    println!(
+        "║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>6}      ║",
+        config.code_distance, config.error_rate, config.num_rounds
+    );
+    println!(
+        "║ Threshold: {:.2}     | Seed: {:>10}                          ║",
+        config.threshold, config.seed
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
     println!();
 
     // Initialize components
-    let surface_config = SurfaceCodeConfig::new(config.code_distance, config.error_rate)
-        .with_seed(config.seed);
+    let surface_config =
+        SurfaceCodeConfig::new(config.code_distance, config.error_rate).with_seed(config.seed);
     let mut syndrome_source = match StimSyndromeSource::new(surface_config) {
         Ok(s) => s,
         Err(e) => {
@@ -578,27 +582,57 @@ fn main() {
     println!("╔═══════════════════════════════════════════════════════════════════╗");
     println!("║                         RESULTS SUMMARY                           ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║ Total Time:        {:>10.2} ms                                 ║",
-             total_time.as_secs_f64() * 1000.0);
-    println!("║ Throughput:        {:>10.0} rounds/sec                         ║",
-             config.num_rounds as f64 / total_time.as_secs_f64());
-    println!("║ Avg Fired/Round:   {:>10.2}                                    ║",
-             total_fired as f64 / config.num_rounds as f64);
+    println!(
+        "║ Total Time:        {:>10.2} ms                                 ║",
+        total_time.as_secs_f64() * 1000.0
+    );
+    println!(
+        "║ Throughput:        {:>10.0} rounds/sec                         ║",
+        config.num_rounds as f64 / total_time.as_secs_f64()
+    );
+    println!(
+        "║ Avg Fired/Round:   {:>10.2}                                    ║",
+        total_fired as f64 / config.num_rounds as f64
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ Latency:                                                         ║");
-    println!("║   Mean:   {:>8.0} ns                                           ║", latency_tracker.mean());
-    println!("║   P50:    {:>8} ns                                           ║", latency_tracker.p50());
-    println!("║   P99:    {:>8} ns                                           ║", latency_tracker.p99());
-    println!("║   P999:   {:>8} ns                                           ║", latency_tracker.p999());
-    println!("║   Max:    {:>8} ns                                           ║", latency_tracker.max());
+    println!(
+        "║   Mean:   {:>8.0} ns                                           ║",
+        latency_tracker.mean()
+    );
+    println!(
+        "║   P50:    {:>8} ns                                           ║",
+        latency_tracker.p50()
+    );
+    println!(
+        "║   P99:    {:>8} ns                                           ║",
+        latency_tracker.p99()
+    );
+    println!(
+        "║   P999:   {:>8} ns                                           ║",
+        latency_tracker.p999()
+    );
+    println!(
+        "║   Max:    {:>8} ns                                           ║",
+        latency_tracker.max()
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ Decisions:                                                       ║");
-    println!("║   Permits: {:>6} ({:>5.1}%)                                      ║",
-             permits, permits as f64 / config.num_rounds as f64 * 100.0);
-    println!("║   Defers:  {:>6} ({:>5.1}%)                                      ║",
-             defers, defers as f64 / config.num_rounds as f64 * 100.0);
-    println!("║   Denies:  {:>6} ({:>5.1}%)                                      ║",
-             denies, denies as f64 / config.num_rounds as f64 * 100.0);
+    println!(
+        "║   Permits: {:>6} ({:>5.1}%)                                      ║",
+        permits,
+        permits as f64 / config.num_rounds as f64 * 100.0
+    );
+    println!(
+        "║   Defers:  {:>6} ({:>5.1}%)                                      ║",
+        defers,
+        defers as f64 / config.num_rounds as f64 * 100.0
+    );
+    println!(
+        "║   Denies:  {:>6} ({:>5.1}%)                                      ║",
+        denies,
+        denies as f64 / config.num_rounds as f64 * 100.0
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 
     // Write metrics file

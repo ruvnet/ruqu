@@ -4,8 +4,8 @@
 //! rapid decision cycling, and error recovery scenarios.
 
 use ruqu::filters::{
-    EvidenceAccumulator, EvidenceConfig, EvidenceFilter, FilterConfig, FilterPipeline,
-    ShiftConfig, ShiftFilter, StructuralConfig, StructuralFilter, SystemState, Verdict,
+    EvidenceAccumulator, EvidenceConfig, EvidenceFilter, FilterConfig, FilterPipeline, ShiftConfig,
+    ShiftFilter, StructuralConfig, StructuralFilter, SystemState, Verdict,
 };
 use ruqu::syndrome::{DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound};
 use ruqu::tile::{
@@ -62,7 +62,11 @@ mod throughput_tests {
         let duration = start.elapsed();
 
         // Performance sanity check - should complete in reasonable time
-        assert!(duration.as_millis() < 5_000, "100k rounds took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 5_000,
+            "100k rounds took too long: {:?}",
+            duration
+        );
 
         // Data integrity
         assert_eq!(buffer.len(), 1024);
@@ -75,18 +79,19 @@ mod throughput_tests {
         let start = Instant::now();
 
         for i in 0..10_000 {
-            let delta = TileSyndromeDelta::new(
-                (i % 64) as u16,
-                ((i + 1) % 64) as u16,
-                (i % 256) as u16,
-            );
+            let delta =
+                TileSyndromeDelta::new((i % 64) as u16, ((i + 1) % 64) as u16, (i % 256) as u16);
             tile.tick(&delta);
         }
 
         let duration = start.elapsed();
 
         assert_eq!(tile.tick, 10_000);
-        assert!(duration.as_millis() < 5_000, "10k ticks took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 5_000,
+            "10k ticks took too long: {:?}",
+            duration
+        );
     }
 
     #[test]
@@ -113,7 +118,11 @@ mod throughput_tests {
         let duration = start.elapsed();
 
         assert_eq!(tilezero.receipt_log.len(), 1_000);
-        assert!(duration.as_millis() < 5_000, "1000 merges took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 5_000,
+            "1000 merges took too long: {:?}",
+            duration
+        );
     }
 
     #[test]
@@ -140,7 +149,11 @@ mod throughput_tests {
         let duration = start.elapsed();
 
         // 300k bitmap operations should be fast (SIMD-like)
-        assert!(duration.as_millis() < 2_000, "Bitmap ops took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 2_000,
+            "Bitmap ops took too long: {:?}",
+            duration
+        );
     }
 
     #[test]
@@ -161,7 +174,11 @@ mod throughput_tests {
         let duration = start.elapsed();
 
         // 1M popcounts should be very fast (hardware instruction)
-        assert!(duration.as_millis() < 1_000, "Popcount ops took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 1_000,
+            "Popcount ops took too long: {:?}",
+            duration
+        );
         assert!(total > 0); // Prevent optimization
     }
 }
@@ -185,7 +202,11 @@ mod memory_pressure_tests {
         );
 
         // Log actual size for monitoring
-        println!("WorkerTile memory: {} bytes ({:.1}% of 64KB)", size, (size as f64 / 65536.0) * 100.0);
+        println!(
+            "WorkerTile memory: {} bytes ({:.1}% of 64KB)",
+            size,
+            (size as f64 / 65536.0) * 100.0
+        );
     }
 
     #[test]
@@ -193,11 +214,7 @@ mod memory_pressure_tests {
         let size = PatchGraph::memory_size();
 
         // PatchGraph should be ~32KB
-        assert!(
-            size <= 65536,
-            "PatchGraph exceeds 64KB: {} bytes",
-            size
-        );
+        assert!(size <= 65536, "PatchGraph exceeds 64KB: {} bytes", size);
 
         println!("PatchGraph memory: {} bytes", size);
     }
@@ -207,11 +224,7 @@ mod memory_pressure_tests {
         let size = ruqu::tile::SyndromBuffer::memory_size();
 
         // SyndromBuffer should be ~16KB
-        assert!(
-            size <= 32768,
-            "SyndromBuffer exceeds 32KB: {} bytes",
-            size
-        );
+        assert!(size <= 32768, "SyndromBuffer exceeds 32KB: {} bytes", size);
 
         println!("SyndromBuffer memory: {} bytes", size);
     }
@@ -381,7 +394,11 @@ mod rapid_decision_tests {
         let duration = start.elapsed();
 
         // 10k evaluations should be fast
-        assert!(duration.as_millis() < 5_000, "10k evaluations took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 5_000,
+            "10k evaluations took too long: {:?}",
+            duration
+        );
     }
 
     #[test]
@@ -397,7 +414,11 @@ mod rapid_decision_tests {
         let duration = start.elapsed();
 
         // 100k updates should be fast
-        assert!(duration.as_millis() < 1_000, "100k evidence updates took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 1_000,
+            "100k evidence updates took too long: {:?}",
+            duration
+        );
 
         // E-value should be very high
         assert!(acc.e_value() > 1e10);
@@ -415,7 +436,11 @@ mod rapid_decision_tests {
 
         let duration = start.elapsed();
 
-        assert!(duration.as_millis() < 2_000, "100k shift updates took too long: {:?}", duration);
+        assert!(
+            duration.as_millis() < 2_000,
+            "100k shift updates took too long: {:?}",
+            duration
+        );
     }
 
     #[test]

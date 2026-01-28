@@ -835,22 +835,14 @@ impl QuantumFabric {
                 // This handles the case where syndromes aren't pre-assigned
                 for tile in &mut self.tiles {
                     // Convert syndrome round to delta for tile processing
-                    let delta = crate::tile::SyndromeDelta::new(
-                        0,
-                        0,
-                        round.fired_count() as u16,
-                    );
+                    let delta = crate::tile::SyndromeDelta::new(0, 0, round.fired_count() as u16);
                     tile.tick(&delta);
                 }
             } else {
                 // Send to specific tile
                 let tile_idx = (tile_id - 1) as usize;
                 if tile_idx < self.tiles.len() {
-                    let delta = crate::tile::SyndromeDelta::new(
-                        0,
-                        0,
-                        round.fired_count() as u16,
-                    );
+                    let delta = crate::tile::SyndromeDelta::new(0, 0, round.fired_count() as u16);
                     self.tiles[tile_idx].tick(&delta);
                 }
             }
@@ -922,8 +914,7 @@ impl QuantumFabric {
 
         let n = self.state.total_decisions();
         if n > 0 {
-            self.state.avg_latency_ns =
-                (self.state.avg_latency_ns * (n - 1) + elapsed) / n;
+            self.state.avg_latency_ns = (self.state.avg_latency_ns * (n - 1) + elapsed) / n;
         }
 
         // Check latency budget
@@ -938,12 +929,8 @@ impl QuantumFabric {
         // Append receipt if enabled
         if self.config.enable_receipts {
             let witness_hash = [0u8; 32]; // Would compute proper hash
-            self.receipt_log.append(
-                tile_decision,
-                self.state.tick,
-                elapsed,
-                witness_hash,
-            );
+            self.receipt_log
+                .append(tile_decision, self.state.tick, elapsed, witness_hash);
         }
 
         Ok(decision)
@@ -1106,21 +1093,10 @@ mod tests {
 
     #[test]
     fn test_fabric_ingest_syndromes() {
-        let mut fabric = QuantumFabric::builder()
-            .tiles(4)
-            .build()
-            .unwrap();
+        let mut fabric = QuantumFabric::builder().tiles(4).build().unwrap();
 
         let rounds: Vec<SyndromeRound> = (0..10)
-            .map(|i| {
-                SyndromeRound::new(
-                    i,
-                    i,
-                    i * 1000,
-                    DetectorBitmap::new(64),
-                    0,
-                )
-            })
+            .map(|i| SyndromeRound::new(i, i, i * 1000, DetectorBitmap::new(64), 0))
             .collect();
 
         let result = fabric.ingest_syndromes(&rounds);
@@ -1130,10 +1106,7 @@ mod tests {
 
     #[test]
     fn test_fabric_tick() {
-        let mut fabric = QuantumFabric::builder()
-            .tiles(4)
-            .build()
-            .unwrap();
+        let mut fabric = QuantumFabric::builder().tiles(4).build().unwrap();
 
         // Tick without any syndromes
         let result = fabric.tick();
@@ -1146,10 +1119,7 @@ mod tests {
 
     #[test]
     fn test_fabric_multiple_ticks() {
-        let mut fabric = QuantumFabric::builder()
-            .tiles(8)
-            .build()
-            .unwrap();
+        let mut fabric = QuantumFabric::builder().tiles(8).build().unwrap();
 
         // Run multiple ticks
         for _ in 0..100 {
@@ -1163,10 +1133,7 @@ mod tests {
 
     #[test]
     fn test_fabric_get_tile() {
-        let fabric = QuantumFabric::builder()
-            .tiles(4)
-            .build()
-            .unwrap();
+        let fabric = QuantumFabric::builder().tiles(4).build().unwrap();
 
         // Tile 0 (TileZero) should return None
         assert!(fabric.get_tile(0).is_none());
@@ -1182,10 +1149,7 @@ mod tests {
 
     #[test]
     fn test_fabric_reset() {
-        let mut fabric = QuantumFabric::builder()
-            .tiles(4)
-            .build()
-            .unwrap();
+        let mut fabric = QuantumFabric::builder().tiles(4).build().unwrap();
 
         // Do some work
         for _ in 0..10 {
@@ -1203,10 +1167,7 @@ mod tests {
 
     #[test]
     fn test_fabric_decision_stats() {
-        let mut fabric = QuantumFabric::builder()
-            .tiles(4)
-            .build()
-            .unwrap();
+        let mut fabric = QuantumFabric::builder().tiles(4).build().unwrap();
 
         for _ in 0..50 {
             let _ = fabric.tick();

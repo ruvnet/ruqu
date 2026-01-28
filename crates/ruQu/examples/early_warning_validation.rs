@@ -63,10 +63,26 @@ fn is_logical_failure(syndrome: &DetectorBitmap, code_distance: usize) -> bool {
         }
 
         let neighbors = [
-            if col > 0 { Some(row * grid_size + col - 1) } else { None },
-            if col + 1 < grid_size { Some(row * grid_size + col + 1) } else { None },
-            if row > 0 { Some((row - 1) * grid_size + col) } else { None },
-            if row + 1 < grid_size { Some((row + 1) * grid_size + col) } else { None },
+            if col > 0 {
+                Some(row * grid_size + col - 1)
+            } else {
+                None
+            },
+            if col + 1 < grid_size {
+                Some(row * grid_size + col + 1)
+            } else {
+                None
+            },
+            if row > 0 {
+                Some((row - 1) * grid_size + col)
+            } else {
+                None
+            },
+            if row + 1 < grid_size {
+                Some((row + 1) * grid_size + col)
+            } else {
+                None
+            },
         ];
 
         for neighbor in neighbors.into_iter().flatten() {
@@ -146,7 +162,9 @@ impl STMinCutGraph {
             visited[source] = true;
 
             while let Some(u) = queue.pop_front() {
-                if u == sink { break; }
+                if u == sink {
+                    break;
+                }
                 for v in 0..n {
                     if !visited[v] && residual[u][v] > 1e-9 {
                         visited[v] = true;
@@ -156,7 +174,9 @@ impl STMinCutGraph {
                 }
             }
 
-            if !visited[sink] { break; }
+            if !visited[sink] {
+                break;
+            }
 
             let mut path_flow = f64::MAX;
             let mut v = sink;
@@ -179,7 +199,11 @@ impl STMinCutGraph {
     }
 }
 
-fn build_qec_graph(code_distance: usize, error_rate: f64, syndrome: &DetectorBitmap) -> STMinCutGraph {
+fn build_qec_graph(
+    code_distance: usize,
+    error_rate: f64,
+    syndrome: &DetectorBitmap,
+) -> STMinCutGraph {
     let grid_size = code_distance - 1;
     let num_detectors = grid_size * grid_size;
 
@@ -197,14 +221,22 @@ fn build_qec_graph(code_distance: usize, error_rate: f64, syndrome: &DetectorBit
             if col + 1 < grid_size {
                 let right = (row * grid_size + col + 1) as u32;
                 let right_fired = fired_set.contains(&(right as usize));
-                let weight = if is_fired || right_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || right_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, right, weight);
             }
 
             if row + 1 < grid_size {
                 let bottom = ((row + 1) * grid_size + col) as u32;
                 let bottom_fired = fired_set.contains(&(bottom as usize));
-                let weight = if is_fired || bottom_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || bottom_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, bottom, weight);
             }
         }
@@ -282,9 +314,12 @@ impl WarningDetector {
         // Compute baseline from first N samples
         if self.history.len() == self.warmup_samples && self.baseline_mean == 0.0 {
             self.baseline_mean = self.history.iter().sum::<f64>() / self.history.len() as f64;
-            self.baseline_std = (self.history.iter()
+            self.baseline_std = (self
+                .history
+                .iter()
                 .map(|x| (x - self.baseline_mean).powi(2))
-                .sum::<f64>() / self.history.len() as f64)
+                .sum::<f64>()
+                / self.history.len() as f64)
                 .sqrt()
                 .max(0.1);
         }
@@ -295,23 +330,32 @@ impl WarningDetector {
     }
 
     fn velocity(&self) -> f64 {
-        if self.history.len() < 2 { return 0.0; }
+        if self.history.len() < 2 {
+            return 0.0;
+        }
         let n = self.history.len();
         self.history[n - 1] - self.history[n - 2]
     }
 
     fn drop_from_lookback(&self) -> f64 {
-        if self.history.len() <= self.rule.lookback { return 0.0; }
+        if self.history.len() <= self.rule.lookback {
+            return 0.0;
+        }
         let n = self.history.len();
         self.history[n - 1] - self.history[n - 1 - self.rule.lookback]
     }
 
     fn is_warning(&self, event_count: usize) -> bool {
-        if self.history.len() < self.warmup_samples { return false; }
-        if self.baseline_mean == 0.0 { return false; }
+        if self.history.len() < self.warmup_samples {
+            return false;
+        }
+        if self.baseline_mean == 0.0 {
+            return false;
+        }
 
         // Adaptive threshold: baseline_mean - theta_sigma * baseline_std
-        let adaptive_threshold = (self.baseline_mean - self.rule.theta_sigma * self.baseline_std).max(0.5);
+        let adaptive_threshold =
+            (self.baseline_mean - self.rule.theta_sigma * self.baseline_std).max(0.5);
 
         // Four-condition warning (hybrid: structural + intensity):
         // 1. Cut below adaptive threshold (relative to learned baseline)
@@ -335,7 +379,9 @@ impl WarningDetector {
 
     /// Get the adaptive threshold value for display
     fn adaptive_threshold(&self) -> f64 {
-        if self.baseline_mean == 0.0 { return 0.0; }
+        if self.baseline_mean == 0.0 {
+            return 0.0;
+        }
         (self.baseline_mean - self.rule.theta_sigma * self.baseline_std).max(0.5)
     }
 }
@@ -383,7 +429,9 @@ impl MovingAverageBaseline {
     }
 
     fn is_warning(&self) -> bool {
-        if self.window.len() < self.window_size { return false; }
+        if self.window.len() < self.window_size {
+            return false;
+        }
         let avg = self.window.iter().sum::<usize>() as f64 / self.window.len() as f64;
         avg >= self.threshold
     }
@@ -443,9 +491,9 @@ impl SyndromeGenerator {
         let mut bitmap = DetectorBitmap::new(num_detectors);
 
         // Check if burst is active
-        let in_burst = self.burst_active &&
-            self.round >= self.burst_start &&
-            self.round < self.burst_start + self.burst_duration;
+        let in_burst = self.burst_active
+            && self.round >= self.burst_start
+            && self.round < self.burst_start + self.burst_duration;
 
         for det in 0..num_detectors {
             let row = det / grid_size;
@@ -508,39 +556,47 @@ struct EvaluationResults {
 
 impl EvaluationResults {
     fn lead_times(&self) -> Vec<usize> {
-        self.episodes.iter()
-            .filter_map(|e| e.lead_time)
-            .collect()
+        self.episodes.iter().filter_map(|e| e.lead_time).collect()
     }
 
     fn median_lead_time(&self) -> f64 {
         let mut times = self.lead_times();
-        if times.is_empty() { return 0.0; }
+        if times.is_empty() {
+            return 0.0;
+        }
         times.sort();
         times[times.len() / 2] as f64
     }
 
     fn p10_lead_time(&self) -> f64 {
         let mut times = self.lead_times();
-        if times.is_empty() { return 0.0; }
+        if times.is_empty() {
+            return 0.0;
+        }
         times.sort();
         times[times.len() / 10] as f64
     }
 
     fn p90_lead_time(&self) -> f64 {
         let mut times = self.lead_times();
-        if times.is_empty() { return 0.0; }
+        if times.is_empty() {
+            return 0.0;
+        }
         times.sort();
         times[times.len() * 9 / 10] as f64
     }
 
     fn recall(&self) -> f64 {
-        if self.total_failures == 0 { return 1.0; }
+        if self.total_failures == 0 {
+            return 1.0;
+        }
         self.true_warnings as f64 / self.total_failures as f64
     }
 
     fn precision(&self) -> f64 {
-        if self.total_warnings == 0 { return 1.0; }
+        if self.total_warnings == 0 {
+            return 1.0;
+        }
         self.true_warnings as f64 / self.total_warnings as f64
     }
 
@@ -549,10 +605,14 @@ impl EvaluationResults {
     }
 
     fn actionable_rate(&self, min_cycles: usize) -> f64 {
-        let actionable = self.lead_times().iter()
+        let actionable = self
+            .lead_times()
+            .iter()
             .filter(|&&t| t >= min_cycles)
             .count();
-        if self.true_warnings == 0 { return 0.0; }
+        if self.true_warnings == 0 {
+            return 0.0;
+        }
         actionable as f64 / self.true_warnings as f64
     }
 }
@@ -681,9 +741,16 @@ fn run_baseline_evaluation(
     let mut cycles_since_warning = 0;
 
     let burst_cycles = if inject_bursts {
-        vec![(500, 10, (2, 2)), (1500, 15, (1, 3)), (3000, 12, (3, 1)),
-             (5000, 8, (2, 2)), (7000, 20, (1, 1))]
-    } else { vec![] };
+        vec![
+            (500, 10, (2, 2)),
+            (1500, 15, (1, 3)),
+            (3000, 12, (3, 1)),
+            (5000, 8, (2, 2)),
+            (7000, 20, (1, 1)),
+        ]
+    } else {
+        vec![]
+    };
 
     for cycle in 0..num_cycles {
         for &(burst_cycle, duration, center) in &burst_cycles {
@@ -722,14 +789,20 @@ fn run_baseline_evaluation(
                     lead_time: Some(cycles_since_warning),
                 }
             } else {
-                FailureEpisode { failure_cycle: cycle, warning_cycle: None, lead_time: None }
+                FailureEpisode {
+                    failure_cycle: cycle,
+                    warning_cycle: None,
+                    lead_time: None,
+                }
             };
             results.episodes.push(episode);
         }
         results.total_cycles += 1;
     }
 
-    if warning_active { results.false_alarms += 1; }
+    if warning_active {
+        results.false_alarms += 1;
+    }
     results
 }
 
@@ -768,7 +841,11 @@ fn bootstrap_confidence_interval(
     let upper_idx = ((1.0 - alpha) * n_bootstrap as f64) as usize;
 
     let mean = values.iter().sum::<f64>() / values.len() as f64;
-    (bootstrap_means[lower_idx], mean, bootstrap_means[upper_idx.min(n_bootstrap - 1)])
+    (
+        bootstrap_means[lower_idx],
+        mean,
+        bootstrap_means[upper_idx.min(n_bootstrap - 1)],
+    )
 }
 
 // ============================================================================
@@ -789,8 +866,14 @@ fn main() {
     println!("├─────────────────────────────────────────────────────────────────────┤");
     println!("│ Logical Failure: Spanning cluster from left to right boundary       │");
     println!("│ Warning Rule (HYBRID): (cut ≤ θ) AND (drop ≥ δ) AND (events ≥ e)    │");
-    println!("│   θ = min(μ - {:.1}σ, {:.1}) (adaptive + absolute)                     │", rule.theta_sigma, rule.theta_absolute);
-    println!("│   δ = {:.1} (drop over {} cycles), e = {} (min fired detectors)          │", rule.delta, rule.lookback, rule.min_event_count);
+    println!(
+        "│   θ = min(μ - {:.1}σ, {:.1}) (adaptive + absolute)                     │",
+        rule.theta_sigma, rule.theta_absolute
+    );
+    println!(
+        "│   δ = {:.1} (drop over {} cycles), e = {} (min fired detectors)          │",
+        rule.delta, rule.lookback, rule.min_event_count
+    );
     println!("│   Mode: HYBRID (structural min-cut + event intensity)               │");
     println!("└─────────────────────────────────────────────────────────────────────┘");
     let horizon = 15; // Prediction horizon in cycles
@@ -807,13 +890,28 @@ fn main() {
 
     println!("║ Cycles: 10,000  | Code: d=5  | Error: 5%  | Bursts: NO            ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║   Total Failures:      {:>6}                                      ║", regime_a.total_failures);
-    println!("║   Total Warnings:      {:>6}                                      ║", regime_a.total_warnings);
-    println!("║   True Warnings:       {:>6} (Recall: {:.1}%)                     ║",
-             regime_a.true_warnings, regime_a.recall() * 100.0);
-    println!("║   False Alarms:        {:>6} ({:.2}/10k cycles)                   ║",
-             regime_a.false_alarms, regime_a.false_alarm_rate_per_10k());
-    println!("║   Precision:           {:>5.1}%                                    ║", regime_a.precision() * 100.0);
+    println!(
+        "║   Total Failures:      {:>6}                                      ║",
+        regime_a.total_failures
+    );
+    println!(
+        "║   Total Warnings:      {:>6}                                      ║",
+        regime_a.total_warnings
+    );
+    println!(
+        "║   True Warnings:       {:>6} (Recall: {:.1}%)                     ║",
+        regime_a.true_warnings,
+        regime_a.recall() * 100.0
+    );
+    println!(
+        "║   False Alarms:        {:>6} ({:.2}/10k cycles)                   ║",
+        regime_a.false_alarms,
+        regime_a.false_alarm_rate_per_10k()
+    );
+    println!(
+        "║   Precision:           {:>5.1}%                                    ║",
+        regime_a.precision() * 100.0
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 
     // ========================================================================
@@ -828,23 +926,56 @@ fn main() {
 
     println!("║ Cycles: 10,000  | Code: d=5  | Error: 3%  | Bursts: YES           ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║   Total Failures:      {:>6}                                      ║", regime_b.total_failures);
-    println!("║   Total Warnings:      {:>6}                                      ║", regime_b.total_warnings);
-    println!("║   True Warnings:       {:>6} (Recall: {:.1}%)                     ║",
-             regime_b.true_warnings, regime_b.recall() * 100.0);
-    println!("║   False Alarms:        {:>6} ({:.2}/10k cycles)                   ║",
-             regime_b.false_alarms, regime_b.false_alarm_rate_per_10k());
-    println!("║   Precision:           {:>5.1}%                                    ║", regime_b.precision() * 100.0);
+    println!(
+        "║   Total Failures:      {:>6}                                      ║",
+        regime_b.total_failures
+    );
+    println!(
+        "║   Total Warnings:      {:>6}                                      ║",
+        regime_b.total_warnings
+    );
+    println!(
+        "║   True Warnings:       {:>6} (Recall: {:.1}%)                     ║",
+        regime_b.true_warnings,
+        regime_b.recall() * 100.0
+    );
+    println!(
+        "║   False Alarms:        {:>6} ({:.2}/10k cycles)                   ║",
+        regime_b.false_alarms,
+        regime_b.false_alarm_rate_per_10k()
+    );
+    println!(
+        "║   Precision:           {:>5.1}%                                    ║",
+        regime_b.precision() * 100.0
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ LEAD TIME DISTRIBUTION:                                           ║");
-    println!("║   Median:     {:>5.1} cycles                                       ║", regime_b.median_lead_time());
-    println!("║   P10:        {:>5.1} cycles                                       ║", regime_b.p10_lead_time());
-    println!("║   P90:        {:>5.1} cycles                                       ║", regime_b.p90_lead_time());
+    println!(
+        "║   Median:     {:>5.1} cycles                                       ║",
+        regime_b.median_lead_time()
+    );
+    println!(
+        "║   P10:        {:>5.1} cycles                                       ║",
+        regime_b.p10_lead_time()
+    );
+    println!(
+        "║   P90:        {:>5.1} cycles                                       ║",
+        regime_b.p90_lead_time()
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ ACTIONABLE WINDOW:                                                ║");
-    println!("║   1-cycle mitigation:  {:>5.1}% actionable                         ║", regime_b.actionable_rate(1) * 100.0);
-    println!("║   2-cycle mitigation:  {:>5.1}% actionable                         ║", regime_b.actionable_rate(2) * 100.0);
-    println!("║   5-cycle mitigation:  {:>5.1}% actionable                         ║", regime_b.actionable_rate(5) * 100.0);
+    println!(
+        "║   1-cycle mitigation:  {:>5.1}% actionable                         ║",
+        regime_b.actionable_rate(1) * 100.0
+    );
+    println!(
+        "║   2-cycle mitigation:  {:>5.1}% actionable                         ║",
+        regime_b.actionable_rate(2) * 100.0
+    );
+    println!(
+        "║   5-cycle mitigation:  {:>5.1}% actionable                         ║",
+        regime_b.actionable_rate(5) * 100.0
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 
     // ========================================================================
@@ -857,18 +988,27 @@ fn main() {
     println!("╠═══════════════╪════════╪═══════════╪═══════════╪════════╪════════╣");
 
     // ruQu (min-cut based)
-    println!("║ ruQu MinCut   │ {:>5.1}% │   {:>5.1}%  │    {:>4.1}   │  {:>5.2} │ {:>5.1}% ║",
-             regime_b.recall() * 100.0, regime_b.precision() * 100.0,
-             regime_b.median_lead_time(), regime_b.false_alarm_rate_per_10k(),
-             regime_b.actionable_rate(2) * 100.0);
+    println!(
+        "║ ruQu MinCut   │ {:>5.1}% │   {:>5.1}%  │    {:>4.1}   │  {:>5.2} │ {:>5.1}% ║",
+        regime_b.recall() * 100.0,
+        regime_b.precision() * 100.0,
+        regime_b.median_lead_time(),
+        regime_b.false_alarm_rate_per_10k(),
+        regime_b.actionable_rate(2) * 100.0
+    );
 
     // Baseline: Event count threshold
     for threshold in [3, 5, 7] {
         let baseline = run_baseline_evaluation(5, 0.03, 10000, threshold, horizon, 42, true);
-        println!("║ Events >= {:>2}  │ {:>5.1}% │   {:>5.1}%  │    {:>4.1}   │  {:>5.2} │ {:>5.1}% ║",
-                 threshold, baseline.recall() * 100.0, baseline.precision() * 100.0,
-                 baseline.median_lead_time(), baseline.false_alarm_rate_per_10k(),
-                 baseline.actionable_rate(2) * 100.0);
+        println!(
+            "║ Events >= {:>2}  │ {:>5.1}% │   {:>5.1}%  │    {:>4.1}   │  {:>5.2} │ {:>5.1}% ║",
+            threshold,
+            baseline.recall() * 100.0,
+            baseline.precision() * 100.0,
+            baseline.median_lead_time(),
+            baseline.false_alarm_rate_per_10k(),
+            baseline.actionable_rate(2) * 100.0
+        );
     }
     println!("╚═══════════════╧════════╧═══════════╧═══════════╧════════╧════════╝");
 
@@ -882,7 +1022,10 @@ fn main() {
     let lead_times: Vec<f64> = regime_b.lead_times().iter().map(|&x| x as f64).collect();
     if !lead_times.is_empty() {
         let (lower, mean, upper) = bootstrap_confidence_interval(&lead_times, 1000, 0.95);
-        println!("║ Lead Time:  {:.1} cycles  (95% CI: [{:.1}, {:.1}])                 ║", mean, lower, upper);
+        println!(
+            "║ Lead Time:  {:.1} cycles  (95% CI: [{:.1}, {:.1}])                 ║",
+            mean, lower, upper
+        );
     }
 
     // Multiple runs for recall CI
@@ -895,7 +1038,12 @@ fn main() {
     }
     if !recall_samples.is_empty() {
         let (lower, mean, upper) = bootstrap_confidence_interval(&recall_samples, 1000, 0.95);
-        println!("║ Recall:     {:.1}%        (95% CI: [{:.1}%, {:.1}%])               ║", mean * 100.0, lower * 100.0, upper * 100.0);
+        println!(
+            "║ Recall:     {:.1}%        (95% CI: [{:.1}%, {:.1}%])               ║",
+            mean * 100.0,
+            lower * 100.0,
+            upper * 100.0
+        );
     }
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 
@@ -907,13 +1055,26 @@ fn main() {
     println!("═══════════════════════════════════════════════════════════════════════");
 
     let criteria = [
-        ("Recall >= 80%", regime_b.recall() >= 0.80, format!("{:.1}%", regime_b.recall() * 100.0)),
-        ("False Alarms < 5/10k", regime_b.false_alarm_rate_per_10k() < 5.0,
-         format!("{:.2}/10k", regime_b.false_alarm_rate_per_10k())),
-        ("Median Lead >= 3 cycles", regime_b.median_lead_time() >= 3.0,
-         format!("{:.1} cycles", regime_b.median_lead_time())),
-        ("Actionable >= 70% (2-cycle)", regime_b.actionable_rate(2) >= 0.70,
-         format!("{:.1}%", regime_b.actionable_rate(2) * 100.0)),
+        (
+            "Recall >= 80%",
+            regime_b.recall() >= 0.80,
+            format!("{:.1}%", regime_b.recall() * 100.0),
+        ),
+        (
+            "False Alarms < 5/10k",
+            regime_b.false_alarm_rate_per_10k() < 5.0,
+            format!("{:.2}/10k", regime_b.false_alarm_rate_per_10k()),
+        ),
+        (
+            "Median Lead >= 3 cycles",
+            regime_b.median_lead_time() >= 3.0,
+            format!("{:.1} cycles", regime_b.median_lead_time()),
+        ),
+        (
+            "Actionable >= 70% (2-cycle)",
+            regime_b.actionable_rate(2) >= 0.70,
+            format!("{:.1}%", regime_b.actionable_rate(2) * 100.0),
+        ),
     ];
 
     let mut all_pass = true;
@@ -944,9 +1105,18 @@ fn main() {
     println!("│  baselines for correlated failure modes.\"                           │");
     println!("│                                                                     │");
     println!("│ Key Result:                                                         │");
-    println!("│   • ruQu provides {:.1} cycles average warning before failure        │", regime_b.median_lead_time());
-    println!("│   • {:.0}% of failures are predicted in advance                      │", regime_b.recall() * 100.0);
-    println!("│   • {:.0}% of warnings are actionable (2+ cycles lead time)          │", regime_b.actionable_rate(2) * 100.0);
+    println!(
+        "│   • ruQu provides {:.1} cycles average warning before failure        │",
+        regime_b.median_lead_time()
+    );
+    println!(
+        "│   • {:.0}% of failures are predicted in advance                      │",
+        regime_b.recall() * 100.0
+    );
+    println!(
+        "│   • {:.0}% of warnings are actionable (2+ cycles lead time)          │",
+        regime_b.actionable_rate(2) * 100.0
+    );
     println!("│                                                                     │");
     println!("│ This is NOVEL because:                                              │");
     println!("│   1. Traditional QEC decoders are reactive, not predictive          │");

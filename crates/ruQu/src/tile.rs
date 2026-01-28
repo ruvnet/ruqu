@@ -37,7 +37,7 @@
 use std::mem::size_of;
 
 // Cryptographic imports
-use ed25519_dalek::{Signature, SigningKey, VerifyingKey, Signer};
+use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
 use subtle::ConstantTimeEq;
 
 // ============================================================================
@@ -237,7 +237,11 @@ impl Edge {
     /// Create a new edge
     #[inline]
     pub const fn new(source: VertexId, target: VertexId, weight: FixedWeight) -> Self {
-        Self { source, target, weight }
+        Self {
+            source,
+            target,
+            weight,
+        }
     }
 }
 
@@ -324,7 +328,10 @@ impl PatchGraph {
                 target: 0,
                 weight: 0,
             }; MAX_PATCH_EDGES],
-            adjacency: [[AdjEntry { neighbor: 0, edge_id: 0 }; MAX_DEGREE]; MAX_PATCH_VERTICES],
+            adjacency: [[AdjEntry {
+                neighbor: 0,
+                edge_id: 0,
+            }; MAX_DEGREE]; MAX_PATCH_VERTICES],
         }
     }
 
@@ -340,8 +347,10 @@ impl PatchGraph {
             // Update syndrome accumulator at vertex
             if (delta.source as usize) < MAX_PATCH_VERTICES {
                 self.ensure_vertex(delta.source);
-                self.vertices[delta.source as usize].syndrome_acc =
-                    self.vertices[delta.source as usize].syndrome_acc.wrapping_add(delta.value);
+                self.vertices[delta.source as usize].syndrome_acc = self.vertices
+                    [delta.source as usize]
+                    .syndrome_acc
+                    .wrapping_add(delta.value);
             }
         }
     }
@@ -362,7 +371,12 @@ impl PatchGraph {
     }
 
     /// Add an edge to the graph
-    pub fn add_edge(&mut self, source: VertexId, target: VertexId, weight: FixedWeight) -> Option<EdgeId> {
+    pub fn add_edge(
+        &mut self,
+        source: VertexId,
+        target: VertexId,
+        weight: FixedWeight,
+    ) -> Option<EdgeId> {
         if source as usize >= MAX_PATCH_VERTICES || target as usize >= MAX_PATCH_VERTICES {
             return None;
         }
@@ -386,11 +400,17 @@ impl PatchGraph {
 
         // Update adjacency
         let src_deg = self.vertices[source as usize].degree as usize;
-        self.adjacency[source as usize][src_deg] = AdjEntry { neighbor: target, edge_id };
+        self.adjacency[source as usize][src_deg] = AdjEntry {
+            neighbor: target,
+            edge_id,
+        };
         self.vertices[source as usize].degree += 1;
 
         let tgt_deg = self.vertices[target as usize].degree as usize;
-        self.adjacency[target as usize][tgt_deg] = AdjEntry { neighbor: source, edge_id };
+        self.adjacency[target as usize][tgt_deg] = AdjEntry {
+            neighbor: source,
+            edge_id,
+        };
         self.vertices[target as usize].degree += 1;
 
         self.num_edges += 1;
@@ -419,7 +439,12 @@ impl PatchGraph {
     }
 
     /// Update edge weight
-    pub fn update_weight(&mut self, source: VertexId, target: VertexId, new_weight: FixedWeight) -> bool {
+    pub fn update_weight(
+        &mut self,
+        source: VertexId,
+        target: VertexId,
+        new_weight: FixedWeight,
+    ) -> bool {
         if let Some(edge_id) = self.find_edge(source, target) {
             self.edges[edge_id as usize].weight = new_weight;
             self.status |= Self::STATUS_DIRTY;
@@ -539,7 +564,12 @@ impl PatchGraph {
         }
 
         #[inline(always)]
-        fn union(parent: &mut [u16; MAX_PATCH_VERTICES], rank: &mut [u8; MAX_PATCH_VERTICES], x: u16, y: u16) {
+        fn union(
+            parent: &mut [u16; MAX_PATCH_VERTICES],
+            rank: &mut [u8; MAX_PATCH_VERTICES],
+            x: u16,
+            y: u16,
+        ) {
             let px = find(parent, x);
             let py = find(parent, y);
             if px == py {
@@ -871,7 +901,8 @@ impl LocalCutState {
         self.cut_value = graph.estimate_local_cut();
 
         // Identify boundary candidates
-        self.num_candidates = graph.identify_boundary_candidates(&mut self.boundary_candidates) as u16;
+        self.num_candidates =
+            graph.identify_boundary_candidates(&mut self.boundary_candidates) as u16;
 
         // Detect boundary movement
         let delta = (self.cut_value - self.prev_cut_value).abs();
@@ -1032,7 +1063,12 @@ impl WorkerTile {
                 syndrome: [
                     (delta.value & 0xFF) as u8,
                     ((delta.value >> 8) & 0xFF) as u8,
-                    0, 0, 0, 0, 0, 0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
                 ],
                 flags: delta.flags as u32,
             };
@@ -1232,7 +1268,7 @@ impl PermitToken {
     pub fn is_valid(&self, now_ns: u64) -> bool {
         self.decision == GateDecision::Permit
             && now_ns >= self.timestamp  // Not before issued
-            && now_ns <= self.timestamp.saturating_add(self.ttl_ns)  // Not after expiry
+            && now_ns <= self.timestamp.saturating_add(self.ttl_ns) // Not after expiry
     }
 
     /// Compute the message bytes to be signed
@@ -1281,7 +1317,9 @@ impl PermitToken {
         let hash = blake3::hash(&message);
 
         // Verify signature over the hash
-        verifying_key.verify_strict(hash.as_bytes(), &signature).is_ok()
+        verifying_key
+            .verify_strict(hash.as_bytes(), &signature)
+            .is_ok()
     }
 }
 
@@ -1332,7 +1370,13 @@ impl ReceiptLog {
     /// # Security
     /// Uses Blake3 for cryptographic hash chaining, ensuring tamper-evidence.
     /// The hash is computed as: H(prev_hash || sequence || decision || timestamp || witness_hash)
-    pub fn append(&mut self, decision: GateDecision, sequence: u64, timestamp: u64, witness_hash: [u8; 32]) {
+    pub fn append(
+        &mut self,
+        decision: GateDecision,
+        sequence: u64,
+        timestamp: u64,
+        witness_hash: [u8; 32],
+    ) {
         // Compute Blake3 hash of all data including previous hash
         let mut hasher = blake3::Hasher::new();
         hasher.update(&self.last_hash);
@@ -1513,7 +1557,8 @@ impl TileZero {
         let timestamp = self.sequence * 1_000_000; // Pseudo-timestamp
 
         // Issue permit token and log receipt
-        self.receipt_log.append(decision, self.sequence, timestamp, witness_hash);
+        self.receipt_log
+            .append(decision, self.sequence, timestamp, witness_hash);
         self.sequence += 1;
 
         decision
@@ -1626,7 +1671,12 @@ impl TileZero {
     /// Evaluate the three-filter decision logic
     /// Evaluate the three-filter decision logic
     #[inline]
-    fn evaluate_filters(&self, global_cut: f64, shift_pressure: f64, e_aggregate: f64) -> GateDecision {
+    fn evaluate_filters(
+        &self,
+        global_cut: f64,
+        shift_pressure: f64,
+        e_aggregate: f64,
+    ) -> GateDecision {
         // Filter 1: Structural (min-cut check)
         if global_cut < self.thresholds.structural_min_cut {
             return GateDecision::Deny;
@@ -1926,8 +1976,8 @@ mod tests {
 
     #[test]
     fn test_tilezero_with_signing_key() {
-        use rand::rngs::OsRng;
         use ed25519_dalek::SigningKey;
+        use rand::rngs::OsRng;
 
         // Create TileZero with a random signing key
         let thresholds = GateThresholds::default();
@@ -1999,7 +2049,10 @@ mod tests {
         let token = tilezero.issue_permit(&decision);
 
         // Token should have placeholder marker
-        assert_eq!(token.signature[63], 0xFF, "Token should have placeholder signature marker");
+        assert_eq!(
+            token.signature[63], 0xFF,
+            "Token should have placeholder signature marker"
+        );
 
         // verify_token should return None when no key is configured
         assert_eq!(tilezero.verify_token(&token), None);

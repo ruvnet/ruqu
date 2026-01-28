@@ -99,38 +99,38 @@ pub mod schema;
 pub mod traits;
 
 // Re-exports for convenient access
+pub use adaptive::{
+    AdaptiveStats, AdaptiveThresholds, DriftConfig, DriftDetector, DriftDirection, DriftProfile,
+    LearningConfig,
+};
+pub use attention::{AttentionConfig, AttentionStats, CoherenceAttention, GatePacketBridge};
+pub use decoder::{Correction, DecoderConfig, MWPMDecoder, StreamingDecoder};
 pub use error::{Result, RuQuError};
+pub use fabric::{
+    linear_patch_map, surface_code, surface_code_d7, CoherenceGate, DecisionStats, FabricBuilder,
+    FabricConfig, FabricState, FilterSummary, PatchMap, QuantumFabric, TileAssignment,
+    WitnessReceipt,
+};
 pub use filters::{
     EdgeId as FilterEdgeId, EvidenceAccumulator, EvidenceFilter, EvidenceResult, FilterConfig,
     FilterPipeline, FilterResults, RegionMask, ShiftFilter, ShiftResult, StructuralFilter,
     StructuralResult, SystemState, Verdict,
 };
+pub use metrics::{Counter, Gauge, Histogram, MetricsCollector, MetricsConfig, MetricsSnapshot};
+pub use mincut::{DynamicMinCutEngine, MinCutResult};
+pub use parallel::{parallel_aggregate, ParallelConfig, ParallelFabric, ParallelStats};
+pub use stim::{ErrorPatternGenerator, StimSyndromeSource, SurfaceCodeConfig, SyndromeStats};
 pub use syndrome::{
     BufferStatistics, DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound,
 };
 pub use tile::{
-    GateDecision, GateThresholds, LocalCutState, PatchGraph, PermitToken, ReceiptLog,
-    TileReport, TileZero, WorkerTile,
+    GateDecision, GateThresholds, LocalCutState, PatchGraph, PermitToken, ReceiptLog, TileReport,
+    TileZero, WorkerTile,
 };
 pub use types::{
-    ActionId, CycleId, RoundId, SequenceId, TileId as DomainTileId,
-    RegionMask as DomainRegionMask, GateDecision as DomainGateDecision,
+    ActionId, CycleId, GateDecision as DomainGateDecision, RegionMask as DomainRegionMask, RoundId,
+    SequenceId, TileId as DomainTileId,
 };
-pub use fabric::{
-    CoherenceGate, DecisionStats, FabricBuilder, FabricConfig, FabricState,
-    FilterSummary, PatchMap, QuantumFabric, TileAssignment, WitnessReceipt,
-    linear_patch_map, surface_code, surface_code_d7,
-};
-pub use mincut::{DynamicMinCutEngine, MinCutResult};
-pub use decoder::{Correction, DecoderConfig, MWPMDecoder, StreamingDecoder};
-pub use attention::{AttentionConfig, AttentionStats, CoherenceAttention, GatePacketBridge};
-pub use adaptive::{
-    AdaptiveStats, AdaptiveThresholds, DriftConfig, DriftDetector, DriftDirection, DriftProfile,
-    LearningConfig,
-};
-pub use metrics::{Counter, Gauge, Histogram, MetricsCollector, MetricsConfig, MetricsSnapshot};
-pub use parallel::{ParallelConfig, ParallelFabric, ParallelStats, parallel_aggregate};
-pub use stim::{ErrorPatternGenerator, StimSyndromeSource, SurfaceCodeConfig, SyndromeStats};
 
 /// Crate version
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -156,17 +156,23 @@ pub const TILE_MEMORY_BUDGET: usize = 65536;
 /// Prelude module for convenient imports
 pub mod prelude {
     //! Commonly used types for syndrome processing, filters, and tile architecture.
+    pub use crate::adaptive::{
+        AdaptiveStats, AdaptiveThresholds, DriftConfig, DriftDetector, DriftProfile, LearningConfig,
+    };
     pub use crate::error::{Result, RuQuError};
     pub use crate::fabric::{
-        CoherenceGate, DecisionStats, FabricBuilder, FabricConfig, FabricState,
-        PatchMap, QuantumFabric, TileAssignment, WitnessReceipt,
-        linear_patch_map, surface_code, surface_code_d7,
+        linear_patch_map, surface_code, surface_code_d7, CoherenceGate, DecisionStats,
+        FabricBuilder, FabricConfig, FabricState, PatchMap, QuantumFabric, TileAssignment,
+        WitnessReceipt,
     };
     pub use crate::filters::{
         EvidenceAccumulator, EvidenceFilter, EvidenceResult, FilterConfig, FilterPipeline,
         FilterResults, RegionMask, ShiftFilter, ShiftResult, StructuralFilter, StructuralResult,
         SystemState, Verdict,
     };
+    pub use crate::metrics::{MetricsCollector, MetricsConfig, MetricsSnapshot};
+    pub use crate::parallel::{ParallelConfig, ParallelFabric, ParallelStats};
+    pub use crate::stim::{StimSyndromeSource, SurfaceCodeConfig, SyndromeStats};
     pub use crate::syndrome::{
         BufferStatistics, DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound,
     };
@@ -175,18 +181,12 @@ pub mod prelude {
         TileReport, TileZero, WorkerTile,
     };
     pub use crate::types::{
-        ActionId, CycleId, RoundId, SequenceId,
-        GateDecision as DomainGateDecision, RegionMask as DomainRegionMask,
+        ActionId, CycleId, GateDecision as DomainGateDecision, RegionMask as DomainRegionMask,
+        RoundId, SequenceId,
     };
     pub use crate::{
         DEFAULT_BUFFER_CAPACITY, MAX_DETECTORS, TILE_COUNT, TILE_MEMORY_BUDGET, WORKER_TILE_COUNT,
     };
-    pub use crate::adaptive::{
-        AdaptiveThresholds, AdaptiveStats, DriftConfig, DriftDetector, DriftProfile, LearningConfig,
-    };
-    pub use crate::metrics::{MetricsCollector, MetricsConfig, MetricsSnapshot};
-    pub use crate::parallel::{ParallelFabric, ParallelConfig, ParallelStats};
-    pub use crate::stim::{StimSyndromeSource, SurfaceCodeConfig, SyndromeStats};
 }
 
 #[cfg(test)]

@@ -31,8 +31,8 @@
 //! - Repetition code
 //! - Color code (planned)
 
-use crate::syndrome::DetectorBitmap;
 use crate::error::{Result, RuQuError};
+use crate::syndrome::DetectorBitmap;
 
 /// Configuration for surface code simulation
 #[derive(Clone, Debug)]
@@ -169,8 +169,8 @@ impl StimSyndromeSource {
         // Pre-compute detector coordinates for correlation modeling
         let mut detector_coords = Vec::new();
         let d = config.distance;
-        for r in 0..d-1 {
-            for c in 0..d-1 {
+        for r in 0..d - 1 {
+            for c in 0..d - 1 {
                 // X stabilizers
                 detector_coords.push((r, c));
                 // Z stabilizers (offset grid)
@@ -222,9 +222,7 @@ impl StimSyndromeSource {
     /// Reset to initial state
     pub fn reset(&mut self) {
         self.round = 0;
-        self.rng = Xorshift64::new(
-            self.config.seed.unwrap_or(12345)
-        );
+        self.rng = Xorshift64::new(self.config.seed.unwrap_or(12345));
     }
 
     // Private helpers
@@ -260,7 +258,7 @@ impl StimSyndromeSource {
             let d = self.config.distance;
             let idx = (self.rng.next() as usize) % (d - 1);
 
-            for i in 0..d-1 {
+            for i in 0..d - 1 {
                 let detector = if is_row {
                     idx * (d - 1) + i
                 } else {
@@ -339,7 +337,7 @@ impl ErrorPatternGenerator {
         let z_offset = (d - 1) * (d - 1);
 
         // Top boundary Z stabilizers
-        for col in 0..d-1 {
+        for col in 0..d - 1 {
             bitmap.set(z_offset + col, true);
         }
 
@@ -373,8 +371,8 @@ impl SyndromeStats {
             self.max_detections = fired;
         }
 
-        self.avg_detection_rate = self.total_detections as f64 /
-            (self.total_syndromes as f64 * bitmap.detector_count() as f64);
+        self.avg_detection_rate = self.total_detections as f64
+            / (self.total_syndromes as f64 * bitmap.detector_count() as f64);
     }
 }
 

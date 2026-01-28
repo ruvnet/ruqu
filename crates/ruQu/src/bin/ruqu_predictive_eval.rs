@@ -203,7 +203,8 @@ impl WarningDetector {
             self.baseline_mean = sum / self.history.len() as f64;
 
             if self.history.len() > 1 {
-                let variance: f64 = self.history
+                let variance: f64 = self
+                    .history
                     .iter()
                     .map(|x| (x - self.baseline_mean).powi(2))
                     .sum::<f64>()
@@ -348,7 +349,11 @@ impl STMinCutGraph {
     }
 }
 
-fn build_qec_graph(code_distance: usize, error_rate: f64, syndrome: &DetectorBitmap) -> STMinCutGraph {
+fn build_qec_graph(
+    code_distance: usize,
+    error_rate: f64,
+    syndrome: &DetectorBitmap,
+) -> STMinCutGraph {
     let grid_size = code_distance - 1;
     let num_detectors = 2 * grid_size * grid_size;
 
@@ -437,10 +442,26 @@ fn is_logical_failure(syndrome: &DetectorBitmap, code_distance: usize) -> bool {
         }
 
         let neighbors = [
-            if col > 0 { Some(row * grid_size + col - 1) } else { None },
-            if col + 1 < grid_size { Some(row * grid_size + col + 1) } else { None },
-            if row > 0 { Some((row - 1) * grid_size + col) } else { None },
-            if row + 1 < grid_size { Some((row + 1) * grid_size + col) } else { None },
+            if col > 0 {
+                Some(row * grid_size + col - 1)
+            } else {
+                None
+            },
+            if col + 1 < grid_size {
+                Some(row * grid_size + col + 1)
+            } else {
+                None
+            },
+            if row > 0 {
+                Some((row - 1) * grid_size + col)
+            } else {
+                None
+            },
+            if row + 1 < grid_size {
+                Some((row + 1) * grid_size + col)
+            } else {
+                None
+            },
         ];
 
         for neighbor_opt in neighbors.iter().flatten() {
@@ -586,10 +607,7 @@ impl SyndromeGenerator {
                     for &(sr, sc) in &[(1i32, 1i32), (1, -1), (-1, 1), (-1, -1)] {
                         let row = center_row as i32 + dr as i32 * sr;
                         let col = center_col as i32 + dc as i32 * sc;
-                        if row >= 0
-                            && row < grid_size as i32
-                            && col >= 0
-                            && col < grid_size as i32
+                        if row >= 0 && row < grid_size as i32 && col >= 0 && col < grid_size as i32
                         {
                             let detector = (row as usize) * grid_size + (col as usize);
                             if detector < syndrome.detector_count() {
@@ -751,10 +769,22 @@ fn main() {
     println!("                           ACTIONABILITY");
     println!("═══════════════════════════════════════════════════════════════════════");
     println!();
-    println!("  Decoder switch (1 cycle):         {:>5.1}%", results.actionable_rate(1) * 100.0);
-    println!("  Extra syndrome round (2 cycles):  {:>5.1}%", results.actionable_rate(2) * 100.0);
-    println!("  Region quarantine (5 cycles):     {:>5.1}%", results.actionable_rate(5) * 100.0);
-    println!("  Full recalibration (10 cycles):   {:>5.1}%", results.actionable_rate(10) * 100.0);
+    println!(
+        "  Decoder switch (1 cycle):         {:>5.1}%",
+        results.actionable_rate(1) * 100.0
+    );
+    println!(
+        "  Extra syndrome round (2 cycles):  {:>5.1}%",
+        results.actionable_rate(2) * 100.0
+    );
+    println!(
+        "  Region quarantine (5 cycles):     {:>5.1}%",
+        results.actionable_rate(5) * 100.0
+    );
+    println!(
+        "  Full recalibration (10 cycles):   {:>5.1}%",
+        results.actionable_rate(10) * 100.0
+    );
 
     // Summary
     println!();
@@ -770,20 +800,38 @@ fn main() {
         println!();
         println!("  ✓ PREDICTIVE: ruQu satisfies all criteria");
         println!("    - Recall >= 80%: {:.1}%", results.recall() * 100.0);
-        println!("    - False alarms < 50/100k: {:.1}/100k", results.false_alarms_per_100k());
-        println!("    - Median lead >= 2 cycles: {:.1} cycles", results.median_lead_time());
+        println!(
+            "    - False alarms < 50/100k: {:.1}/100k",
+            results.false_alarms_per_100k()
+        );
+        println!(
+            "    - Median lead >= 2 cycles: {:.1} cycles",
+            results.median_lead_time()
+        );
     } else {
         println!();
         println!("  ~ PARTIAL: Some criteria not met");
-        println!("    - Recall: {:.1}% (target: >=80%)", results.recall() * 100.0);
-        println!("    - False alarms: {:.1}/100k (target: <50)", results.false_alarms_per_100k());
-        println!("    - Median lead: {:.1} cycles (target: >=2)", results.median_lead_time());
+        println!(
+            "    - Recall: {:.1}% (target: >=80%)",
+            results.recall() * 100.0
+        );
+        println!(
+            "    - False alarms: {:.1}/100k (target: <50)",
+            results.false_alarms_per_100k()
+        );
+        println!(
+            "    - Median lead: {:.1} cycles (target: >=2)",
+            results.median_lead_time()
+        );
     }
 
     let elapsed = start_time.elapsed();
     println!();
     println!("  Total time: {:.2}s", elapsed.as_secs_f64());
-    println!("  Throughput: {:.0} cycles/sec", results.total_cycles as f64 / elapsed.as_secs_f64());
+    println!(
+        "  Throughput: {:.0} cycles/sec",
+        results.total_cycles as f64 / elapsed.as_secs_f64()
+    );
     println!();
 }
 
@@ -801,5 +849,8 @@ fn print_results(results: &EvalResults) {
     println!();
     println!("Precision:     {:.2}", results.precision());
     println!("Recall:        {:.2}", results.recall());
-    println!("False alarms:  {:.1} / 100k cycles", results.false_alarms_per_100k());
+    println!(
+        "False alarms:  {:.1} / 100k cycles",
+        results.false_alarms_per_100k()
+    );
 }

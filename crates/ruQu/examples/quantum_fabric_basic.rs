@@ -9,8 +9,8 @@
 
 use ruqu::{
     fabric::{surface_code_d7, QuantumFabric},
-    tile::GateThresholds,
     syndrome::{DetectorBitmap, SyndromeRound},
+    tile::GateThresholds,
     types::GateDecision,
 };
 
@@ -23,17 +23,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Building QuantumFabric...");
 
     let fabric = QuantumFabric::builder()
-        .tiles(256)                          // 255 workers + TileZero
-        .patch_map(surface_code_d7())        // Surface code distance-7 layout
-        .syndrome_buffer(1024)               // Ring buffer depth
+        .tiles(256) // 255 workers + TileZero
+        .patch_map(surface_code_d7()) // Surface code distance-7 layout
+        .syndrome_buffer(1024) // Ring buffer depth
         .thresholds(GateThresholds::default())
         .build()?;
 
-    println!("  Fabric created with {} worker tiles", fabric.worker_count());
-    println!("  Patch map: {} ({} qubits, {} detectors)",
-             fabric.patch_map().name,
-             fabric.patch_map().qubit_count,
-             fabric.patch_map().detector_count);
+    println!(
+        "  Fabric created with {} worker tiles",
+        fabric.worker_count()
+    );
+    println!(
+        "  Patch map: {} ({} qubits, {} detectors)",
+        fabric.patch_map().name,
+        fabric.patch_map().qubit_count,
+        fabric.patch_map().detector_count
+    );
     println!();
 
     // -------------------------------------------------------------------------
@@ -57,11 +62,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         let round = SyndromeRound::new(
-            cycle as u64,              // round_id
-            cycle as u64,              // cycle
-            cycle as u64 * 1_000_000,  // timestamp (ns)
+            cycle as u64,             // round_id
+            cycle as u64,             // cycle
+            cycle as u64 * 1_000_000, // timestamp (ns)
             detectors,
-            0,                          // source_tile (0 = broadcast)
+            0, // source_tile (0 = broadcast)
         );
 
         // Ingest the syndrome
@@ -90,7 +95,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let state = fabric.current_state();
 
     println!("  Total decisions: {}", stats.total);
-    println!("  Permits: {} ({:.1}%)", stats.permits, stats.permit_rate * 100.0);
+    println!(
+        "  Permits: {} ({:.1}%)",
+        stats.permits,
+        stats.permit_rate * 100.0
+    );
     println!("  Defers:  {}", stats.defers);
     println!("  Denies:  {}", stats.denies);
     println!("  Avg latency: {} ns", stats.avg_latency_ns);
@@ -122,8 +131,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("\n=== Latest Witness Receipt ===");
         println!("  Sequence: {}", receipt.sequence);
         println!("  Decision: {:?}", receipt.decision);
-        println!("  Hash: {:02x}{:02x}{:02x}{:02x}...",
-                 receipt.hash[0], receipt.hash[1], receipt.hash[2], receipt.hash[3]);
+        println!(
+            "  Hash: {:02x}{:02x}{:02x}{:02x}...",
+            receipt.hash[0], receipt.hash[1], receipt.hash[2], receipt.hash[3]
+        );
     }
 
     println!("\nExample completed successfully!");

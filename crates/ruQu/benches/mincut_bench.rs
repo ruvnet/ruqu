@@ -8,9 +8,7 @@ use ruqu::mincut::DynamicMinCutEngine;
 /// Benchmark min-cut engine creation
 fn bench_engine_creation(c: &mut Criterion) {
     c.bench_function("mincut_engine_creation", |b| {
-        b.iter(|| {
-            black_box(DynamicMinCutEngine::new())
-        });
+        b.iter(|| black_box(DynamicMinCutEngine::new()));
     });
 }
 
@@ -51,9 +49,7 @@ fn bench_mincut_query(c: &mut Criterion) {
                 }
             }
 
-            b.iter(|| {
-                black_box(engine.min_cut_value())
-            });
+            b.iter(|| black_box(engine.min_cut_value()));
         });
     }
     group.finish();

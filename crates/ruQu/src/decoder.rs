@@ -88,7 +88,7 @@ pub struct MWPMDecoder {
 impl MWPMDecoder {
     /// Create a new MWPM decoder for a surface code of given distance
     pub fn new(config: DecoderConfig) -> Self {
-        use fusion_blossom::mwpm_solver::{SolverSerial, SolverInitializer};
+        use fusion_blossom::mwpm_solver::{SolverInitializer, SolverSerial};
         use fusion_blossom::util::*;
 
         let d = config.distance;
@@ -237,7 +237,11 @@ impl MWPMDecoder {
         Correction {
             x_corrections: deduped,
             z_corrections: Vec::new(), // Z corrections from separate decoder pass
-            confidence: if syndrome.fired_count() == 0 { 1.0 } else { 0.9 },
+            confidence: if syndrome.fired_count() == 0 {
+                1.0
+            } else {
+                0.9
+            },
             decode_time_ns: elapsed.as_nanos() as u64,
         }
     }
@@ -379,7 +383,11 @@ impl StreamingDecoder {
         if self.correction_history.is_empty() {
             return 0;
         }
-        let sum: u64 = self.correction_history.iter().map(|c| c.decode_time_ns).sum();
+        let sum: u64 = self
+            .correction_history
+            .iter()
+            .map(|c| c.decode_time_ns)
+            .sum();
         sum / self.correction_history.len() as u64
     }
 
@@ -429,8 +437,8 @@ mod tests {
 
         // Two adjacent fired detectors
         let mut syndrome = DetectorBitmap::new(25); // d=5, 5*5=25 detectors
-        syndrome.set(0, true);  // (0,0)
-        syndrome.set(1, true);  // (0,1)
+        syndrome.set(0, true); // (0,0)
+        syndrome.set(1, true); // (0,1)
 
         let correction = decoder.decode(&syndrome);
 

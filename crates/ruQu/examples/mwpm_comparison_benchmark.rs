@@ -131,14 +131,22 @@ fn build_surface_code_graph(
             if col + 1 < grid_size {
                 let right = (row * grid_size + col + 1) as u32;
                 let right_fired = fired_set.contains(&(right as usize));
-                let weight = if is_fired || right_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || right_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, right, weight);
             }
 
             if row + 1 < grid_size {
                 let bottom = ((row + 1) * grid_size + col) as u32;
                 let bottom_fired = fired_set.contains(&(bottom as usize));
-                let weight = if is_fired || bottom_fired { fired_weight } else { base_weight };
+                let weight = if is_fired || bottom_fired {
+                    fired_weight
+                } else {
+                    base_weight
+                };
                 graph.add_edge(node, bottom, weight);
             }
         }
@@ -171,23 +179,35 @@ struct BenchmarkStats {
 
 impl BenchmarkStats {
     fn throughput(&self) -> f64 {
-        if self.total_time_ns == 0 { 0.0 }
-        else { self.total_rounds as f64 / (self.total_time_ns as f64 / 1e9) }
+        if self.total_time_ns == 0 {
+            0.0
+        } else {
+            self.total_rounds as f64 / (self.total_time_ns as f64 / 1e9)
+        }
     }
 
     fn avg_round_time_ns(&self) -> f64 {
-        if self.total_rounds == 0 { 0.0 }
-        else { self.total_time_ns as f64 / self.total_rounds as f64 }
+        if self.total_rounds == 0 {
+            0.0
+        } else {
+            self.total_time_ns as f64 / self.total_rounds as f64
+        }
     }
 
     fn avg_decode_time_ns(&self) -> f64 {
-        if self.decode_calls == 0 { 0.0 }
-        else { self.decode_time_ns as f64 / self.decode_calls as f64 }
+        if self.decode_calls == 0 {
+            0.0
+        } else {
+            self.decode_time_ns as f64 / self.decode_calls as f64
+        }
     }
 
     fn skip_rate(&self) -> f64 {
-        if self.total_rounds == 0 { 0.0 }
-        else { self.skipped_rounds as f64 / self.total_rounds as f64 }
+        if self.total_rounds == 0 {
+            0.0
+        } else {
+            self.skipped_rounds as f64 / self.total_rounds as f64
+        }
     }
 }
 
@@ -226,10 +246,26 @@ fn has_logical_error(syndrome: &DetectorBitmap, code_distance: usize) -> bool {
         }
 
         let neighbors = [
-            if col > 0 { Some(row * grid_size + col - 1) } else { None },
-            if col + 1 < grid_size { Some(row * grid_size + col + 1) } else { None },
-            if row > 0 { Some((row - 1) * grid_size + col) } else { None },
-            if row + 1 < grid_size { Some((row + 1) * grid_size + col) } else { None },
+            if col > 0 {
+                Some(row * grid_size + col - 1)
+            } else {
+                None
+            },
+            if col + 1 < grid_size {
+                Some(row * grid_size + col + 1)
+            } else {
+                None
+            },
+            if row > 0 {
+                Some((row - 1) * grid_size + col)
+            } else {
+                None
+            },
+            if row + 1 < grid_size {
+                Some((row + 1) * grid_size + col)
+            } else {
+                None
+            },
         ];
 
         for neighbor_opt in neighbors.iter().flatten() {
@@ -386,7 +422,8 @@ fn main() {
 
     // Benchmark 2: Pre-filter + MWPM
     println!("Running pre-filter + MWPM benchmark...");
-    let prefilter = benchmark_prefilter_mwpm(code_distance, error_rate, num_rounds, seed, threshold);
+    let prefilter =
+        benchmark_prefilter_mwpm(code_distance, error_rate, num_rounds, seed, threshold);
 
     // Results
     println!("\n╔═══════════════════════════════════════════════════════════════════╗");
@@ -394,46 +431,87 @@ fn main() {
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║                    │  MWPM Baseline  │  Pre-Filter+MWPM          ║");
     println!("╠════════════════════╪═════════════════╪═══════════════════════════╣");
-    println!("║ Total Time         │ {:>12.2} ms │ {:>12.2} ms             ║",
-             baseline.total_time_ns as f64 / 1e6,
-             prefilter.total_time_ns as f64 / 1e6);
-    println!("║ Throughput         │ {:>12.0}/s  │ {:>12.0}/s              ║",
-             baseline.throughput(), prefilter.throughput());
-    println!("║ Avg Round Time     │ {:>12.0} ns │ {:>12.0} ns             ║",
-             baseline.avg_round_time_ns(), prefilter.avg_round_time_ns());
+    println!(
+        "║ Total Time         │ {:>12.2} ms │ {:>12.2} ms             ║",
+        baseline.total_time_ns as f64 / 1e6,
+        prefilter.total_time_ns as f64 / 1e6
+    );
+    println!(
+        "║ Throughput         │ {:>12.0}/s  │ {:>12.0}/s              ║",
+        baseline.throughput(),
+        prefilter.throughput()
+    );
+    println!(
+        "║ Avg Round Time     │ {:>12.0} ns │ {:>12.0} ns             ║",
+        baseline.avg_round_time_ns(),
+        prefilter.avg_round_time_ns()
+    );
     println!("╠════════════════════╪═════════════════╪═══════════════════════════╣");
-    println!("║ Decode Calls       │ {:>12}    │ {:>12} ({:>5.1}%)       ║",
-             baseline.decode_calls, prefilter.decode_calls,
-             prefilter.decode_calls as f64 / baseline.decode_calls.max(1) as f64 * 100.0);
-    println!("║ Skipped Rounds     │ {:>12}    │ {:>12} ({:>5.1}%)       ║",
-             0, prefilter.skipped_rounds, prefilter.skip_rate() * 100.0);
-    println!("║ Avg Decode Time    │ {:>12.0} ns │ {:>12.0} ns             ║",
-             baseline.avg_decode_time_ns(), prefilter.avg_decode_time_ns());
+    println!(
+        "║ Decode Calls       │ {:>12}    │ {:>12} ({:>5.1}%)       ║",
+        baseline.decode_calls,
+        prefilter.decode_calls,
+        prefilter.decode_calls as f64 / baseline.decode_calls.max(1) as f64 * 100.0
+    );
+    println!(
+        "║ Skipped Rounds     │ {:>12}    │ {:>12} ({:>5.1}%)       ║",
+        0,
+        prefilter.skipped_rounds,
+        prefilter.skip_rate() * 100.0
+    );
+    println!(
+        "║ Avg Decode Time    │ {:>12.0} ns │ {:>12.0} ns             ║",
+        baseline.avg_decode_time_ns(),
+        prefilter.avg_decode_time_ns()
+    );
     println!("╠════════════════════╪═════════════════╪═══════════════════════════╣");
-    println!("║ Errors Detected    │ {:>12}    │ {:>12}                ║",
-             baseline.logical_errors_detected, prefilter.logical_errors_detected);
-    println!("║ Errors Missed      │ {:>12}    │ {:>12}                ║",
-             0, prefilter.logical_errors_missed);
+    println!(
+        "║ Errors Detected    │ {:>12}    │ {:>12}                ║",
+        baseline.logical_errors_detected, prefilter.logical_errors_detected
+    );
+    println!(
+        "║ Errors Missed      │ {:>12}    │ {:>12}                ║",
+        0, prefilter.logical_errors_missed
+    );
     println!("╚════════════════════╧═════════════════╧═══════════════════════════╝");
 
     // Speedup calculation
     let speedup = baseline.total_time_ns as f64 / prefilter.total_time_ns.max(1) as f64;
-    let decode_reduction = 1.0 - (prefilter.decode_calls as f64 / baseline.decode_calls.max(1) as f64);
-    let safety = if prefilter.logical_errors_missed == 0 { "SAFE" } else { "UNSAFE" };
+    let decode_reduction =
+        1.0 - (prefilter.decode_calls as f64 / baseline.decode_calls.max(1) as f64);
+    let safety = if prefilter.logical_errors_missed == 0 {
+        "SAFE"
+    } else {
+        "UNSAFE"
+    };
 
     println!("\n┌─────────────────────────────────────────────────────────────────────┐");
     println!("│                         SUMMARY                                    │");
     println!("├─────────────────────────────────────────────────────────────────────┤");
     println!("│                                                                    │");
-    println!("│  Speedup:              {:.2}x                                       │", speedup);
-    println!("│  Decode Calls Reduced: {:.1}%                                      │", decode_reduction * 100.0);
-    println!("│  Errors Missed:        {} ({})                                   │",
-             prefilter.logical_errors_missed, safety);
+    println!(
+        "│  Speedup:              {:.2}x                                       │",
+        speedup
+    );
+    println!(
+        "│  Decode Calls Reduced: {:.1}%                                      │",
+        decode_reduction * 100.0
+    );
+    println!(
+        "│  Errors Missed:        {} ({})                                   │",
+        prefilter.logical_errors_missed, safety
+    );
     println!("│                                                                    │");
     if speedup > 1.0 && prefilter.logical_errors_missed == 0 {
-        println!("│  ✓ Pre-filter provides {:.1}% speedup with 100% recall            │", (speedup - 1.0) * 100.0);
+        println!(
+            "│  ✓ Pre-filter provides {:.1}% speedup with 100% recall            │",
+            (speedup - 1.0) * 100.0
+        );
     } else if speedup > 1.0 {
-        println!("│  ⚠ Pre-filter faster but missed {} errors                        │", prefilter.logical_errors_missed);
+        println!(
+            "│  ⚠ Pre-filter faster but missed {} errors                        │",
+            prefilter.logical_errors_missed
+        );
     } else {
         println!("│  ✗ Pre-filter overhead exceeds decoder savings                   │");
     }
@@ -452,15 +530,21 @@ fn main() {
         let pf = benchmark_prefilter_mwpm(d, 0.05, 2000, 42, (d as f64) * 1.3);
 
         let spd = base.total_time_ns as f64 / pf.total_time_ns.max(1) as f64;
-        let safe = if pf.logical_errors_missed == 0 { "✓" } else { "✗" };
+        let safe = if pf.logical_errors_missed == 0 {
+            "✓"
+        } else {
+            "✗"
+        };
 
-        println!("║ {:>2}  │ {:>8.2} ms │ {:>12.2} ms │  {:>5.2}x │   {:>5.1}%  │   {}    ║",
-                 d,
-                 base.total_time_ns as f64 / 1e6,
-                 pf.total_time_ns as f64 / 1e6,
-                 spd,
-                 pf.skip_rate() * 100.0,
-                 safe);
+        println!(
+            "║ {:>2}  │ {:>8.2} ms │ {:>12.2} ms │  {:>5.2}x │   {:>5.1}%  │   {}    ║",
+            d,
+            base.total_time_ns as f64 / 1e6,
+            pf.total_time_ns as f64 / 1e6,
+            spd,
+            pf.skip_rate() * 100.0,
+            safe
+        );
     }
     println!("╚═════╧════════════╧════════════════╧═════════╧═══════════╧════════╝");
 

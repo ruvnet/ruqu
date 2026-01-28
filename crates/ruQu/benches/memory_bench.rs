@@ -7,9 +7,7 @@
 //!
 //! Run with: `cargo bench -p ruqu --bench memory_bench`
 
-use criterion::{
-    black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput,
-};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
@@ -58,23 +56,52 @@ fn bench_structure_sizes(c: &mut Criterion) {
 
     // Report sizes (this is informational, not a timed benchmark)
     println!("\n=== Structure Sizes ===");
-    println!("WorkerTile:          {} bytes", std::mem::size_of::<WorkerTile>());
-    println!("PatchGraph:          {} bytes", std::mem::size_of::<PatchGraph>());
-    println!("SyndromBuffer:       {} bytes", std::mem::size_of::<SyndromBuffer>());
-    println!("EvidenceAccumulator: {} bytes", std::mem::size_of::<EvidenceAccumulator>());
-    println!("LocalCutState:       {} bytes", std::mem::size_of::<LocalCutState>());
-    println!("TileReport:          {} bytes", std::mem::size_of::<TileReport>());
-    println!("DetectorBitmap:      {} bytes", std::mem::size_of::<DetectorBitmap>());
-    println!("SyndromeRound:       {} bytes", std::mem::size_of::<SyndromeRound>());
-    println!("SyndromeDelta:       {} bytes", std::mem::size_of::<SyndromeDelta>());
+    println!(
+        "WorkerTile:          {} bytes",
+        std::mem::size_of::<WorkerTile>()
+    );
+    println!(
+        "PatchGraph:          {} bytes",
+        std::mem::size_of::<PatchGraph>()
+    );
+    println!(
+        "SyndromBuffer:       {} bytes",
+        std::mem::size_of::<SyndromBuffer>()
+    );
+    println!(
+        "EvidenceAccumulator: {} bytes",
+        std::mem::size_of::<EvidenceAccumulator>()
+    );
+    println!(
+        "LocalCutState:       {} bytes",
+        std::mem::size_of::<LocalCutState>()
+    );
+    println!(
+        "TileReport:          {} bytes",
+        std::mem::size_of::<TileReport>()
+    );
+    println!(
+        "DetectorBitmap:      {} bytes",
+        std::mem::size_of::<DetectorBitmap>()
+    );
+    println!(
+        "SyndromeRound:       {} bytes",
+        std::mem::size_of::<SyndromeRound>()
+    );
+    println!(
+        "SyndromeDelta:       {} bytes",
+        std::mem::size_of::<SyndromeDelta>()
+    );
     println!();
 
     // Verify 64KB budget
     let total_tile_size = std::mem::size_of::<WorkerTile>();
     let budget = 65536; // 64KB
-    println!("WorkerTile size: {} bytes ({:.1}% of 64KB budget)",
-             total_tile_size,
-             (total_tile_size as f64 / budget as f64) * 100.0);
+    println!(
+        "WorkerTile size: {} bytes ({:.1}% of 64KB budget)",
+        total_tile_size,
+        (total_tile_size as f64 / budget as f64) * 100.0
+    );
 
     // Benchmark size computation (ensures compiler doesn't optimize away)
     group.bench_function("size_of_worker_tile", |b| {
@@ -267,14 +294,23 @@ fn bench_cache_efficiency(c: &mut Criterion) {
 
     // Verify cache-line alignment
     println!("\n=== Cache Line Alignment ===");
-    println!("TileReport alignment:    {} bytes (cache line: {})",
-             std::mem::align_of::<TileReport>(), CACHE_LINE_SIZE);
-    println!("PatchGraph alignment:    {} bytes",
-             std::mem::align_of::<PatchGraph>());
-    println!("SyndromBuffer alignment: {} bytes",
-             std::mem::align_of::<SyndromBuffer>());
-    println!("DetectorBitmap alignment: {} bytes",
-             std::mem::align_of::<DetectorBitmap>());
+    println!(
+        "TileReport alignment:    {} bytes (cache line: {})",
+        std::mem::align_of::<TileReport>(),
+        CACHE_LINE_SIZE
+    );
+    println!(
+        "PatchGraph alignment:    {} bytes",
+        std::mem::align_of::<PatchGraph>()
+    );
+    println!(
+        "SyndromBuffer alignment: {} bytes",
+        std::mem::align_of::<SyndromBuffer>()
+    );
+    println!(
+        "DetectorBitmap alignment: {} bytes",
+        std::mem::align_of::<DetectorBitmap>()
+    );
     println!();
 
     // Sequential access pattern (cache-friendly)
@@ -364,9 +400,7 @@ fn bench_memory_pool(c: &mut Criterion) {
     // Pre-allocated tile pool
     group.bench_function("tile_pool_reuse", |b| {
         // Simulate a pool of worker tiles
-        let mut tile_pool: Vec<WorkerTile> = (1..=10)
-            .map(|i| WorkerTile::new(i))
-            .collect();
+        let mut tile_pool: Vec<WorkerTile> = (1..=10).map(|i| WorkerTile::new(i)).collect();
 
         let delta = SyndromeDelta::new(0, 1, 100);
 
@@ -409,7 +443,13 @@ fn bench_memory_pool(c: &mut Criterion) {
         b.iter(|| {
             // Push rounds (reusing buffer space)
             for _ in 0..100 {
-                let round = SyndromeRound::new(round_id, round_id, round_id * 1000, DetectorBitmap::new(64), 0);
+                let round = SyndromeRound::new(
+                    round_id,
+                    round_id,
+                    round_id * 1000,
+                    DetectorBitmap::new(64),
+                    0,
+                );
                 buffer.push(round);
                 round_id += 1;
             }
@@ -452,12 +492,7 @@ fn bench_heap_allocations(c: &mut Criterion) {
             ReceiptLog::new,
             |mut log| {
                 for i in 0..100 {
-                    log.append(
-                        ruqu::tile::GateDecision::Permit,
-                        i,
-                        i * 1000,
-                        [0u8; 32],
-                    );
+                    log.append(ruqu::tile::GateDecision::Permit, i, i * 1000, [0u8; 32]);
                 }
                 black_box(&log);
             },
@@ -499,7 +534,9 @@ fn bench_memory_bandwidth(c: &mut Criterion) {
     let mut group = c.benchmark_group("memory_bandwidth");
 
     // Large data copy (TileReport array)
-    group.throughput(Throughput::Bytes(255 * std::mem::size_of::<TileReport>() as u64));
+    group.throughput(Throughput::Bytes(
+        255 * std::mem::size_of::<TileReport>() as u64,
+    ));
     group.bench_function("copy_255_reports", |b| {
         let source: Vec<TileReport> = (1..=255).map(|i| TileReport::new(i)).collect();
 
@@ -510,7 +547,9 @@ fn bench_memory_bandwidth(c: &mut Criterion) {
     });
 
     // DetectorBitmap copy
-    group.throughput(Throughput::Bytes(std::mem::size_of::<DetectorBitmap>() as u64));
+    group.throughput(Throughput::Bytes(
+        std::mem::size_of::<DetectorBitmap>() as u64
+    ));
     group.bench_function("copy_bitmap", |b| {
         let mut bitmap = DetectorBitmap::new(1024);
         for i in 0..512 {
@@ -524,7 +563,9 @@ fn bench_memory_bandwidth(c: &mut Criterion) {
     });
 
     // Batch bitmap copy
-    group.throughput(Throughput::Bytes(100 * std::mem::size_of::<DetectorBitmap>() as u64));
+    group.throughput(Throughput::Bytes(
+        100 * std::mem::size_of::<DetectorBitmap>() as u64,
+    ));
     group.bench_function("copy_100_bitmaps", |b| {
         let bitmaps: Vec<DetectorBitmap> = (0..100)
             .map(|i| {
@@ -541,7 +582,9 @@ fn bench_memory_bandwidth(c: &mut Criterion) {
     });
 
     // SyndromeRound copy
-    group.throughput(Throughput::Bytes(std::mem::size_of::<SyndromeRound>() as u64));
+    group.throughput(Throughput::Bytes(
+        std::mem::size_of::<SyndromeRound>() as u64
+    ));
     group.bench_function("copy_syndrome_round", |b| {
         let mut detectors = DetectorBitmap::new(256);
         for i in 0..25 {

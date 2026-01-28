@@ -303,8 +303,16 @@ impl AdaptiveThresholds {
         self.outcomes.record(was_deny, was_actually_bad);
 
         // Update EMAs
-        let fp = if was_deny && !was_actually_bad { 1.0 } else { 0.0 };
-        let fn_rate = if !was_deny && was_actually_bad { 1.0 } else { 0.0 };
+        let fp = if was_deny && !was_actually_bad {
+            1.0
+        } else {
+            0.0
+        };
+        let fn_rate = if !was_deny && was_actually_bad {
+            1.0
+        } else {
+            0.0
+        };
 
         self.false_positive_ema.update(fp);
         self.false_negative_ema.update(fn_rate);
@@ -380,22 +388,19 @@ impl AdaptiveThresholds {
         // Target: threshold = mean + 2*std
         if self.shift_stats.count > 100 {
             let target = (self.shift_stats.mean + 2.0 * self.shift_stats.std_dev()).min(1.0);
-            self.current.shift_max =
-                self.current.shift_max * (1.0 - lr) + target * lr;
+            self.current.shift_max = self.current.shift_max * (1.0 - lr) + target * lr;
         }
 
         // Adjust evidence thresholds
         if self.evidence_stats.count > 100 {
             // tau_deny should be well below normal (5th percentile estimate)
-            let tau_deny_target = (self.evidence_stats.mean - 2.0 * self.evidence_stats.std_dev())
-                .max(0.001);
-            self.current.tau_deny =
-                self.current.tau_deny * (1.0 - lr) + tau_deny_target * lr;
+            let tau_deny_target =
+                (self.evidence_stats.mean - 2.0 * self.evidence_stats.std_dev()).max(0.001);
+            self.current.tau_deny = self.current.tau_deny * (1.0 - lr) + tau_deny_target * lr;
 
             // tau_permit should be above normal (75th percentile estimate)
             let tau_permit_target = self.evidence_stats.mean + 0.5 * self.evidence_stats.std_dev();
-            self.current.tau_permit =
-                self.current.tau_permit * (1.0 - lr) + tau_permit_target * lr;
+            self.current.tau_permit = self.current.tau_permit * (1.0 - lr) + tau_permit_target * lr;
         }
     }
 
@@ -496,8 +501,8 @@ impl Default for DriftConfig {
         Self {
             window_size: 100,
             min_samples: 50,
-            mean_shift_threshold: 2.0,  // 2 sigma
-            variance_threshold: 1.5,    // 50% variance change
+            mean_shift_threshold: 2.0, // 2 sigma
+            variance_threshold: 1.5,   // 50% variance change
             trend_sensitivity: 0.1,
         }
     }
@@ -591,7 +596,9 @@ impl DriftDetector {
 
         // Check for variance expansion
         let var_ratio = current_var / self.baseline_var.max(1e-10);
-        if var_ratio > self.config.variance_threshold || var_ratio < 1.0 / self.config.variance_threshold {
+        if var_ratio > self.config.variance_threshold
+            || var_ratio < 1.0 / self.config.variance_threshold
+        {
             return Some(DriftProfile::VarianceExpansion { ratio: var_ratio });
         }
 
@@ -647,7 +654,7 @@ impl DriftDetector {
 
         // Handle zero-variance case: if both are near zero, no variance drift
         let var_component = if self.baseline_var < 1e-6 && current_var < 1e-6 {
-            0.0  // Both constant signals - no variance drift
+            0.0 // Both constant signals - no variance drift
         } else {
             ((current_var / self.baseline_var.max(1e-10)) - 1.0).abs() / 2.0
         };
@@ -686,10 +693,7 @@ impl DriftDetector {
         let sum: f64 = self.buffer.iter().take(n).sum();
         let mean = sum / n as f64;
 
-        let var_sum: f64 = self.buffer.iter()
-            .take(n)
-            .map(|x| (x - mean).powi(2))
-            .sum();
+        let var_sum: f64 = self.buffer.iter().take(n).map(|x| (x - mean).powi(2)).sum();
         let var = var_sum / n as f64;
 
         (mean, var)
@@ -739,7 +743,10 @@ impl AdaptiveThresholds {
                     }
                 }
             }
-            DriftProfile::StepChange { magnitude, direction } => {
+            DriftProfile::StepChange {
+                magnitude,
+                direction,
+            } => {
                 // More aggressive adjustment for step changes
                 let adjustment = magnitude * 0.3;
                 match direction {
@@ -939,7 +946,13 @@ mod tests {
 
         let profile = detector.detect();
         assert!(
-            matches!(profile, Some(DriftProfile::StepChange { direction: DriftDirection::Increasing, .. })),
+            matches!(
+                profile,
+                Some(DriftProfile::StepChange {
+                    direction: DriftDirection::Increasing,
+                    ..
+                })
+            ),
             "Expected step change increasing, got {:?}",
             profile
         );
@@ -951,7 +964,7 @@ mod tests {
             window_size: 50,
             min_samples: 30,
             variance_threshold: 1.5,
-            mean_shift_threshold: 5.0,  // High to avoid step detection
+            mean_shift_threshold: 5.0, // High to avoid step detection
             ..Default::default()
         });
 
@@ -966,17 +979,14 @@ mod tests {
 
         // Now add high variance samples (same mean, higher amplitude)
         for i in 0..50 {
-            let noise = ((i as f64) * 0.3).sin() * 2.5;  // Much larger amplitude
+            let noise = ((i as f64) * 0.3).sin() * 2.5; // Much larger amplitude
             detector.push(10.0 + noise);
         }
 
         let profile = detector.detect();
         // Should detect some kind of drift (variance, step change, or be stable)
         // The exact detection depends on the sinusoidal phase alignment
-        assert!(
-            profile.is_some(),
-            "Expected some drift profile, got None"
-        );
+        assert!(profile.is_some(), "Expected some drift profile, got None");
     }
 
     #[test]
@@ -985,7 +995,7 @@ mod tests {
 
         // Not enough samples
         for i in 0..10 {
-            detector.push(10.0 + (i as f64) * 0.001);  // Tiny variance to establish baseline
+            detector.push(10.0 + (i as f64) * 0.001); // Tiny variance to establish baseline
         }
         assert_eq!(detector.severity(), 0.0);
 
@@ -1007,7 +1017,11 @@ mod tests {
         // Severity should be reasonable for stable signal (after proper warmup)
         // Note: small variance differences can cause moderate severity values
         let severity = detector.severity();
-        assert!(severity < 0.6, "Expected reasonable severity for stable signal: {}", severity);
+        assert!(
+            severity < 0.6,
+            "Expected reasonable severity for stable signal: {}",
+            severity
+        );
     }
 
     #[test]
@@ -1030,7 +1044,11 @@ mod tests {
         detector.reset_baseline();
 
         let (new_baseline, _) = detector.baseline_stats();
-        assert!(new_baseline > 12.0, "Baseline should shift: {}", new_baseline);
+        assert!(
+            new_baseline > 12.0,
+            "Baseline should shift: {}",
+            new_baseline
+        );
     }
 
     #[test]

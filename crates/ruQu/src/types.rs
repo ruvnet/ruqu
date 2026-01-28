@@ -170,7 +170,9 @@ impl RegionMask {
     /// Create a mask with all bits set (all regions)
     #[inline]
     pub const fn all() -> Self {
-        Self { bits: [u64::MAX; 4] }
+        Self {
+            bits: [u64::MAX; 4],
+        }
     }
 
     /// Create a mask from a slice of tile IDs
@@ -290,11 +292,7 @@ impl Default for RegionMask {
 
 impl std::fmt::Display for RegionMask {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "RegionMask({} tiles)",
-            self.count()
-        )
+        write!(f, "RegionMask({} tiles)", self.count())
     }
 }
 
@@ -550,11 +548,16 @@ impl GateThresholds {
                 constraint: format!("in [{}, {}]", MIN_PERMIT_TTL_NS, MAX_PERMIT_TTL_NS),
             });
         }
-        if self.decision_budget_ns < MIN_DECISION_BUDGET_NS || self.decision_budget_ns > MAX_DECISION_BUDGET_NS {
+        if self.decision_budget_ns < MIN_DECISION_BUDGET_NS
+            || self.decision_budget_ns > MAX_DECISION_BUDGET_NS
+        {
             return Err(crate::error::RuQuError::InvalidThreshold {
                 name: "decision_budget_ns".to_string(),
                 value: self.decision_budget_ns as f64,
-                constraint: format!("in [{}, {}]", MIN_DECISION_BUDGET_NS, MAX_DECISION_BUDGET_NS),
+                constraint: format!(
+                    "in [{}, {}]",
+                    MIN_DECISION_BUDGET_NS, MAX_DECISION_BUDGET_NS
+                ),
             });
         }
 

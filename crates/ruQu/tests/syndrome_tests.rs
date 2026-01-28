@@ -4,7 +4,9 @@
 //! syndrome buffer ring behavior, delta computation accuracy,
 //! and buffer overflow handling.
 
-use ruqu::syndrome::{BufferStatistics, DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound};
+use ruqu::syndrome::{
+    BufferStatistics, DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound,
+};
 use ruqu::MAX_DETECTORS;
 
 // ============================================================================

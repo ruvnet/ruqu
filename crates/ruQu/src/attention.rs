@@ -33,8 +33,8 @@
 
 #[cfg(feature = "attention")]
 use ruvector_mincut_gated_transformer::{
-    GatePacket, MincutDepthRouter, ModRoutingConfig, RoutingStats, TokenRoute,
-    CoherenceEarlyExit, EarlyExitConfig, EarlyExitDecision, ExitReason,
+    CoherenceEarlyExit, EarlyExitConfig, EarlyExitDecision, ExitReason, GatePacket,
+    MincutDepthRouter, ModRoutingConfig, RoutingStats, TokenRoute,
 };
 
 use crate::tile::{GateDecision, TileReport};
@@ -79,7 +79,7 @@ impl AttentionConfig {
     /// Configuration optimized for real-time coherence gating
     pub fn realtime() -> Self {
         Self {
-            flops_reduction: 0.6,           // More aggressive skip
+            flops_reduction: 0.6, // More aggressive skip
             min_entries_per_round: 2,
             lambda_delta_skip_threshold: 2000, // More aggressive
             adaptive_capacity: true,
@@ -146,7 +146,9 @@ impl GatePacketBridge {
                 max_shift = report.shift_score;
             }
             // Use boundary candidate count as proxy for boundary edges
-            total_boundary += report.boundary_candidates.iter()
+            total_boundary += report
+                .boundary_candidates
+                .iter()
                 .filter(|&&c| c != 0)
                 .count() as u32;
 
@@ -409,29 +411,33 @@ pub mod fallback {
             let gate = self.bridge.to_gate_packet_fallback(reports);
 
             // Simple heuristic routing without transformer
-            let routes: Vec<TokenRoute> = reports.iter().enumerate().map(|(i, report)| {
-                // Boundary tokens always compute
-                if report.boundary_candidates.iter().any(|&c| c != 0) {
-                    return TokenRoute::Boundary;
-                }
+            let routes: Vec<TokenRoute> = reports
+                .iter()
+                .enumerate()
+                .map(|(i, report)| {
+                    // Boundary tokens always compute
+                    if report.boundary_candidates.iter().any(|&c| c != 0) {
+                        return TokenRoute::Boundary;
+                    }
 
-                // Skip if shift score is low (stable)
-                if report.shift_score < 0.1 && i % 2 == 0 {
-                    return TokenRoute::Skip;
-                }
+                    // Skip if shift score is low (stable)
+                    if report.shift_score < 0.1 && i % 2 == 0 {
+                        return TokenRoute::Skip;
+                    }
 
-                TokenRoute::Compute
-            }).collect();
+                    TokenRoute::Compute
+                })
+                .collect();
 
             // Update stats
             self.stats.total_entries += routes.len();
-            self.stats.computed_entries += routes.iter()
-                .filter(|r| r.requires_compute())
-                .count();
-            self.stats.skipped_entries += routes.iter()
+            self.stats.computed_entries += routes.iter().filter(|r| r.requires_compute()).count();
+            self.stats.skipped_entries += routes
+                .iter()
                 .filter(|r| matches!(r, TokenRoute::Skip))
                 .count();
-            self.stats.boundary_entries += routes.iter()
+            self.stats.boundary_entries += routes
+                .iter()
                 .filter(|r| matches!(r, TokenRoute::Boundary))
                 .count();
             self.stats.decisions += 1;

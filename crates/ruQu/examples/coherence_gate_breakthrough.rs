@@ -257,17 +257,21 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
     println!("\n╔═══════════════════════════════════════════════════════════════════╗");
     println!("║     COHERENCE GATE: Subpolynomial Min-Cut for QEC                ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>5}      ║",
-             config.code_distance, config.error_rate, config.num_rounds);
+    println!(
+        "║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>5}      ║",
+        config.code_distance, config.error_rate, config.num_rounds
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝\n");
 
     let mut stats = CoherenceStats::new();
 
     // Build initial syndrome graph
     let edges = build_syndrome_graph(config.code_distance);
-    println!("Building syndrome graph: {} nodes, {} edges",
-             2 * (config.code_distance - 1).pow(2) + 4,
-             edges.len());
+    println!(
+        "Building syndrome graph: {} nodes, {} edges",
+        2 * (config.code_distance - 1).pow(2) + 4,
+        edges.len()
+    );
 
     // Create the dynamic min-cut structure using the proper API
     let mut mincut = MinCutBuilder::new()
@@ -281,10 +285,10 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
     println!();
 
     // Initialize syndrome source
-    let surface_config = SurfaceCodeConfig::new(config.code_distance, config.error_rate)
-        .with_seed(config.seed);
-    let mut syndrome_source = StimSyndromeSource::new(surface_config)
-        .expect("Failed to create syndrome source");
+    let surface_config =
+        SurfaceCodeConfig::new(config.code_distance, config.error_rate).with_seed(config.seed);
+    let mut syndrome_source =
+        StimSyndromeSource::new(surface_config).expect("Failed to create syndrome source");
 
     let grid_size = config.code_distance - 1;
     let num_x_stabs = grid_size * grid_size;
@@ -361,10 +365,15 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
             }
 
             // X-Z coupling edge
-            let coupled = if base == 0 { det + z_offset } else { det - z_offset };
+            let coupled = if base == 0 {
+                det + z_offset
+            } else {
+                det - z_offset
+            };
             if coupled < (2 * num_x_stabs) as u64 {
                 let _ = mincut.delete_edge(det.min(coupled), det.max(coupled));
-                let _ = mincut.insert_edge(det.min(coupled), det.max(coupled), weakened_weight * 0.5);
+                let _ =
+                    mincut.insert_edge(det.min(coupled), det.max(coupled), weakened_weight * 0.5);
                 modified_edges.push((det.min(coupled), det.max(coupled), 0.5));
             }
         }
@@ -379,8 +388,12 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
         if last_report.elapsed() > Duration::from_secs(1) {
             let progress = (round as f64 / config.num_rounds as f64) * 100.0;
             let throughput = round as f64 / start_time.elapsed().as_secs_f64();
-            println!("  Progress: {:5.1}% | {:>7.0} rounds/sec | avg min-cut: {:.3}",
-                     progress, throughput, stats.mean_min_cut());
+            println!(
+                "  Progress: {:5.1}% | {:>7.0} rounds/sec | avg min-cut: {:.3}",
+                progress,
+                throughput,
+                stats.mean_min_cut()
+            );
             last_report = Instant::now();
         }
     }
@@ -396,17 +409,21 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
     println!("\n╔═══════════════════════════════════════════════════════════════════╗");
     println!("║     COHERENCE GATE (Fallback Mode - No Subpolynomial)            ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>5}      ║",
-             config.code_distance, config.error_rate, config.num_rounds);
+    println!(
+        "║ Code Distance: d={}  | Error Rate: {:.4}  | Rounds: {:>5}      ║",
+        config.code_distance, config.error_rate, config.num_rounds
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝\n");
 
     let mut stats = CoherenceStats::new();
 
     // Build initial syndrome graph
     let edges = build_syndrome_graph(config.code_distance);
-    println!("Building syndrome graph: {} nodes, {} edges",
-             2 * (config.code_distance - 1).pow(2) + 4,
-             edges.len());
+    println!(
+        "Building syndrome graph: {} nodes, {} edges",
+        2 * (config.code_distance - 1).pow(2) + 4,
+        edges.len()
+    );
 
     // Create fallback engine
     let mut engine = DynamicMinCutEngine::new();
@@ -418,10 +435,10 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
     println!();
 
     // Initialize syndrome source
-    let surface_config = SurfaceCodeConfig::new(config.code_distance, config.error_rate)
-        .with_seed(config.seed);
-    let mut syndrome_source = StimSyndromeSource::new(surface_config)
-        .expect("Failed to create syndrome source");
+    let surface_config =
+        SurfaceCodeConfig::new(config.code_distance, config.error_rate).with_seed(config.seed);
+    let mut syndrome_source =
+        StimSyndromeSource::new(surface_config).expect("Failed to create syndrome source");
 
     let grid_size = config.code_distance - 1;
     let num_x_stabs = grid_size * grid_size;
@@ -460,7 +477,8 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
             }
         }
 
-        let min_cut = (base_coherence - penalty - cluster_penalty.min(base_coherence * 0.5)).max(0.1);
+        let min_cut =
+            (base_coherence - penalty - cluster_penalty.min(base_coherence * 0.5)).max(0.1);
         let update_ns = round_start.elapsed().as_nanos() as u64;
 
         stats.record(min_cut, update_ns, config.coherence_threshold);
@@ -468,8 +486,12 @@ fn run_coherence_experiment(config: &CoherenceGateConfig) -> CoherenceStats {
         if last_report.elapsed() > Duration::from_secs(1) {
             let progress = (round as f64 / config.num_rounds as f64) * 100.0;
             let throughput = round as f64 / start_time.elapsed().as_secs_f64();
-            println!("  Progress: {:5.1}% | {:>7.0} rounds/sec | avg coherence: {:.3}",
-                     progress, throughput, stats.mean_min_cut());
+            println!(
+                "  Progress: {:5.1}% | {:>7.0} rounds/sec | avg coherence: {:.3}",
+                progress,
+                throughput,
+                stats.mean_min_cut()
+            );
             last_report = Instant::now();
         }
     }
@@ -482,26 +504,42 @@ fn print_results(_config: &CoherenceGateConfig, stats: &CoherenceStats, elapsed:
     println!("\n╔═══════════════════════════════════════════════════════════════════╗");
     println!("║                      EXPERIMENT RESULTS                          ║");
     println!("╠═══════════════════════════════════════════════════════════════════╣");
-    println!("║ Throughput:          {:>10.0} rounds/sec                      ║",
-             stats.total_rounds as f64 / elapsed.as_secs_f64());
-    println!("║ Avg Update Latency:  {:>10.0} ns                              ║", stats.avg_update_ns());
+    println!(
+        "║ Throughput:          {:>10.0} rounds/sec                      ║",
+        stats.total_rounds as f64 / elapsed.as_secs_f64()
+    );
+    println!(
+        "║ Avg Update Latency:  {:>10.0} ns                              ║",
+        stats.avg_update_ns()
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ Min-Cut Statistics:                                              ║");
-    println!("║   Mean:     {:>8.4} ± {:.4}                                   ║",
-             stats.mean_min_cut(), stats.std_min_cut());
-    println!("║   Range:    [{:.4}, {:.4}]                                      ║",
-             stats.min_min_cut, stats.max_min_cut);
+    println!(
+        "║   Mean:     {:>8.4} ± {:.4}                                   ║",
+        stats.mean_min_cut(),
+        stats.std_min_cut()
+    );
+    println!(
+        "║   Range:    [{:.4}, {:.4}]                                      ║",
+        stats.min_min_cut, stats.max_min_cut
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║ Coherence Assessment:                                            ║");
-    println!("║   Coherent:   {:>6} ({:>5.1}%)                                   ║",
-             stats.coherent_rounds,
-             stats.coherent_rounds as f64 / stats.total_rounds as f64 * 100.0);
-    println!("║   Warning:    {:>6} ({:>5.1}%)                                   ║",
-             stats.warning_rounds,
-             stats.warning_rounds as f64 / stats.total_rounds as f64 * 100.0);
-    println!("║   Critical:   {:>6} ({:>5.1}%)                                   ║",
-             stats.critical_rounds,
-             stats.critical_rounds as f64 / stats.total_rounds as f64 * 100.0);
+    println!(
+        "║   Coherent:   {:>6} ({:>5.1}%)                                   ║",
+        stats.coherent_rounds,
+        stats.coherent_rounds as f64 / stats.total_rounds as f64 * 100.0
+    );
+    println!(
+        "║   Warning:    {:>6} ({:>5.1}%)                                   ║",
+        stats.warning_rounds,
+        stats.warning_rounds as f64 / stats.total_rounds as f64 * 100.0
+    );
+    println!(
+        "║   Critical:   {:>6} ({:>5.1}%)                                   ║",
+        stats.critical_rounds,
+        stats.critical_rounds as f64 / stats.total_rounds as f64 * 100.0
+    );
     println!("╚═══════════════════════════════════════════════════════════════════╝");
 }
 
@@ -526,12 +564,14 @@ fn compare_code_distances() {
         let stats = run_coherence_experiment(&config);
         let elapsed = start.elapsed();
 
-        println!("║ {:>2}  │ {:>12.1}%  │ {:>9.4}   │ {:>8.0}/s   │ {:>7.0} ns  ║",
-                 d,
-                 stats.coherence_rate() * 100.0,
-                 stats.mean_min_cut(),
-                 stats.total_rounds as f64 / elapsed.as_secs_f64(),
-                 stats.avg_update_ns());
+        println!(
+            "║ {:>2}  │ {:>12.1}%  │ {:>9.4}   │ {:>8.0}/s   │ {:>7.0} ns  ║",
+            d,
+            stats.coherence_rate() * 100.0,
+            stats.mean_min_cut(),
+            stats.total_rounds as f64 / elapsed.as_secs_f64(),
+            stats.avg_update_ns()
+        );
     }
 
     println!("╚═════╧════════════════╧═════════════╧══════════════╧═════════════╝");
@@ -540,7 +580,10 @@ fn compare_code_distances() {
 /// Compare different error rates
 fn compare_error_rates(code_distance: usize) {
     println!("\n╔═══════════════════════════════════════════════════════════════════╗");
-    println!("║        ERROR RATE SENSITIVITY (d={})                             ║", code_distance);
+    println!(
+        "║        ERROR RATE SENSITIVITY (d={})                             ║",
+        code_distance
+    );
     println!("╠═══════════════════════════════════════════════════════════════════╣");
     println!("║  Error Rate  │ Coherent │ Warning │ Critical │ Avg Min-Cut      ║");
     println!("╠══════════════╪══════════╪═════════╪══════════╪══════════════════╣");
@@ -556,13 +599,15 @@ fn compare_error_rates(code_distance: usize) {
 
         let stats = run_coherence_experiment(&config);
 
-        println!("║    {:.4}    │ {:>6.1}%  │ {:>5.1}%  │ {:>6.1}%  │ {:>8.4} ± {:.4} ║",
-                 p,
-                 stats.coherent_rounds as f64 / stats.total_rounds as f64 * 100.0,
-                 stats.warning_rounds as f64 / stats.total_rounds as f64 * 100.0,
-                 stats.critical_rounds as f64 / stats.total_rounds as f64 * 100.0,
-                 stats.mean_min_cut(),
-                 stats.std_min_cut());
+        println!(
+            "║    {:.4}    │ {:>6.1}%  │ {:>5.1}%  │ {:>6.1}%  │ {:>8.4} ± {:.4} ║",
+            p,
+            stats.coherent_rounds as f64 / stats.total_rounds as f64 * 100.0,
+            stats.warning_rounds as f64 / stats.total_rounds as f64 * 100.0,
+            stats.critical_rounds as f64 / stats.total_rounds as f64 * 100.0,
+            stats.mean_min_cut(),
+            stats.std_min_cut()
+        );
     }
 
     println!("╚══════════════╧══════════╧═════════╧══════════╧══════════════════╝");

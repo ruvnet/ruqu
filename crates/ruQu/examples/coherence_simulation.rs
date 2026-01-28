@@ -11,10 +11,8 @@
 use std::time::{Duration, Instant};
 
 use ruqu::{
-    tile::{
-        GateDecision, GateThresholds, SyndromeDelta, TileReport, TileZero, WorkerTile,
-    },
     syndrome::DetectorBitmap,
+    tile::{GateDecision, GateThresholds, SyndromeDelta, TileReport, TileZero, WorkerTile},
 };
 
 #[cfg(feature = "structural")]
@@ -64,12 +62,28 @@ impl SimStats {
         println!("\n=== Simulation Statistics ===");
         println!("Total ticks: {}", self.total_ticks);
         println!("Total decisions: {}", self.total_decisions);
-        println!("  Permits: {} ({:.1}%)", self.permits, 100.0 * self.permits as f64 / self.total_decisions as f64);
-        println!("  Defers:  {} ({:.1}%)", self.defers, 100.0 * self.defers as f64 / self.total_decisions as f64);
-        println!("  Denies:  {} ({:.1}%)", self.denies, 100.0 * self.denies as f64 / self.total_decisions as f64);
+        println!(
+            "  Permits: {} ({:.1}%)",
+            self.permits,
+            100.0 * self.permits as f64 / self.total_decisions as f64
+        );
+        println!(
+            "  Defers:  {} ({:.1}%)",
+            self.defers,
+            100.0 * self.defers as f64 / self.total_decisions as f64
+        );
+        println!(
+            "  Denies:  {} ({:.1}%)",
+            self.denies,
+            100.0 * self.denies as f64 / self.total_decisions as f64
+        );
 
         if !self.tick_times.is_empty() {
-            let tick_ns: Vec<u64> = self.tick_times.iter().map(|d| d.as_nanos() as u64).collect();
+            let tick_ns: Vec<u64> = self
+                .tick_times
+                .iter()
+                .map(|d| d.as_nanos() as u64)
+                .collect();
             let avg_tick = tick_ns.iter().sum::<u64>() / tick_ns.len() as u64;
             let max_tick = *tick_ns.iter().max().unwrap();
             let mut sorted = tick_ns.clone();
@@ -83,7 +97,11 @@ impl SimStats {
         }
 
         if !self.merge_times.is_empty() {
-            let merge_ns: Vec<u64> = self.merge_times.iter().map(|d| d.as_nanos() as u64).collect();
+            let merge_ns: Vec<u64> = self
+                .merge_times
+                .iter()
+                .map(|d| d.as_nanos() as u64)
+                .collect();
             let avg_merge = merge_ns.iter().sum::<u64>() / merge_ns.len() as u64;
             let max_merge = *merge_ns.iter().max().unwrap();
             let mut sorted = merge_ns.clone();
@@ -98,7 +116,11 @@ impl SimStats {
 
         #[cfg(feature = "structural")]
         if !self.mincut_times.is_empty() {
-            let mincut_ns: Vec<u64> = self.mincut_times.iter().map(|d| d.as_nanos() as u64).collect();
+            let mincut_ns: Vec<u64> = self
+                .mincut_times
+                .iter()
+                .map(|d| d.as_nanos() as u64)
+                .collect();
             let avg_mincut = mincut_ns.iter().sum::<u64>() / mincut_ns.len() as u64;
             let max_mincut = *mincut_ns.iter().max().unwrap();
             let mut sorted = mincut_ns.clone();
@@ -243,7 +265,12 @@ fn run_simulation(config: &SimConfig) -> SimStats {
         if round % 100 == 0 && decision == GateDecision::Permit {
             let token = tilezero.issue_permit(&decision);
             let verified = tilezero.verify_token(&token);
-            assert_eq!(verified, Some(true), "Token verification failed at round {}", round);
+            assert_eq!(
+                verified,
+                Some(true),
+                "Token verification failed at round {}",
+                round
+            );
         }
 
         // Progress indicator
@@ -257,8 +284,14 @@ fn run_simulation(config: &SimConfig) -> SimStats {
     println!(" Done!\n");
 
     // Verify receipt log integrity
-    assert!(tilezero.receipt_log.verify_chain(), "Receipt log chain verification failed!");
-    println!("Receipt log verified: {} entries, chain intact", tilezero.receipt_log.len());
+    assert!(
+        tilezero.receipt_log.verify_chain(),
+        "Receipt log chain verification failed!"
+    );
+    println!(
+        "Receipt log verified: {} entries, chain intact",
+        tilezero.receipt_log.len()
+    );
 
     stats
 }
@@ -288,8 +321,12 @@ fn benchmark_detector_bitmap() {
         total += bitmap1.popcount();
     }
     let popcount_time = start.elapsed();
-    println!("Popcount ({} iterations): {:?} ({:.1} ns/op)",
-             ITERATIONS, popcount_time, popcount_time.as_nanos() as f64 / ITERATIONS as f64);
+    println!(
+        "Popcount ({} iterations): {:?} ({:.1} ns/op)",
+        ITERATIONS,
+        popcount_time,
+        popcount_time.as_nanos() as f64 / ITERATIONS as f64
+    );
     println!("  Result: {} bits set", total / ITERATIONS);
 
     // Benchmark XOR
@@ -298,8 +335,12 @@ fn benchmark_detector_bitmap() {
         let _ = bitmap1.xor(&bitmap2);
     }
     let xor_time = start.elapsed();
-    println!("XOR ({} iterations): {:?} ({:.1} ns/op)",
-             ITERATIONS, xor_time, xor_time.as_nanos() as f64 / ITERATIONS as f64);
+    println!(
+        "XOR ({} iterations): {:?} ({:.1} ns/op)",
+        ITERATIONS,
+        xor_time,
+        xor_time.as_nanos() as f64 / ITERATIONS as f64
+    );
 
     // Benchmark AND
     let start = Instant::now();
@@ -307,8 +348,12 @@ fn benchmark_detector_bitmap() {
         let _ = bitmap1.and(&bitmap2);
     }
     let and_time = start.elapsed();
-    println!("AND ({} iterations): {:?} ({:.1} ns/op)",
-             ITERATIONS, and_time, and_time.as_nanos() as f64 / ITERATIONS as f64);
+    println!(
+        "AND ({} iterations): {:?} ({:.1} ns/op)",
+        ITERATIONS,
+        and_time,
+        and_time.as_nanos() as f64 / ITERATIONS as f64
+    );
 
     // Benchmark OR
     let start = Instant::now();
@@ -316,8 +361,12 @@ fn benchmark_detector_bitmap() {
         let _ = bitmap1.or(&bitmap2);
     }
     let or_time = start.elapsed();
-    println!("OR ({} iterations): {:?} ({:.1} ns/op)",
-             ITERATIONS, or_time, or_time.as_nanos() as f64 / ITERATIONS as f64);
+    println!(
+        "OR ({} iterations): {:?} ({:.1} ns/op)",
+        ITERATIONS,
+        or_time,
+        or_time.as_nanos() as f64 / ITERATIONS as f64
+    );
 }
 
 fn main() {
@@ -340,7 +389,11 @@ fn main() {
     println!("\n=== Optimization Targets ===");
 
     if !stats.tick_times.is_empty() {
-        let tick_ns: Vec<u64> = stats.tick_times.iter().map(|d| d.as_nanos() as u64).collect();
+        let tick_ns: Vec<u64> = stats
+            .tick_times
+            .iter()
+            .map(|d| d.as_nanos() as u64)
+            .collect();
         let mut sorted = tick_ns.clone();
         sorted.sort();
         let p99 = sorted[sorted.len() * 99 / 100];

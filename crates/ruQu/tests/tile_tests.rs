@@ -8,9 +8,9 @@
 
 use ruqu::tile::{
     Edge, EvidenceAccumulator, GateDecision, GateThresholds, LocalCutState, PatchGraph,
-    PermitToken, ReceiptLog, SyndromBuffer, SyndromeEntry, SyndromeDelta, TileReport, TileZero,
-    Vertex, WorkerTile, MAX_BOUNDARY_CANDIDATES, MAX_PATCH_EDGES, MAX_PATCH_VERTICES,
-    NUM_WORKERS, SYNDROME_BUFFER_DEPTH,
+    PermitToken, ReceiptLog, SyndromBuffer, SyndromeDelta, SyndromeEntry, TileReport, TileZero,
+    Vertex, WorkerTile, MAX_BOUNDARY_CANDIDATES, MAX_PATCH_EDGES, MAX_PATCH_VERTICES, NUM_WORKERS,
+    SYNDROME_BUFFER_DEPTH,
 };
 
 // ============================================================================
@@ -970,7 +970,11 @@ mod scaling_tests {
 
         // Each tile should fit within 64KB budget (with some margin)
         // The spec says ~64KB, so we allow up to 128KB
-        assert!(tile_size <= 131072, "Worker tile exceeds memory budget: {} bytes", tile_size);
+        assert!(
+            tile_size <= 131072,
+            "Worker tile exceeds memory budget: {} bytes",
+            tile_size
+        );
     }
 }
 

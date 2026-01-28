@@ -76,10 +76,10 @@ mod structural_filter_tests {
     #[test]
     fn test_structural_filter_various_cut_values() {
         let test_cases = vec![
-            (vec![(1, 2, 1.0)], 1.0, true),               // Single edge at threshold (>= passes)
-            (vec![(1, 2, 2.0)], 1.0, true),               // Single edge weight 2.0 above threshold
-            (vec![(1, 2, 1.0), (2, 3, 1.0)], 1.0, true),  // Path
-            (vec![(1, 2, 0.5)], 1.0, false),              // Weak edge below threshold
+            (vec![(1, 2, 1.0)], 1.0, true), // Single edge at threshold (>= passes)
+            (vec![(1, 2, 2.0)], 1.0, true), // Single edge weight 2.0 above threshold
+            (vec![(1, 2, 1.0), (2, 3, 1.0)], 1.0, true), // Path
+            (vec![(1, 2, 0.5)], 1.0, false), // Weak edge below threshold
         ];
 
         for (edges, threshold, expected_coherent) in test_cases {
@@ -633,10 +633,7 @@ mod filter_pipeline_tests {
         let result = pipeline.evaluate(&state);
 
         // Should be Defer (evidence accumulating) since no evidence added
-        assert!(
-            result.verdict == Some(Verdict::Defer)
-                || result.evidence.verdict == None
-        );
+        assert!(result.verdict == Some(Verdict::Defer) || result.evidence.verdict == None);
     }
 
     #[test]

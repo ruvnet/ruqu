@@ -4,7 +4,9 @@
 //! and receipt generation with verification.
 
 use ruqu::{
-    filters::{EvidenceConfig, FilterConfig, FilterPipeline, ShiftConfig, StructuralConfig, Verdict},
+    filters::{
+        EvidenceConfig, FilterConfig, FilterPipeline, ShiftConfig, StructuralConfig, Verdict,
+    },
     prelude::*,
     syndrome::{DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound},
     tile::{

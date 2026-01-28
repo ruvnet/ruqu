@@ -7,15 +7,13 @@
 //!
 //! Run with: `cargo bench -p ruqu --bench throughput_bench`
 
-use criterion::{
-    black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput,
-};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 
 use ruqu::filters::{FilterConfig, FilterPipeline, SystemState};
 use ruqu::syndrome::{DetectorBitmap, SyndromeBuffer, SyndromeDelta, SyndromeRound};
 use ruqu::tile::{
-    GateDecision, GateThresholds, PatchGraph, PermitToken, ReceiptLog, SyndromeDelta as TileSyndromeDelta,
-    TileReport, TileZero, WorkerTile,
+    GateDecision, GateThresholds, PatchGraph, PermitToken, ReceiptLog,
+    SyndromeDelta as TileSyndromeDelta, TileReport, TileZero, WorkerTile,
 };
 
 // ============================================================================
@@ -133,7 +131,10 @@ fn bench_syndrome_ingestion(c: &mut Criterion) {
     for firing_rate in [0.01, 0.05, 0.1, 0.25].iter() {
         group.throughput(Throughput::Elements(1000));
         group.bench_with_input(
-            BenchmarkId::new("batch_1000_firing_rate", format!("{:.0}pct", firing_rate * 100.0)),
+            BenchmarkId::new(
+                "batch_1000_firing_rate",
+                format!("{:.0}pct", firing_rate * 100.0),
+            ),
             firing_rate,
             |b, &rate| {
                 let mut buffer = SyndromeBuffer::new(4096);

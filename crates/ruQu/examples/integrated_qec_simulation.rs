@@ -173,8 +173,11 @@ struct SimStats {
 
 impl SimStats {
     fn avg_latency_ns(&self) -> f64 {
-        if self.total_rounds == 0 { 0.0 }
-        else { self.total_latency_ns as f64 / self.total_rounds as f64 }
+        if self.total_rounds == 0 {
+            0.0
+        } else {
+            self.total_latency_ns as f64 / self.total_rounds as f64
+        }
     }
 
     fn throughput(&self, elapsed: Duration) -> f64 {
@@ -186,22 +189,31 @@ impl SimStats {
 fn run_simulation(config: SimConfig, verbose: bool) -> (SimStats, SimulationModel) {
     if verbose {
         println!("╔══════════════════════════════════════════════════════════════╗");
-        println!("║         Optimized QEC Simulation (Seed: {:>10})          ║", config.seed);
+        println!(
+            "║         Optimized QEC Simulation (Seed: {:>10})          ║",
+            config.seed
+        );
         println!("╠══════════════════════════════════════════════════════════════╣");
-        println!("║ Code Distance: d={:<2} | Error Rate: {:.4}                   ║",
-            config.code_distance, config.error_rate);
-        println!("║ Rounds: {:>6}     | Drift: {}                            ║",
-            config.num_rounds, if config.inject_drift { "ON " } else { "OFF" });
+        println!(
+            "║ Code Distance: d={:<2} | Error Rate: {:.4}                   ║",
+            config.code_distance, config.error_rate
+        );
+        println!(
+            "║ Rounds: {:>6}     | Drift: {}                            ║",
+            config.num_rounds,
+            if config.inject_drift { "ON " } else { "OFF" }
+        );
         println!("╚══════════════════════════════════════════════════════════════╝");
     }
 
     let mut stats = SimStats::default();
 
     // Initialize with seed
-    let surface_config = SurfaceCodeConfig::new(config.code_distance, config.error_rate)
-        .with_seed(config.seed);
+    let surface_config =
+        SurfaceCodeConfig::new(config.code_distance, config.error_rate).with_seed(config.seed);
     let num_detectors = surface_config.detectors_per_round();
-    let mut syndrome_source = StimSyndromeSource::new(surface_config).expect("Failed to create syndrome source");
+    let mut syndrome_source =
+        StimSyndromeSource::new(surface_config).expect("Failed to create syndrome source");
 
     let mut drift_detector = DriftDetector::new(100);
     let mut adaptive = AdaptiveThresholds::new(LearningConfig {
@@ -466,8 +478,12 @@ fn run_simulation(config: SimConfig, verbose: bool) -> (SimStats, SimulationMode
         if verbose && last_report.elapsed() > Duration::from_secs(2) {
             let elapsed = start_time.elapsed();
             let progress = (round as f64 / config.num_rounds as f64) * 100.0;
-            println!("  Progress: {:5.1}% | {:>7.0} rounds/sec | Drifts: {}",
-                progress, stats.throughput(elapsed), stats.drift_detections);
+            println!(
+                "  Progress: {:5.1}% | {:>7.0} rounds/sec | Drifts: {}",
+                progress,
+                stats.throughput(elapsed),
+                stats.drift_detections
+            );
             last_report = Instant::now();
         }
     }
@@ -491,21 +507,50 @@ fn run_simulation(config: SimConfig, verbose: bool) -> (SimStats, SimulationMode
         println!("╔══════════════════════════════════════════════════════════════╗");
         println!("║                     Simulation Results                       ║");
         println!("╠══════════════════════════════════════════════════════════════╣");
-        println!("║ Throughput:       {:>10.0} rounds/sec                      ║", stats.throughput(elapsed));
-        println!("║ Avg Latency:      {:>10.0} ns                              ║", stats.avg_latency_ns());
-        println!("║ Permit Rate:      {:>10.1}%                               ║",
-            (stats.permits as f64 / stats.total_rounds as f64) * 100.0);
-        println!("║ Drift Detections: {:>10}                                  ║", stats.drift_detections);
+        println!(
+            "║ Throughput:       {:>10.0} rounds/sec                      ║",
+            stats.throughput(elapsed)
+        );
+        println!(
+            "║ Avg Latency:      {:>10.0} ns                              ║",
+            stats.avg_latency_ns()
+        );
+        println!(
+            "║ Permit Rate:      {:>10.1}%                               ║",
+            (stats.permits as f64 / stats.total_rounds as f64) * 100.0
+        );
+        println!(
+            "║ Drift Detections: {:>10}                                  ║",
+            stats.drift_detections
+        );
         println!("╠══════════════════════════════════════════════════════════════╣");
         println!("║ Learned Thresholds:                                          ║");
-        println!("║   structural_min_cut: {:>10.4}                            ║", model.thresholds.structural_min_cut);
-        println!("║   shift_max:          {:>10.4}                            ║", model.thresholds.shift_max);
-        println!("║   tau_permit:         {:>10.4}                            ║", model.thresholds.tau_permit);
-        println!("║   tau_deny:           {:>10.4}                            ║", model.thresholds.tau_deny);
+        println!(
+            "║   structural_min_cut: {:>10.4}                            ║",
+            model.thresholds.structural_min_cut
+        );
+        println!(
+            "║   shift_max:          {:>10.4}                            ║",
+            model.thresholds.shift_max
+        );
+        println!(
+            "║   tau_permit:         {:>10.4}                            ║",
+            model.thresholds.tau_permit
+        );
+        println!(
+            "║   tau_deny:           {:>10.4}                            ║",
+            model.thresholds.tau_deny
+        );
         println!("╠══════════════════════════════════════════════════════════════╣");
         println!("║ Statistics:                                                  ║");
-        println!("║   cut_mean: {:>10.4}   cut_std: {:>10.4}               ║", model.cut_mean, model.cut_std);
-        println!("║   shift_mean: {:>8.4}   samples: {:>10}                 ║", model.shift_mean, model.samples);
+        println!(
+            "║   cut_mean: {:>10.4}   cut_std: {:>10.4}               ║",
+            model.cut_mean, model.cut_std
+        );
+        println!(
+            "║   shift_mean: {:>8.4}   samples: {:>10}                 ║",
+            model.shift_mean, model.samples
+        );
         println!("╚══════════════════════════════════════════════════════════════╝");
     }
 
@@ -550,8 +595,13 @@ fn discover_capabilities(base_model: &SimulationModel) {
         let permit_rate = (stats.permits as f64 / stats.total_rounds as f64) * 100.0;
         let deny_rate = (stats.denies as f64 / stats.total_rounds as f64) * 100.0;
 
-        println!("│ {:12} │ {:>10.1}% │ {:>10.1}% │ {:>8.0}/s   │",
-            name, permit_rate, deny_rate, stats.throughput(elapsed));
+        println!(
+            "│ {:12} │ {:>10.1}% │ {:>10.1}% │ {:>8.0}/s   │",
+            name,
+            permit_rate,
+            deny_rate,
+            stats.throughput(elapsed)
+        );
     }
 
     println!("└──────────────┴──────────────┴──────────────┴──────────────┘");
@@ -579,8 +629,13 @@ fn discover_capabilities(base_model: &SimulationModel) {
 
         let drift_rate = (stats.drift_detections as f64 / stats.total_rounds as f64) * 100.0;
 
-        println!("│ d={:<2}        │ {:>8.0} ns  │ {:>10.2}% │ {:>8.0}/s   │",
-            d, stats.avg_latency_ns(), drift_rate, stats.throughput(elapsed));
+        println!(
+            "│ d={:<2}        │ {:>8.0} ns  │ {:>10.2}% │ {:>8.0}/s   │",
+            d,
+            stats.avg_latency_ns(),
+            drift_rate,
+            stats.throughput(elapsed)
+        );
     }
 
     println!("└────────────┴──────────────┴──────────────┴──────────────┘");
@@ -610,8 +665,10 @@ fn main() {
 
     // Test import
     if let Some(imported) = SimulationModel::import(&model_data) {
-        println!("Model import verified: seed={}, d={}, samples={}",
-            imported.seed, imported.code_distance, imported.samples);
+        println!(
+            "Model import verified: seed={}, d={}, samples={}",
+            imported.seed, imported.code_distance, imported.samples
+        );
     }
 
     // Discover novel capabilities
@@ -625,17 +682,34 @@ fn main() {
     println!();
 
     println!("Running same simulation with identical seed:");
-    let config1 = SimConfig { seed: 12345, num_rounds: 1000, inject_drift: false, ..Default::default() };
-    let config2 = SimConfig { seed: 12345, num_rounds: 1000, inject_drift: false, ..Default::default() };
+    let config1 = SimConfig {
+        seed: 12345,
+        num_rounds: 1000,
+        inject_drift: false,
+        ..Default::default()
+    };
+    let config2 = SimConfig {
+        seed: 12345,
+        num_rounds: 1000,
+        inject_drift: false,
+        ..Default::default()
+    };
 
     let (stats1, model1) = run_simulation(config1, false);
     let (stats2, model2) = run_simulation(config2, false);
 
-    println!("  Run 1: permits={}, denies={}, cut_mean={:.4}",
-        stats1.permits, stats1.denies, model1.cut_mean);
-    println!("  Run 2: permits={}, denies={}, cut_mean={:.4}",
-        stats2.permits, stats2.denies, model2.cut_mean);
-    println!("  Reproducible: {}", stats1.permits == stats2.permits && stats1.denies == stats2.denies);
+    println!(
+        "  Run 1: permits={}, denies={}, cut_mean={:.4}",
+        stats1.permits, stats1.denies, model1.cut_mean
+    );
+    println!(
+        "  Run 2: permits={}, denies={}, cut_mean={:.4}",
+        stats2.permits, stats2.denies, model2.cut_mean
+    );
+    println!(
+        "  Reproducible: {}",
+        stats1.permits == stats2.permits && stats1.denies == stats2.denies
+    );
 
     println!();
     println!("═══════════════════════════════════════════════════════════════");

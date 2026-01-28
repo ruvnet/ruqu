@@ -28,8 +28,8 @@
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
 
-use crate::tile::{GateDecision, GateThresholds, TileReport, TileZero, WorkerTile, SyndromeDelta};
 use crate::error::{Result, RuQuError};
+use crate::tile::{GateDecision, GateThresholds, SyndromeDelta, TileReport, TileZero, WorkerTile};
 
 /// Configuration for parallel processing
 #[derive(Clone, Debug)]
@@ -60,7 +60,7 @@ impl ParallelConfig {
     pub fn low_latency() -> Self {
         Self {
             num_threads: 4,
-            chunk_size: 64, // Larger chunks = less overhead
+            chunk_size: 64,       // Larger chunks = less overhead
             work_stealing: false, // Predictable scheduling
             thresholds: GateThresholds::default(),
         }
@@ -117,9 +117,7 @@ impl ParallelFabric {
         }
 
         // Create 255 worker tiles (1-255)
-        let workers: Vec<WorkerTile> = (1..=255u8)
-            .map(WorkerTile::new)
-            .collect();
+        let workers: Vec<WorkerTile> = (1..=255u8).map(WorkerTile::new).collect();
 
         let coordinator = TileZero::with_random_key(config.thresholds.clone());
 
@@ -138,7 +136,8 @@ impl ParallelFabric {
         let start = Instant::now();
 
         // Process all workers in parallel
-        let reports: Vec<TileReport> = self.workers
+        let reports: Vec<TileReport> = self
+            .workers
             .par_iter_mut()
             .with_min_len(self.config.chunk_size)
             .map(|worker| worker.tick(syndrome))
@@ -151,8 +150,8 @@ impl ParallelFabric {
         let elapsed_ns = start.elapsed().as_nanos() as u64;
         self.stats.total_processed += 255;
         self.stats.batches += 1;
-        self.stats.avg_batch_time_ns =
-            (self.stats.avg_batch_time_ns * (self.stats.batches - 1) + elapsed_ns)
+        self.stats.avg_batch_time_ns = (self.stats.avg_batch_time_ns * (self.stats.batches - 1)
+            + elapsed_ns)
             / self.stats.batches;
 
         let throughput = 255.0 / (elapsed_ns as f64 / 1_000_000_000.0);
@@ -170,7 +169,8 @@ impl ParallelFabric {
         let start = Instant::now();
 
         // Process all workers sequentially
-        let reports: Vec<TileReport> = self.workers
+        let reports: Vec<TileReport> = self
+            .workers
             .iter_mut()
             .map(|worker| worker.tick(syndrome))
             .collect();
@@ -182,8 +182,8 @@ impl ParallelFabric {
         let elapsed_ns = start.elapsed().as_nanos() as u64;
         self.stats.total_processed += 255;
         self.stats.batches += 1;
-        self.stats.avg_batch_time_ns =
-            (self.stats.avg_batch_time_ns * (self.stats.batches - 1) + elapsed_ns)
+        self.stats.avg_batch_time_ns = (self.stats.avg_batch_time_ns * (self.stats.batches - 1)
+            + elapsed_ns)
             / self.stats.batches;
 
         Ok(decision)
@@ -245,7 +245,13 @@ pub fn parallel_aggregate(reports: &[TileReport]) -> (f64, f64, f64) {
     // Parallel reduction for min_cut (minimum)
     let min_cut = reports
         .par_iter()
-        .map(|r| if r.local_cut > 0.0 { r.local_cut } else { f64::MAX })
+        .map(|r| {
+            if r.local_cut > 0.0 {
+                r.local_cut
+            } else {
+                f64::MAX
+            }
+        })
         .reduce(|| f64::MAX, |a, b| a.min(b));
 
     // Parallel reduction for shift (maximum)

@@ -422,10 +422,7 @@ impl ActionSink for LoggingActionSink {
 
     fn capabilities(&self) -> ActionCapabilities {
         ActionCapabilities {
-            supported_actions: vec![
-                ActionType::LogEvent,
-                ActionType::AlertOperator,
-            ],
+            supported_actions: vec![ActionType::LogEvent, ActionType::AlertOperator],
             max_concurrent: 100,
             min_interval_ns: 0,
         }

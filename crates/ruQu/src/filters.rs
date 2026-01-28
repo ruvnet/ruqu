@@ -430,11 +430,7 @@ impl StructuralFilter {
             weight_a.partial_cmp(weight_b).unwrap()
         });
 
-        edges
-            .into_iter()
-            .take(10)
-            .map(|(_, &id)| id)
-            .collect()
+        edges.into_iter().take(10).map(|(_, &id)| id).collect()
     }
 
     fn edge_key(u: VertexId, v: VertexId) -> (VertexId, VertexId) {
@@ -568,8 +564,7 @@ impl ShiftFilter {
 
         // Update shift accumulator
         let deviation = (score - self.global_mean).abs();
-        stats.shift_accumulator =
-            self.config.decay_factor * stats.shift_accumulator + deviation;
+        stats.shift_accumulator = self.config.decay_factor * stats.shift_accumulator + deviation;
 
         // Update global statistics
         self.num_observations += 1;
@@ -698,9 +693,9 @@ pub struct EvidenceConfig {
 impl Default for EvidenceConfig {
     fn default() -> Self {
         Self {
-            tau_permit: 20.0,   // Strong evidence for permit
+            tau_permit: 20.0,     // Strong evidence for permit
             tau_deny: 1.0 / 20.0, // Strong evidence for deny
-            prior: 0.95,       // Assume system is usually coherent
+            prior: 0.95,          // Assume system is usually coherent
         }
     }
 }
@@ -861,8 +856,7 @@ impl EvidenceFilter {
                 / (self.config.tau_permit.ln().abs() + 1.0))
                 .min(1.0)
         } else if e_value <= self.config.tau_deny {
-            ((self.config.tau_deny.ln() - e_value.ln())
-                / (self.config.tau_deny.ln().abs() + 1.0))
+            ((self.config.tau_deny.ln() - e_value.ln()) / (self.config.tau_deny.ln().abs() + 1.0))
                 .min(1.0)
         } else {
             0.0
@@ -988,11 +982,7 @@ impl FilterPipeline {
         let evidence_result = self.evidence.evaluate(state);
 
         // Determine overall verdict
-        let verdict = self.combine_verdicts(
-            &structural_result,
-            &shift_result,
-            &evidence_result,
-        );
+        let verdict = self.combine_verdicts(&structural_result, &shift_result, &evidence_result);
 
         // Collect affected regions
         let mut affected_regions = shift_result.affected_regions;
@@ -1030,8 +1020,7 @@ impl FilterPipeline {
         } else if evidence_result.verdict.is_none() {
             recommendations.push(format!(
                 "Evidence: E-value {:.2e} - gathering more evidence ({} samples)",
-                evidence_result.e_value,
-                evidence_result.samples_seen
+                evidence_result.e_value, evidence_result.samples_seen
             ));
         }
 
@@ -1168,7 +1157,7 @@ mod tests {
     fn test_structural_filter_low_cut() {
         // Use simple cut calculation for predictable unit test behavior
         let config = StructuralConfig {
-            threshold: 3.0, // High threshold
+            threshold: 3.0,           // High threshold
             use_subpolynomial: false, // Disable subpolynomial for unit tests
             ..Default::default()
         };
@@ -1316,7 +1305,7 @@ mod tests {
     fn test_filter_pipeline_deny_structural() {
         let config = FilterConfig {
             structural: StructuralConfig {
-                threshold: 5.0, // High threshold
+                threshold: 5.0,           // High threshold
                 use_subpolynomial: false, // Disable for unit test predictability
                 ..Default::default()
             },
