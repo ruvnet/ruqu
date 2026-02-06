@@ -1,7 +1,9 @@
-//! Tests for ruqu_algorithms — Grover's search, VQE, QAOA MaxCut, Surface Code.
+//! Tests for ruqu_algorithms — Deutsch, Grover, VQE, QAOA MaxCut, Surface Code.
 
 use ruqu_algorithms::*;
+use ruqu_core::gate::Gate;
 use ruqu_core::prelude::*;
+use ruqu_core::state::QuantumState;
 
 // Algorithms are variational / probabilistic, so we use a wider tolerance.
 const ALGO_EPSILON: f64 = 0.1;
@@ -11,6 +13,147 @@ const EPSILON: f64 = 1e-10;
 
 fn approx_eq(a: f64, b: f64) -> bool {
     (a - b).abs() < EPSILON
+}
+
+// ===========================================================================
+// Deutsch's Algorithm — Theorem Verification (ADR-QE-013)
+// ===========================================================================
+
+/// Run Deutsch's algorithm for a given oracle type.
+/// Returns true if f is balanced, false if constant.
+fn deutsch_algorithm(oracle: &str) -> bool {
+    let mut state = QuantumState::new(2).unwrap();
+
+    // Prepare |01⟩: apply X to qubit 1
+    state.apply_gate(&Gate::X(1)).unwrap();
+
+    // Hadamard both qubits
+    state.apply_gate(&Gate::H(0)).unwrap();
+    state.apply_gate(&Gate::H(1)).unwrap();
+
+    // Apply oracle
+    match oracle {
+        "f0" => { /* identity — f(x) = 0 for all x */ }
+        "f1" => {
+            // f(x) = 1 for all x: flip ancilla unconditionally
+            state.apply_gate(&Gate::X(1)).unwrap();
+        }
+        "f2" => {
+            // f(x) = x: CNOT with query qubit as control
+            state.apply_gate(&Gate::CNOT(0, 1)).unwrap();
+        }
+        "f3" => {
+            // f(x) = 1-x: X, CNOT, X (anti-controlled NOT)
+            state.apply_gate(&Gate::X(0)).unwrap();
+            state.apply_gate(&Gate::CNOT(0, 1)).unwrap();
+            state.apply_gate(&Gate::X(0)).unwrap();
+        }
+        _ => panic!("Unknown oracle: {oracle}"),
+    }
+
+    // Final Hadamard on query qubit
+    state.apply_gate(&Gate::H(0)).unwrap();
+
+    // Measure qubit 0: |0⟩ = constant, |1⟩ = balanced
+    // prob(q0=1) = sum of probabilities where bit 0 is set (indices 1 and 3)
+    let probs = state.probabilities();
+    let prob_q0_one = probs[1] + probs[3];
+    prob_q0_one > 0.5
+}
+
+#[test]
+fn test_deutsch_f0_constant() {
+    // f(0) = 0, f(1) = 0 → constant → measure |0⟩
+    assert!(!deutsch_algorithm("f0"), "f0 should be classified as constant");
+}
+
+#[test]
+fn test_deutsch_f1_constant() {
+    // f(0) = 1, f(1) = 1 → constant → measure |0⟩
+    assert!(!deutsch_algorithm("f1"), "f1 should be classified as constant");
+}
+
+#[test]
+fn test_deutsch_f2_balanced() {
+    // f(0) = 0, f(1) = 1 → balanced → measure |1⟩
+    assert!(deutsch_algorithm("f2"), "f2 should be classified as balanced");
+}
+
+#[test]
+fn test_deutsch_f3_balanced() {
+    // f(0) = 1, f(1) = 0 → balanced → measure |1⟩
+    assert!(deutsch_algorithm("f3"), "f3 should be classified as balanced");
+}
+
+#[test]
+fn test_deutsch_deterministic_probabilities() {
+    // Verify that measurement probabilities are exactly 0 or 1 (no randomness)
+    for oracle in &["f0", "f1", "f2", "f3"] {
+        let mut state = QuantumState::new(2).unwrap();
+        state.apply_gate(&Gate::X(1)).unwrap();
+        state.apply_gate(&Gate::H(0)).unwrap();
+        state.apply_gate(&Gate::H(1)).unwrap();
+
+        match *oracle {
+            "f0" => {}
+            "f1" => { state.apply_gate(&Gate::X(1)).unwrap(); }
+            "f2" => { state.apply_gate(&Gate::CNOT(0, 1)).unwrap(); }
+            "f3" => {
+                state.apply_gate(&Gate::X(0)).unwrap();
+                state.apply_gate(&Gate::CNOT(0, 1)).unwrap();
+                state.apply_gate(&Gate::X(0)).unwrap();
+            }
+            _ => unreachable!(),
+        }
+
+        state.apply_gate(&Gate::H(0)).unwrap();
+        let probs = state.probabilities();
+        let prob_q0_one = probs[1] + probs[3];
+
+        // The result must be deterministic: probability is 0.0 or 1.0
+        assert!(
+            prob_q0_one < EPSILON || (1.0 - prob_q0_one) < EPSILON,
+            "Oracle {oracle}: prob(q0=1) = {prob_q0_one}, expected 0.0 or 1.0"
+        );
+    }
+}
+
+#[test]
+fn test_deutsch_phase_kickback() {
+    // Verify the phase kickback mechanism directly.
+    // After oracle on |+⟩|−⟩, the first qubit should be ±|+⟩ or ±|−⟩.
+    // For balanced f, the first qubit is |−⟩; for constant f, it is |+⟩.
+
+    // f2 (balanced): after oracle, first qubit amplitudes should encode |−⟩
+    let mut state = QuantumState::new(2).unwrap();
+    state.apply_gate(&Gate::X(1)).unwrap();
+    state.apply_gate(&Gate::H(0)).unwrap();
+    state.apply_gate(&Gate::H(1)).unwrap();
+    state.apply_gate(&Gate::CNOT(0, 1)).unwrap();
+
+    // Before the final H, check that q0 is in |−⟩ state.
+    // |−⟩|−⟩ has amplitudes: (|00⟩ - |01⟩ - |10⟩ + |11⟩)/2
+    let amps = state.state_vector();
+    let a00 = amps[0]; // |00⟩
+    let a01 = amps[1]; // |01⟩  (bit 0 is qubit 0 in little-endian)
+
+    // Wait -- we need to be careful about qubit ordering.
+    // In little-endian: index = q0_bit + 2*q1_bit
+    // |00⟩ = index 0, |10⟩ = index 1, |01⟩ = index 2, |11⟩ = index 3
+    // For balanced oracle (CNOT), first qubit gets |−⟩:
+    // State should be |−⟩_q0 ⊗ |−⟩_q1
+    // = (|0⟩-|1⟩)/√2 ⊗ (|0⟩-|1⟩)/√2
+    // = (|00⟩ - |10⟩ - |01⟩ + |11⟩)/2
+    // In little-endian: |00⟩=idx0, |10⟩=idx1, |01⟩=idx2, |11⟩=idx3
+    // Amplitudes: [+1/2, -1/2, -1/2, +1/2]
+    let expected = [0.5, -0.5, -0.5, 0.5];
+    for (i, &exp) in expected.iter().enumerate() {
+        assert!(
+            (amps[i].re - exp).abs() < EPSILON && amps[i].im.abs() < EPSILON,
+            "Amplitude mismatch at index {i}: got ({}, {}), expected ({exp}, 0)",
+            amps[i].re, amps[i].im
+        );
+    }
 }
 
 // ===========================================================================
