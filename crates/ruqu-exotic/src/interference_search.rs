@@ -14,7 +14,6 @@ use ruqu_core::types::Complex;
 
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
-use std::f64::consts::PI;
 
 // ---------------------------------------------------------------------------
 // Public types
