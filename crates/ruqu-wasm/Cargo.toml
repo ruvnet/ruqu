@@ -1,0 +1,30 @@
+[package]
+name = "ruqu-wasm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "WebAssembly bindings for the ruQu quantum simulation engine"
+keywords = ["quantum", "wasm", "simulation", "webassembly"]
+categories = ["wasm", "science", "simulation"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+
+[dependencies]
+ruqu-core = { path = "../ruqu-core" }
+ruqu-algorithms = { path = "../ruqu-algorithms" }
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde-wasm-bindgen = "0.6"
+getrandom = { workspace = true }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
