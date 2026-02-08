@@ -1,13 +1,14 @@
 [package]
 name = "ruqu-core"
-version.workspace = true
+version = "2.0.3"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-description = "Quantum simulation engine core - state-vector simulator with gate operations, measurement, and noise models"
-keywords = ["quantum", "simulation", "state-vector", "gates", "qubits"]
+readme = "README.md"
+description = "High-performance quantum circuit simulator in pure Rust - state-vector simulation with SIMD acceleration, noise models, and multi-threading"
+keywords = ["quantum", "simulation", "state-vector", "quantum-computing", "qubits"]
 categories = ["science", "simulation", "algorithms"]
 
 [features]

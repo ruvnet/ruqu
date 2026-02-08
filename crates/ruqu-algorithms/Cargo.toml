@@ -1,13 +1,14 @@
 [package]
 name = "ruqu-algorithms"
-version.workspace = true
+version = "2.0.3"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-description = "Quantum algorithm implementations: VQE, Grover's search, QAOA MaxCut, Surface Code error correction"
-keywords = ["quantum", "vqe", "grover", "qaoa", "error-correction"]
+readme = "README.md"
+description = "Production-ready quantum algorithms in Rust - VQE for chemistry, Grover's search, QAOA optimization, Surface Code error correction"
+keywords = ["quantum", "vqe", "grover", "qaoa", "quantum-algorithms"]
 categories = ["science", "simulation", "algorithms"]
 
 [features]
@@ -15,7 +16,7 @@ default = ["std"]
 std = []
 
 [dependencies]
-ruqu-core = { version = "2.0", path = "../ruqu-core" }
+ruqu-core = { version = "2.0.3", path = "../ruqu-core" }
 rand = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true, optional = true }
