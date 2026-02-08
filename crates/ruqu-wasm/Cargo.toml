@@ -17,8 +17,8 @@ crate-type = ["cdylib", "rlib"]
 default = []
 
 [dependencies]
-ruqu-core = { path = "../ruqu-core" }
-ruqu-algorithms = { path = "../ruqu-algorithms" }
+ruqu-core = { version = "2.0", path = "../ruqu-core" }
+ruqu-algorithms = { version = "2.0", path = "../ruqu-algorithms" }
 wasm-bindgen = { workspace = true }
 js-sys = { workspace = true }
 serde = { workspace = true }
