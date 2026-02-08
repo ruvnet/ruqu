@@ -1,0 +1,33 @@
+[package]
+name = "ruqu-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Quantum simulation engine core - state-vector simulator with gate operations, measurement, and noise models"
+keywords = ["quantum", "simulation", "state-vector", "gates", "qubits"]
+categories = ["science", "simulation", "algorithms"]
+
+[features]
+default = ["std"]
+std = []
+parallel = ["rayon"]
+simd = []
+
+[dependencies]
+rand = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true, optional = true }
+rayon = { workspace = true, optional = true }
+tracing = { workspace = true, optional = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+proptest = { workspace = true }
+approx = "0.5"
+
+[[bench]]
+name = "quantum_sim"
+harness = false
