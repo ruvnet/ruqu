@@ -1,6 +1,6 @@
 [package]
 name = "ruqu-wasm"
-version = "2.0.4"
+version = "2.0.5"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -18,8 +18,8 @@ crate-type = ["cdylib", "rlib"]
 default = []
 
 [dependencies]
-ruqu-core = { version = "2.0.4", path = "../ruqu-core" }
-ruqu-algorithms = { version = "2.0.4", path = "../ruqu-algorithms" }
+ruqu-core = { version = "2.0.5", path = "../ruqu-core" }
+ruqu-algorithms = { version = "2.0.5", path = "../ruqu-algorithms" }
 wasm-bindgen = { workspace = true }
 js-sys = { workspace = true }
 serde = { workspace = true }

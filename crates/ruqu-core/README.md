@@ -4,17 +4,21 @@
 [![Documentation](https://docs.rs/ruqu-core/badge.svg)](https://docs.rs/ruqu-core)
 [![License](https://img.shields.io/crates/l/ruqu-core.svg)](https://github.com/ruvnet/ruvector)
 
-**High-performance quantum circuit simulator in pure Rust** — state-vector simulation with SIMD acceleration, noise models, and multi-threading support.
+**Quantum Execution Intelligence Engine in pure Rust** — 5 simulation backends with automatic routing, noise models, error mitigation, OpenQASM 3.0 export, and cryptographic witness logging.
 
 ## Features
 
-- **State-Vector Simulation** — Complex128 amplitude representation for exact quantum state evolution
+- **5 Simulation Backends** — StateVector (exact, up to 32 qubits), Stabilizer (millions of qubits), Clifford+T (moderate T-count), TensorNetwork (MPS-based), Hardware (device profiles)
+- **Cost-Model Planner** — Automatically routes circuits to the optimal backend based on qubit count, gate mix, and T-count
 - **Universal Gate Set** — H, X, Y, Z, CNOT, CZ, Toffoli, Rx, Ry, Rz, Phase, SWAP, and custom unitaries
-- **Noise Models** — Depolarizing, amplitude damping, phase damping, and custom Kraus operators
+- **QEC Control Plane** — Union-find decoder with O(n*a(n)) amortized time, sub-polynomial decoders, QEC scheduling, control theory integration
+- **OpenQASM 3.0** — Full circuit export to standard quantum assembly format
+- **Noise & Mitigation** — Depolarizing, amplitude/phase damping, custom Kraus operators, zero-noise extrapolation, probabilistic error cancellation
 - **SIMD Acceleration** — AVX2/NEON vectorized gate application for 2-4x speedup
 - **Multi-Threading** — Rayon-based parallelism for large qubit counts
-- **Measurement** — Single-qubit, multi-qubit, and partial measurement with state collapse
-- **Circuit Optimization** — Gate fusion, cancellation, and commutation rules
+- **Cryptographic Witnesses** — Tamper-evident execution logs for reproducibility and verification
+- **Transpiler** — Gate decomposition, routing, and hardware-aware optimization
+- **Mixed Precision** — Configurable f32/f64 simulation for speed vs accuracy tradeoff
 
 ## Installation
 
@@ -31,23 +35,47 @@ cargo add ruqu-core --features parallel,simd
 ## Quick Start
 
 ```rust
-use ruqu_core::{QuantumState, Gate, Circuit, Simulator};
+use ruqu_core::prelude::*;
 
-// Create a 3-qubit circuit
-let mut circuit = Circuit::new(3);
+// Create a Bell state |00> + |11>
+let mut circuit = QuantumCircuit::new(2);
+circuit.h(0).cnot(0, 1);
 
-// Build a GHZ state: |000⟩ + |111⟩
-circuit.h(0);           // Hadamard on qubit 0
-circuit.cnot(0, 1);     // CNOT: control=0, target=1
-circuit.cnot(1, 2);     // CNOT: control=1, target=2
+let result = Simulator::run(&circuit)?;
+let probs = result.state.probabilities();
+// probs ~= [0.5, 0.0, 0.0, 0.5]
+```
 
-// Execute simulation
-let simulator = Simulator::new();
-let state = simulator.run(&circuit)?;
+## Simulation Backends
 
-// Measure all qubits
-let result = state.measure_all();
-println!("Measured: {:03b}", result);  // Either 000 or 111
+| Backend | Qubits | Best For |
+|---------|--------|----------|
+| **StateVector** | Up to 32 | Exact simulation, small circuits |
+| **Stabilizer** | Millions | Clifford-only circuits (Gottesman-Knill) |
+| **Clifford+T** | Moderate | Circuits with low T-count |
+| **TensorNetwork** | Variable | Shallow/structured circuits (MPS) |
+| **Hardware** | Device-dependent | Real device profiles and constraints |
+
+The cost-model planner automatically selects the best backend:
+
+```rust
+use ruqu_core::planner::CostModelPlanner;
+
+let planner = CostModelPlanner::new();
+let backend = planner.select(&circuit); // Auto-routes to optimal backend
+```
+
+## OpenQASM 3.0 Export
+
+```rust
+use ruqu_core::qasm::to_qasm3;
+
+let qasm = to_qasm3(&circuit);
+println!("{}", qasm);
+// OPENQASM 3.0;
+// qubit[2] q;
+// h q[0];
+// cx q[0], q[1];
 ```
 
 ## Quantum Gates
@@ -99,7 +127,7 @@ let noisy_state = simulator.run_noisy(&circuit, &noise)?;
 
 ## Architecture
 
-Part of the [RuVector](https://github.com/ruvnet/ruvector) ecosystem. See [ADR-QE-001](https://github.com/ruvnet/ruvector/blob/main/docs/adr/quantum-engine/ADR-QE-001-quantum-engine-core-architecture.md) for design decisions.
+Part of the [RuVector](https://github.com/ruvnet/ruvector) quantum ecosystem. See [ADR-QE-001](https://github.com/ruvnet/ruvector/blob/main/docs/adr/quantum-engine/ADR-QE-001-quantum-engine-core-architecture.md) for core architecture and [ADR-QE-015](https://github.com/ruvnet/ruvector/blob/main/docs/adr/quantum-engine/ADR-QE-015-quantum-execution-intelligence.md) for the execution intelligence engine design.
 
 ## License
 

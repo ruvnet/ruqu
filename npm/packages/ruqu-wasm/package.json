@@ -1,6 +1,6 @@
 {
   "name": "@ruvector/ruqu-wasm",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "type": "module",
   "description": "Run quantum simulations in the browser - WebAssembly bindings for quantum circuits with 25-qubit support, VQE, Grover, QAOA",
   "main": "ruqu_wasm.js",

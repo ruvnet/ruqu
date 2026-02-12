@@ -1,6 +1,6 @@
 [package]
 name = "ruqu-algorithms"
-version = "2.0.4"
+version = "2.0.5"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
@@ -16,7 +16,7 @@ default = ["std"]
 std = []
 
 [dependencies]
-ruqu-core = { version = "2.0.4", path = "../ruqu-core" }
+ruqu-core = { version = "2.0.5", path = "../ruqu-core" }
 rand = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true, optional = true }
