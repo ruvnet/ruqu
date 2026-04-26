@@ -521,7 +521,10 @@ pub fn init() {
 // Tests
 // ═══════════════════════════════════════════════════════════════════════════
 
-#[cfg(test)]
+// Tests for the WASM bindings only run on wasm32 because wasm-bindgen
+// 0.2.117 panics on `JsValue::from_str` from a non-wasm runtime.
+// Native verification of the underlying logic lives in `ruqu-core`.
+#[cfg(all(test, target_arch = "wasm32"))]
 mod tests {
     use super::*;
 
