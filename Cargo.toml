@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/ruqu-core", "crates/ruqu-algorithms", "crates/ruqu-exotic", "crates/ruqu-wasm", "crates/ruQu"]
+members = ["crates/ruqu-core", "crates/ruqu-algorithms", "crates/ruqu-exotic", "crates/ruqu-wasm", "crates/ruQu", "crates/ruqu-possibility", "crates/ruqu-rag", "crates/ruqu-agent", "crates/ruqu-receipts", "crates/ruqu-sensing"]
 
 [workspace.package]
 version = "2.2.3"
@@ -11,6 +11,8 @@ authors = ["Ruvector Team"]
 repository = "https://github.com/ruvnet/ruqu"
 
 [workspace.dependencies]
+anyhow = "1.0"
+blake3 = "1.5"
 criterion = { version = "0.5", features = ["html_reports"] }
 js-sys = "0.3"
 proptest = "1.5"

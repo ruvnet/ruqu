@@ -1578,6 +1578,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ruqu-agent"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "rand 0.8.6",
+ "ruqu-core",
+ "ruqu-exotic",
+ "ruqu-possibility",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "ruqu-algorithms"
 version = "2.0.5"
 dependencies = [
@@ -1614,6 +1628,58 @@ dependencies = [
  "rand 0.8.6",
  "ruqu-core",
  "serde",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "ruqu-possibility"
+version = "0.1.0"
+dependencies = [
+ "blake3",
+ "proptest",
+ "rand 0.8.6",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "ruqu-rag"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "proptest",
+ "rand 0.8.6",
+ "ruqu-core",
+ "ruqu-exotic",
+ "ruqu-possibility",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "ruqu-receipts"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "ruqu-possibility",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "ruqu-sensing"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ruqu-core",
+ "ruqu-exotic",
+ "ruqu-possibility",
+ "serde",
+ "serde_json",
  "thiserror 2.0.18",
 ]
 

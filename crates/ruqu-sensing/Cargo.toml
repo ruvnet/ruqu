@@ -1,0 +1,33 @@
+[package]
+name = "ruqu-sensing"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Convert telemetry and sensor signals into syndrome streams for structural anomaly detection (ADR-258)"
+keywords = ["ai", "sensing", "syndrome", "anomaly", "telemetry"]
+categories = ["science", "algorithms"]
+
+[features]
+default = ["std"]
+std = []
+
+[dependencies]
+ruqu-possibility = { version = "0.1.0", path = "../ruqu-possibility" }
+ruqu-exotic = { version = "2.0.5", path = "../ruqu-exotic" }
+ruqu-core = { version = "2.0.5", path = "../ruqu-core" }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[lints.rust]
+dead_code = "allow"
+unused_variables = "allow"
+
+[lints.clippy]
+correctness = { level = "deny", priority = -1 }
+suspicious = { level = "deny", priority = -1 }
