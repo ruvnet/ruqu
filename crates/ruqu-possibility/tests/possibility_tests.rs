@@ -71,6 +71,20 @@ fn replay_reproduces_selection_and_coherence_within_tolerance() {
 }
 
 #[test]
+fn collapse_argmax_picks_highest_probability_regardless_of_seed() {
+    let f = field(); // "a" has the largest amplitude (0.9)
+    let (s_a, r_a) = f.collapse_argmax(1).unwrap();
+    let (s_b, r_b) = f.collapse_argmax(999).unwrap();
+    assert_eq!(s_a.id, "a");
+    assert_eq!(s_b.id, "a");
+    assert_eq!(r_a.selected_id, "a");
+    // Selection is seed-independent; metrics describe the natural-order field.
+    assert_eq!(r_a.field_hash, f.field_hash());
+    assert_eq!(r_a.field_hash, r_b.field_hash);
+    assert_eq!(r_a.rejected.len(), f.len() - 1);
+}
+
+#[test]
 fn receipt_hash_is_stable_and_content_addressed() {
     let f = field();
     let (_, receipt) = f.collapse(42).unwrap();

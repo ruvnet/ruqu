@@ -205,7 +205,8 @@ impl<T: Clone> PossibilityField<T> {
         self.collapse_with_gate(seed, &CoherenceGate::with_defaults())
     }
 
-    /// Collapse using an explicit gate for the receipt's decision.
+    /// Collapse using a seeded weighted draw with an explicit gate for the
+    /// receipt's decision.
     pub fn collapse_with_gate(
         &self,
         seed: u64,
@@ -214,24 +215,77 @@ impl<T: Clone> PossibilityField<T> {
         if self.candidates.is_empty() {
             return Err(PossibilityError::EmptyField);
         }
-
-        let entropy_before = self.entropy();
-        let coherence = self.coherence();
         let probs = self.probabilities();
-        let gate_decision = gate.evaluate(self);
+        let selected_idx = Self::sample_index(&probs, seed);
+        Ok(self.finish_collapse(selected_idx, &probs, gate, seed))
+    }
 
-        // Seeded weighted draw. Deterministic for a given (field, seed).
+    /// Deterministically collapse to the **highest-probability** possibility
+    /// (the argmax), tie-broken by lowest index, returning a [`CollapseReceipt`].
+    ///
+    /// Unlike [`collapse`](Self::collapse), the selection does not depend on the
+    /// seed — only the receipt's recorded `seed` field does (so a replay can
+    /// reconstruct the same field). This is the right mode when the field has
+    /// already been scored/ranked (e.g. after interference reranking) and the
+    /// caller wants the top result, deterministically, with auditable metrics
+    /// computed over the field *in its natural order* (so `field_hash` matches a
+    /// replayer who reconstructs the same field).
+    pub fn collapse_argmax(&self, seed: u64) -> Result<(Possibility<T>, CollapseReceipt)> {
+        self.collapse_argmax_with_gate(seed, &CoherenceGate::with_defaults())
+    }
+
+    /// Argmax collapse with an explicit gate for the receipt's decision.
+    pub fn collapse_argmax_with_gate(
+        &self,
+        seed: u64,
+        gate: &CoherenceGate,
+    ) -> Result<(Possibility<T>, CollapseReceipt)> {
+        if self.candidates.is_empty() {
+            return Err(PossibilityError::EmptyField);
+        }
+        let probs = self.probabilities();
+        let selected_idx = Self::argmax_index(&probs);
+        Ok(self.finish_collapse(selected_idx, &probs, gate, seed))
+    }
+
+    /// Seeded weighted draw over a normalized probability distribution.
+    fn sample_index(probs: &[f64], seed: u64) -> usize {
         let mut rng = StdRng::seed_from_u64(seed);
         let r: f64 = rng.gen::<f64>();
         let mut cumulative = 0.0;
-        let mut selected_idx = self.candidates.len() - 1;
         for (i, &p) in probs.iter().enumerate() {
             cumulative += p;
             if r <= cumulative {
-                selected_idx = i;
-                break;
+                return i;
             }
         }
+        probs.len() - 1
+    }
+
+    /// Index of the maximum probability, tie-broken by lowest index.
+    fn argmax_index(probs: &[f64]) -> usize {
+        let mut best = 0;
+        for i in 1..probs.len() {
+            if probs[i] > probs[best] {
+                best = i;
+            }
+        }
+        best
+    }
+
+    /// Build the selected possibility, the rejected list, and the receipt for a
+    /// chosen `selected_idx`. Shared by every collapse mode so they emit
+    /// identical receipt structure.
+    fn finish_collapse(
+        &self,
+        selected_idx: usize,
+        probs: &[f64],
+        gate: &CoherenceGate,
+        seed: u64,
+    ) -> (Possibility<T>, CollapseReceipt) {
+        let entropy_before = self.entropy();
+        let coherence = self.coherence();
+        let gate_decision = gate.evaluate(self);
 
         let selected = self.candidates[selected_idx].clone();
         let selected_prob = probs.get(selected_idx).copied().unwrap_or(0.0);
@@ -246,7 +300,7 @@ impl<T: Clone> PossibilityField<T> {
                 let reason = if p + 1e-12 < selected_prob {
                     format!("lower interference probability ({p:.4} < {selected_prob:.4})")
                 } else {
-                    format!("not selected by seeded draw (probability {p:.4})")
+                    format!("not selected by collapse (probability {p:.4})")
                 };
                 RejectedCandidate {
                     id: c.id.clone(),
@@ -272,6 +326,6 @@ impl<T: Clone> PossibilityField<T> {
             seed,
         };
 
-        Ok((selected, receipt))
+        (selected, receipt)
     }
 }

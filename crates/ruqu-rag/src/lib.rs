@@ -380,14 +380,16 @@ impl QuantumRagIndex {
         let coherence_gate = CoherenceGate::with_defaults();
         let gate = coherence_gate.evaluate(&field);
 
-        // Rank candidates by post-interference probability (ties by id).
+        // Rank candidates by post-interference probability. Ties broken by
+        // lowest index so the top of this ranking matches the receipt's argmax
+        // selection (see `collapse_argmax`).
         let probs = field.probabilities();
         let mut order: Vec<usize> = (0..field.candidates.len()).collect();
         order.sort_by(|&i, &j| {
             probs[j]
                 .partial_cmp(&probs[i])
                 .unwrap_or(std::cmp::Ordering::Equal)
-                .then_with(|| field.candidates[i].id.cmp(&field.candidates[j].id))
+                .then_with(|| i.cmp(&j))
         });
 
         let scored: Vec<ScoredCandidate> = order
@@ -404,10 +406,14 @@ impl QuantumRagIndex {
             })
             .collect();
 
-        // Collapse for the receipt, with the interference top-1 placed first so
-        // the seeded weighted draw selects it deterministically and the receipt
-        // metrics (coherence/entropy/gate/field hash) reflect the reranked field.
-        let receipt = self.collapse_top1(&field, &order, &coherence_gate, seed)?;
+        // Collapse the reranked field to its argmax (the interference top-1) for
+        // an auditable receipt. Deterministic, and the receipt's metrics
+        // (coherence / entropy / gate / field hash) describe the field in its
+        // natural order — so a replayer who reconstructs the same field via
+        // `build_field` + interference reproduces the identical receipt.
+        let (_selected, receipt) = field
+            .collapse_argmax_with_gate(seed, &coherence_gate)
+            .map_err(|e| anyhow::anyhow!("collapse failed: {e}"))?;
 
         Ok(SearchResult {
             selected: scored,
@@ -415,53 +421,6 @@ impl QuantumRagIndex {
             gate,
             baseline_cosine_top_k,
         })
-    }
-
-    /// Build a receipt whose `selected_id` is the interference top-1.
-    ///
-    /// We reorder the reranked field so the highest-probability candidate is
-    /// first, then collapse. The seeded weighted draw walks candidates in order
-    /// and selects the first whose cumulative probability reaches the draw; with
-    /// the dominant candidate first this is deterministic and matches the ranked
-    /// top-1, while coherence/entropy/gate in the receipt reflect the true
-    /// reranked field (reordering does not change those metrics).
-    fn collapse_top1(
-        &self,
-        field: &PossibilityField<RagCandidate>,
-        order: &[usize],
-        gate: &CoherenceGate,
-        seed: u64,
-    ) -> anyhow::Result<CollapseReceipt> {
-        let reordered: Vec<Possibility<RagCandidate>> =
-            order.iter().map(|&i| field.candidates[i].clone()).collect();
-        let top1_id = reordered
-            .first()
-            .map(|p| p.id.clone())
-            .unwrap_or_default();
-        let ordered_field =
-            PossibilityField::new(reordered).with_threshold(field.collapse_threshold);
-
-        let (selected, mut receipt) = ordered_field
-            .collapse_with_gate(seed, gate)
-            .map_err(|e| anyhow::anyhow!("collapse failed: {e}"))?;
-
-        // Guarantee the receipt names the interference top-1 as selected. If the
-        // seeded draw landed on a different (necessarily lower-probability)
-        // candidate, override deterministically to the top-1 and re-list the
-        // rest as rejected.
-        if selected.id != top1_id {
-            receipt.selected_id = top1_id.clone();
-            receipt.rejected = ordered_field
-                .candidates
-                .iter()
-                .filter(|c| c.id != top1_id)
-                .map(|c| ruqu_possibility::RejectedCandidate {
-                    id: c.id.clone(),
-                    reason: "lower post-interference probability".to_string(),
-                })
-                .collect();
-        }
-        Ok(receipt)
     }
 }
 
