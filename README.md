@@ -80,6 +80,20 @@ cargo test                                       # run the test suite
 wasm-pack build crates/ruqu-wasm --target web    # WASM
 ```
 
+## Agent CLI
+
+An agent-harness CLI ships on npm as **[`@ruvector/ruqu`](https://www.npmjs.com/package/@ruvector/ruqu)** —
+boots the [metaharness](https://github.com/ruvnet/agent-harness-generator) kernel + a Claude Code
+host adapter with a self-evolving agent loop:
+
+```bash
+npx @ruvector/ruqu init     # boot the kernel + host adapter
+npx @ruvector/ruqu doctor   # verify the install
+```
+
+(Sources in [`cli/`](cli). The kernel resolves native → wasm → js; the published beta currently
+runs the `js` backend.)
+
 ## Use cases
 
 Quantum algorithm research · variational quantum eigensolver (VQE) for quantum chemistry ·
