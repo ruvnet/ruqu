@@ -6,14 +6,14 @@ adapter, with a self-evolving agent loop (hypothesizer → experimenter → fede
 witness-signed evolution log.
 
 ```bash
-npx ruqu init      # boot the kernel + host adapter
-npx ruqu doctor    # verify the install end-to-end
+npx @ruvector/ruqu init      # boot the kernel + host adapter
+npx @ruvector/ruqu doctor    # verify the install end-to-end
 ```
 
 Or install globally:
 
 ```bash
-npm install -g ruqu
+npm install -g @ruvector/ruqu
 ruqu doctor
 ```
 

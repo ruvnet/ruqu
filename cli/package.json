@@ -1,7 +1,7 @@
 {
-  "name": "ruqu",
+  "name": "@ruvector/ruqu",
   "version": "0.1.0",
-  "description": "Agent-harness CLI for the ruqu quantum project — boots the metaharness kernel + Claude Code host adapter. Run: npx ruqu",
+  "description": "Agent-harness CLI for the ruqu quantum project — boots the metaharness kernel + Claude Code host adapter. Run: npx @ruvector/ruqu",
   "type": "module",
   "bin": {
     "ruqu": "bin/cli.js"
