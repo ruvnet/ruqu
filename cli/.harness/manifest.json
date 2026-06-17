@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "generator": "0.1.0",
+  "template": "vertical:exotic",
+  "template_version": "0.0.0",
+  "vars": {
+    "name": "ruqu",
+    "description": "ruqu quantum CLI — agent harness over the quantum-sim + coherence crates",
+    "host": "claude-code"
+  },
+  "hosts": [
+    "claude-code"
+  ],
+  "files": {
+    ".claude/commands/doctor.md": "2f1475fa0ed34729cb2ed9d6cecf29e99781da0a56afef133361e3ff0a17bb52",
+    ".claude/settings.json": "5f468901a1daef7ab4156d7c7add11a6a8cb83a314768f46f8e540655d55cef6",
+    ".claude/skills/evolve/SKILL.md": "56c8005022612cc130c6f811ab4dea57ddf9d012abb20c0c624e1fc27174d94f",
+    ".claude/skills/memory-inspect/SKILL.md": "996b09e2dd12f68a589d94de0cbaef1522a30c912157cbbd6557abd3c4fd1ff3",
+    ".claude-plugin/plugin.json": "749278d0aa88f336457393e03f4cae34cfde060a001eaf5db55f9b4d0107c9b5",
+    "bin/cli.js": "6cf6cdd370bc7212a4ed3352cd900246907d01813b1a70bf413eb3101485144d",
+    "CLAUDE.md": "612d3a335ff5f4005cfcd96104fe6a224acd766b17dce52939b913835a96e767",
+    "package.json": "e9360ccc325eafb0c6eb9ea059d77a030922c8ad59fd6854607dee6cbacafb62",
+    "README.md": "829caeb9953d674d5c0e6507711407e803324aa320bd3fc13d066cbf05c22dd7",
+    "src/agents/experimenter.ts": "05d5099fc181b4b204349c5284e3edb3407b7ad54762dd565fdc4574fa71682e",
+    "src/agents/federator.ts": "29dfc188ab4caad3bb63f810dc5b5662b9a1be8e0f3be9e1e049dc6638985279",
+    "src/agents/hypothesizer.ts": "12fd4c30b88113f8a883f8b354fb71a602f3981c8686a7f10ab31dca64f39390",
+    "src/init.ts": "388b957b8ed4e8f75ee081d8e4c7489f81d16062e25301f8def0b802d84df335",
+    "tsconfig.json": "8b4e730a1aa39162ac574455d7a98e1881f5313ca80ffe503b9652dcf0c76b9d",
+    "__tests__/smoke.test.ts": "e39c6fe234730be04e0b9db752177a1c34ced2d17e37a2ba1046425f96c2e9d4"
+  },
+  "generated_at": "2026-06-17T18:02:54.519Z",
+  "meta": {
+    "surface": "cli"
+  }
+}
