@@ -1,39 +1,35 @@
-# ruqu
+# @ruvector/ruqu
 
-**Agent-harness CLI for the [ruqu](https://github.com/ruvnet/ruqu) quantum project.** Boots the
-[metaharness](https://github.com/ruvnet/agent-harness-generator) kernel + a Claude Code host
-adapter, with a self-evolving agent loop (hypothesizer → experimenter → federator) over a
-witness-signed evolution log.
-
-```bash
-npx @ruvector/ruqu init      # boot the kernel + host adapter
-npx @ruvector/ruqu doctor    # verify the install end-to-end
-```
-
-Or install globally:
+**Quantum computing from your terminal** — a state-vector quantum circuit simulator compiled to
+**WebAssembly** (the pure-Rust [`ruqu`](https://github.com/ruvnet/ruqu) crates), wrapped in a
+[metaharness](https://github.com/ruvnet/agent-harness-generator) agent CLI.
 
 ```bash
-npm install -g @ruvector/ruqu
-ruqu doctor
+npx @ruvector/ruqu capabilities          # what it can do
+npx @ruvector/ruqu simulate --qubits 4   # GHZ state-vector simulation
+npx @ruvector/ruqu grover --qubits 3 --target 5
+npx @ruvector/ruqu qaoa --nodes 4        # QAOA MaxCut on a ring
+npx @ruvector/ruqu doctor                # verify kernel + quantum WASM
 ```
 
-## Agents
+## Commands
 
-| Agent | Role |
+| Command | What it does |
 |---|---|
-| `hypothesizer` | Proposes a falsifiable self-improvement. |
-| `experimenter` | Tests the hypothesis safely and records it. |
-| `federator` | Shares vetted improvements across instances. |
+| `simulate [--qubits N]` | Run a GHZ/Bell circuit on the WASM state-vector simulator (up to 25 qubits). |
+| `grover [--qubits N --target T --seed S]` | Grover amplitude amplification / search. |
+| `qaoa [--nodes N --p P]` | QAOA MaxCut on a ring graph. |
+| `capabilities` | List gates, algorithms, qubit/memory limits. |
+| `init` · `doctor` | Boot / verify the agent-harness kernel **and** the quantum WASM. |
+| `version` | Kernel + WASM versions. |
 
-Ships with the **claude-code** host adapter.
+Gates: `h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`. Up to **25 qubits**.
 
-## Kernel backend
+## How it works
 
-The harness loads `@metaharness/kernel`, which resolves a backend in order **native → wasm → js**.
-The published `@metaharness/kernel@0.1.0` beta ships only the **pure-JS** floor backend; the native
-(NAPI) and WASM artifacts are produced by separate upstream build jobs and are not in the npm
-package yet, so `ruqu doctor` currently reports the **`js`** backend. It will pick up native/WASM
-automatically once those kernel artifacts are published — no change needed here.
+The CLI bundles a `--target nodejs` WebAssembly build of the `ruqu-wasm` crate (real state-vector
+simulation in Rust → WASM) and loads it directly in Node — no native addon, no Python. It also boots
+the metaharness kernel + Claude Code host adapter for the agent-harness commands (`init`/`doctor`).
 
 ## License
 

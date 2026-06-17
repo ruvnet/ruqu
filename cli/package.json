@@ -1,7 +1,7 @@
 {
   "name": "@ruvector/ruqu",
-  "version": "0.1.0",
-  "description": "Agent-harness CLI for the ruqu quantum project — boots the metaharness kernel + Claude Code host adapter. Run: npx @ruvector/ruqu",
+  "version": "0.2.0",
+  "description": "Quantum circuit simulator in WebAssembly + agent harness CLI — run state-vector simulation, Grover search, and QAOA MaxCut from your terminal. npx @ruvector/ruqu",
   "type": "module",
   "bin": {
     "ruqu": "bin/cli.js"
@@ -13,7 +13,8 @@
     ".claude/**",
     "CLAUDE.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "wasm/**"
   ],
   "scripts": {
     "build": "tsc",
@@ -57,6 +58,14 @@
     "claude-code",
     "quantum",
     "harness",
-    "npx"
+    "npx",
+    "quantum-computing",
+    "quantum-simulator",
+    "webassembly",
+    "wasm",
+    "qaoa",
+    "grover",
+    "state-vector",
+    "quantum-circuit"
   ]
 }

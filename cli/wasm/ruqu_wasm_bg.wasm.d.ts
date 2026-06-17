@@ -1,0 +1,38 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const __wbg_wasmquantumcircuit_free: (a: number, b: number) => void;
+export const estimate_memory: (a: number) => number;
+export const grover_search: (a: number, b: number, c: number, d: any) => [number, number, number];
+export const init: () => void;
+export const max_qubits: () => number;
+export const qaoa_maxcut: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: any) => [number, number, number];
+export const simulate: (a: number) => [number, number, number];
+export const wasmquantumcircuit_barrier: (a: number) => void;
+export const wasmquantumcircuit_cnot: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_cz: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_depth: (a: number) => number;
+export const wasmquantumcircuit_gate_count: (a: number) => number;
+export const wasmquantumcircuit_h: (a: number, b: number) => void;
+export const wasmquantumcircuit_measure: (a: number, b: number) => void;
+export const wasmquantumcircuit_measure_all: (a: number) => void;
+export const wasmquantumcircuit_new: (a: number) => [number, number, number];
+export const wasmquantumcircuit_num_qubits: (a: number) => number;
+export const wasmquantumcircuit_reset: (a: number, b: number) => void;
+export const wasmquantumcircuit_rx: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_ry: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_rz: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_rzz: (a: number, b: number, c: number, d: number) => void;
+export const wasmquantumcircuit_s: (a: number, b: number) => void;
+export const wasmquantumcircuit_swap: (a: number, b: number, c: number) => void;
+export const wasmquantumcircuit_t: (a: number, b: number) => void;
+export const wasmquantumcircuit_x: (a: number, b: number) => void;
+export const wasmquantumcircuit_y: (a: number, b: number) => void;
+export const wasmquantumcircuit_z: (a: number, b: number) => void;
+export const __wbindgen_malloc: (a: number, b: number) => number;
+export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_exn_store: (a: number) => void;
+export const __externref_table_alloc: () => number;
+export const __wbindgen_externrefs: WebAssembly.Table;
+export const __externref_table_dealloc: (a: number) => void;
+export const __wbindgen_start: () => void;
