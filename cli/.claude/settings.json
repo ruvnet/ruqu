@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx ruqu*)",
+      "mcp__ruqu__*",
+      "mcp__evolution_log__*",
+      "mcp__federation__*"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(rm -rf*)"
+    ]
+  },
+  "mcpServers": {
+    "ruqu": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "ruqu@latest",
+        "mcp",
+        "start"
+      ]
+    },
+    "evolution_log": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "ruqu@latest",
+        "mcp",
+        "evolution"
+      ]
+    },
+    "federation": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "ruqu@latest",
+        "mcp",
+        "federate"
+      ]
+    }
+  }
+}
