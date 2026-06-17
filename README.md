@@ -80,19 +80,20 @@ cargo test                                       # run the test suite
 wasm-pack build crates/ruqu-wasm --target web    # WASM
 ```
 
-## Agent CLI
+## Command-line quantum (npx)
 
-An agent-harness CLI ships on npm as **[`@ruvector/ruqu`](https://www.npmjs.com/package/@ruvector/ruqu)** —
-boots the [metaharness](https://github.com/ruvnet/agent-harness-generator) kernel + a Claude Code
-host adapter with a self-evolving agent loop:
+Run quantum circuits from your terminal via **[`@ruvector/ruqu`](https://www.npmjs.com/package/@ruvector/ruqu)** —
+the `ruqu-wasm` state-vector simulator compiled to WebAssembly, wrapped in a metaharness agent CLI:
 
 ```bash
-npx @ruvector/ruqu init     # boot the kernel + host adapter
-npx @ruvector/ruqu doctor   # verify the install
+npx @ruvector/ruqu simulate --qubits 4    # GHZ state-vector simulation
+npx @ruvector/ruqu grover --qubits 3 --target 5
+npx @ruvector/ruqu qaoa --nodes 4         # QAOA MaxCut on a ring
+npx @ruvector/ruqu capabilities           # gates, algorithms, limits
+npx @ruvector/ruqu doctor                 # verify the quantum WASM
 ```
 
-(Sources in [`cli/`](cli). The kernel resolves native → wasm → js; the published beta currently
-runs the `js` backend.)
+Sources in [`cli/`](cli); the bundled `--target nodejs` WASM runs up to 25 qubits in Node — no native addon.
 
 ## Use cases
 
