@@ -1,16 +1,25 @@
 {
   "name": "ruqu",
   "version": "0.1.0",
-  "description": "ruqu quantum CLI — agent harness over the quantum-sim + coherence crates",
+  "description": "Agent-harness CLI for the ruqu quantum project — boots the metaharness kernel + Claude Code host adapter. Run: npx ruqu",
   "type": "module",
   "bin": {
     "ruqu": "bin/cli.js"
   },
-  "files": ["bin/**", "dist/**", "src/**", "tsconfig.json", ".claude/**", "CLAUDE.md", "README.md", "LICENSE"],
+  "files": [
+    "bin/**",
+    "src/**",
+    "tsconfig.json",
+    ".claude/**",
+    "CLAUDE.md",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
-    "init": "node ./bin/cli.js init", "doctor": "node ./bin/cli.js doctor"
+    "init": "node ./bin/cli.js init",
+    "doctor": "node ./bin/cli.js doctor"
   },
   "dependencies": {
     "@metaharness/kernel": "^0.1.0",
@@ -26,5 +35,28 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "license": "MIT",
+  "author": "Ruvector Team <info@ruv.io> (https://ruv.io)",
+  "homepage": "https://github.com/ruvnet/ruqu#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruvnet/ruqu.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/ruvnet/ruqu/issues"
+  },
+  "keywords": [
+    "ruqu",
+    "cli",
+    "agent",
+    "agent-harness",
+    "metaharness",
+    "ai-agent",
+    "claude-code",
+    "quantum",
+    "harness",
+    "npx"
+  ]
 }
