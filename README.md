@@ -126,6 +126,26 @@ Try the interference-vs-cosine retrieval demo:
 cargo run -p ruqu-rag --bin quantum_rag_demo
 ```
 
+## Management console (web)
+
+A static, browser-based **management console** for the structural possibility
+runtime (ADR-258) lives in [`web/`](web). It is a plain ES-module web app driven
+by a WASM module, with a live **Sensing / Live Gate** panel that consumes a
+WebSocket telemetry stream. See [`web/README.md`](web/README.md) and
+[ADR-258](docs/adr/ADR-258-structural-possibility-runtime.md).
+
+```bash
+# build the WASM bundle, then serve the static app
+wasm-pack build crates/ruqu-console-wasm --target web --out-dir web/pkg --out-name ruqu_console
+python3 -m http.server 8099 --directory web   # open http://localhost:8099/
+```
+
+It deploys to **GitHub Pages** via
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) (repo Settings →
+Pages → Source: GitHub Actions). Pages is static-only, so the Sensing panel uses
+an external `ws://`/`wss://` endpoint or the built-in simulated feed — see
+[`web/server-example/`](web/server-example) for an example WebSocket server.
+
 ## Use cases
 
 Quantum algorithm research · variational quantum eigensolver (VQE) for quantum chemistry ·

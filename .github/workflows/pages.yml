@@ -1,0 +1,62 @@
+name: Deploy management console to GitHub Pages
+
+# Builds the ruQu management console (ADR-258): compiles the WASM module with
+# wasm-pack into web/pkg (which is gitignored, so it must be built fresh in CI)
+# and publishes the static web/ directory to GitHub Pages.
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+# Least-privilege permissions required to deploy to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent Pages deployment; do not cancel an in-progress run so a
+# deploy can finish cleanly.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install Rust toolchain (with wasm32 target)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WASM bundle into web/pkg
+        run: wasm-pack build crates/ruqu-console-wasm --target web --out-dir web/pkg --out-name ruqu_console
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

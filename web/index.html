@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ruQu Console — Structural Possibility Runtime</title>
+    <meta
+      name="description"
+      content="Management console for the ruQu Structural Possibility Runtime (ADR-258): possibility fields, interference RAG, swarm consensus, sensing, receipts — running in-browser via WebAssembly."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="wasm-error-banner" class="wasm-error-banner" hidden></div>
+
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">ruQu</span>
+          <span class="brand-sub">Possibility Runtime</span>
+        </div>
+        <nav id="nav" class="nav" aria-label="Console sections"></nav>
+        <div class="sidebar-foot">
+          <div id="boot-status" class="boot-status">loading runtime…</div>
+          <div class="adr">ADR-258 · WASM · offline-ready</div>
+        </div>
+      </aside>
+
+      <main id="main" class="content">
+        <div class="boot-splash">Initializing WebAssembly runtime…</div>
+      </main>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

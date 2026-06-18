@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/ruqu-core", "crates/ruqu-algorithms", "crates/ruqu-exotic", "crates/ruqu-wasm", "crates/ruQu", "crates/ruqu-possibility", "crates/ruqu-rag", "crates/ruqu-agent", "crates/ruqu-receipts", "crates/ruqu-sensing"]
+members = ["crates/ruqu-core", "crates/ruqu-algorithms", "crates/ruqu-exotic", "crates/ruqu-wasm", "crates/ruQu", "crates/ruqu-possibility", "crates/ruqu-rag", "crates/ruqu-agent", "crates/ruqu-receipts", "crates/ruqu-sensing", "crates/ruqu-console-wasm"]
 
 [workspace.package]
 version = "2.2.3"

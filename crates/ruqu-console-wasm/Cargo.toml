@@ -1,0 +1,46 @@
+[package]
+name = "ruqu-console-wasm"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "WebAssembly bindings for the ruQu Structural Possibility Runtime management console - possibility fields, interference RAG, swarm consensus, sensing, and receipts in the browser (ADR-258)"
+keywords = ["ai", "wasm", "possibility", "agents", "browser"]
+categories = ["wasm", "science", "algorithms"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+console_error_panic_hook = ["dep:console_error_panic_hook"]
+
+[dependencies]
+ruqu-possibility = { version = "0.1.0", path = "../ruqu-possibility" }
+ruqu-rag = { version = "0.1.0", path = "../ruqu-rag" }
+ruqu-agent = { version = "0.1.0", path = "../ruqu-agent" }
+ruqu-sensing = { version = "0.1.0", path = "../ruqu-sensing" }
+ruqu-receipts = { version = "0.1.0", path = "../ruqu-receipts" }
+ruqu-core = { version = "2.0.5", path = "../ruqu-core" }
+ruqu-algorithms = { version = "2.0.5", path = "../ruqu-algorithms" }
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde-wasm-bindgen = "0.6"
+getrandom = { version = "0.2", features = ["js"] }
+console_error_panic_hook = { version = "0.1", optional = true }
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lints.rust]
+dead_code = "allow"
+unused_variables = "allow"
+
+[lints.clippy]
+correctness = { level = "deny", priority = -1 }
+suspicious = { level = "deny", priority = -1 }
