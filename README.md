@@ -34,11 +34,11 @@ browser via **WebAssembly**.
 | [`ruqu-exotic`](crates/ruqu-exotic) | Experimental **quantum–classical hybrid** algorithms — quantum memory decay, interference search, reasoning error correction, swarm interference for AI systems. |
 | [`ruqu-wasm`](crates/ruqu-wasm) | **WebAssembly** bindings — run quantum simulations in the browser (25-qubit, VQE/Grover/QAOA). |
 | [`ruqu`](crates/ruQu) | Classical **coherence engine** — real-time coherence assessment for quantum machines via **dynamic min-cut**. |
-| [`ruqu-possibility`](crates/ruqu-possibility) | **Structural possibility runtime** — possibility fields, interference scoring, coherence gating, and auditable collapse receipts (ADR-258). |
-| [`ruqu-rag`](crates/ruqu-rag) | **Interference reranking** — possibility-field retrieval that suppresses contradicted candidates and emits collapse receipts (ADR-258). |
-| [`ruqu-agent`](crates/ruqu-agent) | **Swarm collapse consensus** — interference-based multi-agent consensus with reasoning error correction (ADR-258). |
-| [`ruqu-sensing`](crates/ruqu-sensing) | **Structural anomaly detection** — telemetry → syndrome streams → fault localization (ADR-258). |
-| [`ruqu-receipts`](crates/ruqu-receipts) | **Governance evidence** — tamper-evident, replayable collapse/audit logs (ADR-258). |
+| [`ruqu-possibility`](crates/ruqu-possibility) | **Structural possibility runtime** — possibility fields, interference scoring, coherence gating, and auditable collapse receipts. |
+| [`ruqu-rag`](crates/ruqu-rag) | **Interference reranking** — possibility-field retrieval that suppresses contradicted candidates and emits collapse receipts. |
+| [`ruqu-agent`](crates/ruqu-agent) | **Swarm collapse consensus** — interference-based multi-agent consensus with reasoning error correction. |
+| [`ruqu-sensing`](crates/ruqu-sensing) | **Structural anomaly detection** — telemetry → syndrome streams → fault localization. |
+| [`ruqu-receipts`](crates/ruqu-receipts) | **Governance evidence** — tamper-evident, replayable collapse/audit logs. |
 
 ## Install
 
@@ -100,19 +100,25 @@ npx @ruvector/ruqu doctor                 # verify the quantum WASM
 
 Sources in [`cli/`](cli); the bundled `--target nodejs` WASM runs up to 25 qubits in Node — no native addon.
 
-## Structural Possibility Runtime (ADR-258)
+## Structural possibility runtime
 
-Beyond simulation, ruqu doubles as a **structural possibility runtime for AI
-systems** — a layer that holds multiple plausible states, amplifies coherent
-evidence, suppresses contradictory paths, gates risky actions, and emits
-**collapse receipts**. See
-[ADR-258](docs/adr/ADR-258-structural-possibility-runtime.md).
+Beyond simulation, ruqu doubles as a **decision layer for AI systems**. Instead
+of committing to the single highest-scoring answer, it keeps several plausible
+options "in play" at once, lets supporting evidence reinforce while contradictory
+evidence cancels out, decides whether the result is solid enough to act on
+(**PERMIT / DEFER / DENY**), and writes a **receipt** explaining why one option
+was chosen over the rest.
+
+It's useful wherever you'd otherwise pick a top result and hope it's right:
+retrieval that resists confidently-wrong sources, multi-agent decisions that
+don't silently act on weak consensus, and telemetry monitoring that flags
+correlated failures.
 
 ```rust
 use ruqu_possibility::{Possibility, PossibilityField, CoherenceGate};
 
 let field = PossibilityField::new(vec![
-    Possibility::new("strong",      "well-cited answer",        0.9, 0.0),
+    Possibility::new("strong",      "well-cited answer",     0.9, 0.0),
     Possibility::new("contradicted","plausible but refuted", 0.6, std::f64::consts::PI),
 ]);
 
@@ -120,7 +126,7 @@ let decision = CoherenceGate::with_defaults().evaluate(&field); // PERMIT / DEFE
 let (selected, receipt) = field.collapse(42).unwrap();          // deterministic + auditable
 ```
 
-Try the interference-vs-cosine retrieval demo:
+See it pick the well-supported answer over a contradicted-but-similar one:
 
 ```bash
 cargo run -p ruqu-rag --bin quantum_rag_demo
@@ -128,23 +134,26 @@ cargo run -p ruqu-rag --bin quantum_rag_demo
 
 ## Management console (web)
 
-A static, browser-based **management console** for the structural possibility
-runtime (ADR-258) lives in [`web/`](web). It is a plain ES-module web app driven
-by a WASM module, with a live **Sensing / Live Gate** panel that consumes a
-WebSocket telemetry stream. See [`web/README.md`](web/README.md) and
-[ADR-258](docs/adr/ADR-258-structural-possibility-runtime.md).
+A browser-based **dashboard** for the runtime lives in [`web/`](web): explore
+possibility fields, compare ordinary vs. interference-based search, run
+multi-agent consensus, watch a **live coherence gauge** fed by a real-time
+telemetry stream, and inspect/verify the decision receipts. It's a plain web app
+(no build tooling to install) running the runtime directly in the browser via
+WebAssembly. Full details in [`web/README.md`](web/README.md).
 
 ```bash
-# build the WASM bundle, then serve the static app
+# build the WebAssembly bundle, then serve the app locally
 wasm-pack build crates/ruqu-console-wasm --target web --out-dir web/pkg --out-name ruqu_console
 python3 -m http.server 8099 --directory web   # open http://localhost:8099/
 ```
 
-It deploys to **GitHub Pages** via
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml) (repo Settings →
-Pages → Source: GitHub Actions). Pages is static-only, so the Sensing panel uses
-an external `ws://`/`wss://` endpoint or the built-in simulated feed — see
-[`web/server-example/`](web/server-example) for an example WebSocket server.
+It publishes to **GitHub Pages** automatically via
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) (enable it under repo
+Settings → Pages → Source: GitHub Actions). Because GitHub Pages only serves
+static files, the live panel either connects to a WebSocket server you run
+yourself (an example is in [`web/server-example/`](web/server-example)) or falls
+back to a built-in simulated feed, so the dashboard works with no backend at
+all.
 
 ## Use cases
 
