@@ -22,8 +22,9 @@ browser via **WebAssembly**.
   optimization), and Surface Code error correction, ready to use.
 - **Runs in the browser** — `ruqu-wasm` exposes circuits, VQE, Grover and QAOA to JavaScript with
   ~25-qubit support.
-- **Coherence-aware** — a classical "nervous system for quantum machines" that assesses qubit
-  coherence in real time via dynamic min-cut.
+- **Coherence-aware** — a classical "nervous system for quantum machines": a real-time
+  *structural-health gate* that assesses qubit coherence via dynamic min-cut and decides whether
+  it's safe to act. It is a health gate, not a surface-code syndrome decoder.
 
 ## Crates
 
@@ -102,17 +103,40 @@ Sources in [`cli/`](cli); the bundled `--target nodejs` WASM runs up to 25 qubit
 
 ## Structural possibility runtime
 
-Beyond simulation, ruqu doubles as a **decision layer for AI systems**. Instead
-of committing to the single highest-scoring answer, it keeps several plausible
-options "in play" at once, lets supporting evidence reinforce while contradictory
-evidence cancels out, decides whether the result is solid enough to act on
-(**PERMIT / DEFER / DENY**), and writes a **receipt** explaining why one option
-was chosen over the rest.
+Beyond simulation, ruqu doubles as a **governed decision layer for AI systems**.
+Its first job is accountability:
+
+- **Auditable decision receipts.** Every decision is written to a tamper-evident,
+  hash-chained log — *what* was chosen, *why*, and *what was rejected* — so any
+  decision can be replayed and verified after the fact.
+- **A DEFER state for human oversight.** Beyond a simple yes/no, the runtime can
+  step back and hand off — declining to act on its own when confidence is too low
+  and routing the case to a person.
+- **PERMIT / DEFER / DENY risk gating.** High-impact actions pass a gate that
+  permits the safe ones, defers the uncertain ones for review, and denies the
+  unsafe ones outright.
+
+Underneath that, instead of committing to the single highest-scoring answer, it
+keeps several plausible options "in play" at once and lets supporting evidence
+reinforce while contradictory evidence cancels out — then collapses to a choice,
+gates it, and records the receipt.
 
 It's useful wherever you'd otherwise pick a top result and hope it's right:
 retrieval that resists confidently-wrong sources, multi-agent decisions that
 don't silently act on weak consensus, and telemetry monitoring that flags
 correlated failures.
+
+### Prior art & positioning
+
+Using interference — letting evidence reinforce or cancel rather than just adding
+up scores — to rank and decide is not new: it has a substantial research lineage
+spanning information retrieval, quantum-inspired cognition and decision models,
+and complex-valued matching. ruqu does not claim to invent that principle. Its
+contribution is the **integrated, auditable runtime**: combining interference
+scoring with a coherence/entropy gate and tamper-evident, hash-chained collapse
+receipts, mapped to concrete governance practice (auditable logging and a human
+in the loop). For the full landscape, baselines, and citations, see
+[`docs/research/sota-landscape.md`](docs/research/sota-landscape.md).
 
 ```rust
 use ruqu_possibility::{Possibility, PossibilityField, CoherenceGate};
@@ -163,5 +187,4 @@ NISQ noise studies · teaching quantum computing · browser-based quantum demos.
 
 ## License
 
-MIT © Ruvector Team. Part of the [ruvector](https://github.com/ruvnet/ruvector) ecosystem
-(extracted per ADR-257).
+MIT © Ruvector Team. Part of the [ruvector](https://github.com/ruvnet/ruvector) ecosystem.

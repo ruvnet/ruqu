@@ -60,7 +60,7 @@ Most quantum frameworks do one thing: simulate circuits. ruQu does five:
 
 **No mocks.** Every module runs real math. Noise channels apply real Kraus operators. Decoders run real union-find with path compression. The Clifford+T backend performs genuine Bravyi-Gosset stabilizer rank decomposition. The benchmark suite doesn't assert "it works" -- it proves quantitative advantages.
 
-**Coherence gating.** ruQu's original innovation: real-time structural health monitoring using boundary-to-boundary min-cut analysis. Before any operation, the system answers: "Is it safe to act?" This turns quantum computers from fragile experiments into self-aware machines.
+**Coherence gating.** ruQu's original innovation: a classical, real-time **structural-health / coherence gate** built on boundary-to-boundary min-cut analysis. Before any operation, the system answers one question: *"Is it safe to act?"* This turns quantum computers from fragile experiments into self-aware machines. Note: this is a *structural-health gate*, **not** a per-round surface-code syndrome decoder — see [Coherence Gating](#coherence-gating) for the distinction.
 
 ---
 
@@ -179,7 +179,7 @@ Quantitative evidence that the architecture delivers measurable advantages.
 
 ## Coherence Gating
 
-ruQu's original capability: a **classical nervous system** for quantum machines. Real-time structural health monitoring that answers one question before every operation: *"Is it safe to act?"*
+ruQu's original capability: a **classical nervous system** for quantum machines. A real-time **structural-health / coherence gate** that answers one question before every operation: *"Is it safe to act?"*
 
 ```
 Syndrome Stream --> [Min-Cut Analysis] --> PERMIT / DEFER / DENY
@@ -187,6 +187,31 @@ Syndrome Stream --> [Min-Cut Analysis] --> PERMIT / DEFER / DENY
                     "Is the error pattern
                      structurally safe?"
 ```
+
+> **What this is — and what it is not.** The coherence gate is a *classical
+> structural-health monitor*: it inspects the live syndrome stream and decides
+> whether the error structure is safe enough to keep acting. It is **not** a
+> surface-code syndrome decoder and does not estimate logical error rates,
+> recover logical operators, or scale with code distance. Read the latency
+> numbers below as **coherence-gate latencies**, not decoder latencies.
+
+### How this differs from a QEC decoder
+
+A QEC decoder consumes syndromes every cycle and outputs a *correction* — it
+must keep up with the ~1 µs/round surface-code window and is characterized by
+code distance, noise model, and logical error rate. The coherence gate instead
+answers a coarser, classical question ("is the structure healthy enough to
+proceed?") and emits a PERMIT/DEFER/DENY action, carrying none of those decoder
+metrics. They are complementary, not competing.
+
+For genuine real-time decoding, the relevant baselines are sparse blossom /
+PyMatching v2 (<1 µs/round at d=17), Fusion Blossom (1M rounds/s to d=33), and
+Micro Blossom (FPGA exact MWPM, ~0.8 µs at d=13). Note also that min-cut /
+max-flow decoding is itself established QEC prior art (Dennis, Kitaev, Landahl &
+Preskill, 2002, quant-ph/0110143). Any decoder claim ruQu makes must be reported
+with (distance, noise, logical error rate, throughput-vs-latency) against those
+baselines — see [`docs/research/sota-landscape.md`](../../docs/research/sota-landscape.md)
+and ADR-258 for the full positioning.
 
 | Decision | Meaning | Action |
 |----------|---------|--------|
@@ -209,7 +234,12 @@ Syndrome Stream --> [Min-Cut Analysis] --> PERMIT / DEFER / DENY
 | False alarms | 2.0 per 10k cycles |
 | Actionable (2-cycle mitigation) | 100% |
 
-### Performance
+### Performance (coherence-gate latencies)
+
+These are **coherence-gate** latencies for the classical structural-health
+monitor — *not* per-round decoder latencies. They carry no code distance, noise
+model, or logical error rate, and the fixed-size graph means they do not scale
+with `d`; do not read them as QEC-decoder numbers.
 
 | Metric | Target | Measured |
 |--------|--------|----------|

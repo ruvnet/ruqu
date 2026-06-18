@@ -68,6 +68,12 @@ use ruqu_possibility::{
 };
 use serde::{Deserialize, Serialize};
 
+pub mod eval;
+pub use eval::{
+    average_precision, baseline, context_precision_at_k, contradiction_rate_at_k, dcg_at_k, mrr,
+    ndcg_at_k, precision_at_k, recall_at_k, Relevance,
+};
+
 /// Cosine similarity between two vectors.
 ///
 /// Returns `0.0` for empty vectors or when either vector has zero norm. When the

@@ -49,6 +49,9 @@ use ruqu_possibility::{
 
 use std::f64::consts::PI;
 
+pub mod self_consistency;
+pub use self_consistency::{self_consistency, SelfConsistency, VoteWeighting};
+
 /// Maximum reasoning steps that fit the reasoning-QEC qubit budget
 /// (`2·num_steps − 1 ≤ 25`).
 const MAX_QEC_STEPS: usize = 13;
@@ -341,7 +344,7 @@ impl ConsensusOutcome {
 // ---------------------------------------------------------------------------
 
 /// Clamp a value into `[0, 1]`, mapping non-finite values to 0.
-fn clamp01(x: f64) -> f64 {
+pub(crate) fn clamp01(x: f64) -> f64 {
     if x.is_finite() {
         x.clamp(0.0, 1.0)
     } else {

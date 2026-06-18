@@ -10,6 +10,30 @@ The console visualizes possibility fields, coherence gating
 (PERMIT / DEFER / DENY), collapse receipts, and a live **Sensing / Live Gate**
 panel that consumes a WebSocket telemetry stream.
 
+### Clifford (large-N) panel
+
+The **Clifford (large-N)** panel exposes ruQu's Aaronson–Gottesman *stabilizer*
+simulator (`ruqu_core::stabilizer`) directly in the browser. Where the dense
+state-vector demos in the **Quantum** panel allocate a `2^n` amplitude array —
+and so hit a hard memory wall around **25 qubits** in the browser — a Clifford
+circuit is stored as an `O(n^2)`-bit tableau. Memory therefore grows
+*polynomially*, letting the console run circuits with **thousands of qubits**
+client-side (the WASM bindings cap a single call at 16384 qubits).
+
+The panel offers two seeded, deterministic runners over the
+`clifford_ghz(num_qubits, seed)` and `clifford_random(num_qubits, depth, seed)`
+WASM exports:
+
+- **GHZ state (large N)** — prepares an `n`-qubit GHZ state and measures every
+  qubit; a correct collapse makes all measured bits equal (`all_equal: true`).
+- **Random Clifford circuit** — applies `depth` layers of random Clifford gates
+  (H/S/X/Y/Z plus CNOT/CZ pairs) and measures all qubits.
+
+Both report the qubit count, elapsed time, the result, and a short bit sample.
+The trade-off is that this engine is restricted to the Clifford gate set; for
+universal (non-Clifford) circuits use the state-vector **Quantum** panel within
+its ~25-qubit limit.
+
 ## Layout
 
 ```

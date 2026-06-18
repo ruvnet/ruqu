@@ -476,3 +476,224 @@ pub fn quantum_grover(num_qubits: u32, target: u32, seed: f64) -> Result<JsValue
         num_iterations: result.num_iterations,
     })
 }
+
+// ---------------------------------------------------------------------------
+// Clifford (stabilizer) simulation — the large-N browser capability
+// ---------------------------------------------------------------------------
+//
+// Unlike the dense state-vector demos above (which allocate a `2^n` amplitude
+// array and so hit a hard memory wall at roughly 25 qubits in the browser),
+// these functions drive the Aaronson–Gottesman **stabilizer** simulator in
+// `ruqu_core::stabilizer`. A Clifford circuit is represented by a tableau of
+// `O(n^2)` bits, so memory grows *polynomially* rather than exponentially.
+// That lets the browser run circuits with **thousands** of qubits client-side,
+// far beyond the `2^n` state-vector limit — at the cost of being restricted to
+// the Clifford gate set (H, S, X, Y, Z, CNOT, CZ, SWAP, measurement).
+
+/// Cap on qubit count for the Clifford demos. The tableau is `O(n^2)` bits, so
+/// even this ceiling is cheap relative to a `2^n` state vector; it just keeps a
+/// single browser call bounded.
+const CLIFFORD_MAX_QUBITS: usize = 16384;
+
+/// How many measurement outcomes to ship back as a visual bit sample.
+const CLIFFORD_SAMPLE_LEN: usize = 32;
+
+/// Monotonic wall-clock millisecond timestamp that compiles on wasm.
+///
+/// `js_sys::Date::now()` is already available (the crate depends on `js-sys`)
+/// and returns ms since the epoch, which is all we need for elapsed timing.
+fn now_ms() -> f64 {
+    js_sys::Date::now()
+}
+
+/// Build and measure an `n`-qubit **GHZ state** on the stabilizer simulator.
+///
+/// Prepares `H(q0)` then `CNOT(0, i)` for `i in 1..n`, measures every qubit,
+/// and reports whether all outcomes agree (a GHZ state collapses to either
+/// `|0…0>` or `|1…1>`, so every measured bit must be equal).
+///
+/// This is the polynomial-memory Clifford path — `num_qubits` can be far above
+/// the ~25-qubit state-vector wall (e.g. thousands).
+///
+/// Returns:
+/// ```typescript
+/// {
+///   num_qubits: number,
+///   elapsed_ms: number,
+///   all_equal: boolean,   // true for a correct GHZ collapse
+///   ones: number,         // count of qubits that measured 1
+///   sample_prefix: boolean[]  // first ~32 measurement outcomes
+/// }
+/// ```
+#[wasm_bindgen]
+pub fn clifford_ghz(num_qubits: usize, seed: f64) -> Result<JsValue, JsValue> {
+    if num_qubits == 0 {
+        return Err(JsValue::from_str("num_qubits must be >= 1"));
+    }
+    if num_qubits > CLIFFORD_MAX_QUBITS {
+        return Err(JsValue::from_str(&format!(
+            "num_qubits must be <= {CLIFFORD_MAX_QUBITS} for the Clifford demo"
+        )));
+    }
+
+    let start = now_ms();
+
+    let mut state = ruqu_core::stabilizer::StabilizerState::new_with_seed(num_qubits, seed as u64)
+        .map_err(err)?;
+    state.hadamard(0);
+    for i in 1..num_qubits {
+        state.cnot(0, i);
+    }
+
+    let mut ones: usize = 0;
+    let mut sample_prefix: Vec<bool> = Vec::with_capacity(CLIFFORD_SAMPLE_LEN.min(num_qubits));
+    let mut first: Option<bool> = None;
+    let mut all_equal = true;
+    for q in 0..num_qubits {
+        let outcome = state.measure(q).map_err(err)?;
+        if outcome.result {
+            ones += 1;
+        }
+        match first {
+            None => first = Some(outcome.result),
+            Some(f) => {
+                if f != outcome.result {
+                    all_equal = false;
+                }
+            }
+        }
+        if sample_prefix.len() < CLIFFORD_SAMPLE_LEN {
+            sample_prefix.push(outcome.result);
+        }
+    }
+
+    let elapsed_ms = now_ms() - start;
+
+    #[derive(Serialize)]
+    struct Out {
+        num_qubits: usize,
+        elapsed_ms: f64,
+        all_equal: bool,
+        ones: usize,
+        sample_prefix: Vec<bool>,
+    }
+    to_js(&Out {
+        num_qubits,
+        elapsed_ms,
+        all_equal,
+        ones,
+        sample_prefix,
+    })
+}
+
+/// Run a **random Clifford circuit** of `depth` layers, then measure every
+/// qubit.
+///
+/// Each layer applies one seeded random single-qubit gate (H / S / X / Y / Z)
+/// to every qubit, then a sweep of seeded random two-qubit gates (CNOT or CZ)
+/// over adjacent qubit pairs. Everything is driven by a small deterministic
+/// PRNG seeded from `seed`, so the result is reproducible.
+///
+/// Like [`clifford_ghz`], this is polynomial-memory Clifford simulation, so
+/// `num_qubits` can run well past the `2^n` state-vector limit.
+///
+/// Returns:
+/// ```typescript
+/// {
+///   num_qubits: number,
+///   depth: number,
+///   gates_applied: number,
+///   elapsed_ms: number,
+///   ones: number,             // count of qubits that measured 1
+///   sample_prefix: boolean[]  // first ~32 measurement outcomes
+/// }
+/// ```
+#[wasm_bindgen]
+pub fn clifford_random(num_qubits: usize, depth: usize, seed: f64) -> Result<JsValue, JsValue> {
+    if num_qubits == 0 {
+        return Err(JsValue::from_str("num_qubits must be >= 1"));
+    }
+    if num_qubits > CLIFFORD_MAX_QUBITS {
+        return Err(JsValue::from_str(&format!(
+            "num_qubits must be <= {CLIFFORD_MAX_QUBITS} for the Clifford demo"
+        )));
+    }
+
+    let start = now_ms();
+
+    let mut state = ruqu_core::stabilizer::StabilizerState::new_with_seed(num_qubits, seed as u64)
+        .map_err(err)?;
+
+    // Tiny deterministic SplitMix64 PRNG for gate selection (kept independent of
+    // the simulator's measurement RNG so circuit construction is reproducible).
+    let mut rng_state: u64 = (seed as u64) ^ 0x9E37_79B9_7F4A_7C15;
+    let mut next = || -> u64 {
+        rng_state = rng_state.wrapping_add(0x9E37_79B9_7F4A_7C15);
+        let mut z = rng_state;
+        z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+        z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+        z ^ (z >> 31)
+    };
+
+    let mut gates_applied: usize = 0;
+    for _ in 0..depth {
+        // Single-qubit layer.
+        for q in 0..num_qubits {
+            match next() % 5 {
+                0 => state.hadamard(q),
+                1 => state.phase_gate(q),
+                2 => state.x_gate(q),
+                3 => state.y_gate(q),
+                _ => state.z_gate(q),
+            }
+            gates_applied += 1;
+        }
+        // Two-qubit layer over adjacent pairs (alternating offset per layer is
+        // unnecessary; a randomized start keeps coverage varied).
+        if num_qubits >= 2 {
+            let start_off = (next() % 2) as usize;
+            let mut q = start_off;
+            while q + 1 < num_qubits {
+                if next() % 2 == 0 {
+                    state.cnot(q, q + 1);
+                } else {
+                    state.cz(q, q + 1);
+                }
+                gates_applied += 1;
+                q += 2;
+            }
+        }
+    }
+
+    let mut ones: usize = 0;
+    let mut sample_prefix: Vec<bool> = Vec::with_capacity(CLIFFORD_SAMPLE_LEN.min(num_qubits));
+    for q in 0..num_qubits {
+        let outcome = state.measure(q).map_err(err)?;
+        if outcome.result {
+            ones += 1;
+        }
+        if sample_prefix.len() < CLIFFORD_SAMPLE_LEN {
+            sample_prefix.push(outcome.result);
+        }
+    }
+
+    let elapsed_ms = now_ms() - start;
+
+    #[derive(Serialize)]
+    struct Out {
+        num_qubits: usize,
+        depth: usize,
+        gates_applied: usize,
+        elapsed_ms: f64,
+        ones: usize,
+        sample_prefix: Vec<bool>,
+    }
+    to_js(&Out {
+        num_qubits,
+        depth,
+        gates_applied,
+        elapsed_ms,
+        ones,
+        sample_prefix,
+    })
+}

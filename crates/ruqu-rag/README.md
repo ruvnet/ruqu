@@ -99,19 +99,94 @@ interference the coherent, well-cited `d_current` wins and `d_old` drops out of
 the top-3. The demo prints the cosine top-3, the interference top-3, the gate
 decision, and the full `CollapseReceipt` JSON.
 
-## Running ADR-258 §22 Test 1 (retrieval coherence)
+## Evaluation — credible metrics, not "+X% over cosine"
+
+> **Cosine is the weak floor.** "+10% faithfulness over cosine" is *not* a
+> meaningful claim: cosine is the universally-beaten baseline in the reranking
+> literature ([SOTA report](../../docs/research/sota-landscape.md),
+> recommendation #2). A credible result must report **standard IR metrics**
+> against a **strong** baseline and prove **contradiction suppression** on a
+> grounding axis.
+
+The [`eval`](src/eval.rs) module provides pure, unit-tested ranking metrics over
+a ranked list of ids given graded/binary relevance labels:
+
+- `ndcg_at_k` / `dcg_at_k` — graded relevance, log2 discount (nDCG ∈ `[0,1]`);
+- `recall_at_k`, `precision_at_k`, `mrr`, `average_precision` (MAP);
+- `context_precision_at_k` — the **faithfulness proxy**: fraction of the top-`k`
+  that are *relevant **and** not contradicted* (RAGAS-style grounding);
+- `contradiction_rate_at_k` — fraction of the top-`k` that are contradicted
+  (the direct suppression metric; lower is better).
+
+The `baseline` submodule supplies both opponents:
+
+- `cosine_ranking(query, candidates)` — the **weak floor**;
+- `supervised_ranking(candidates, relevance, noise, seed)` — a **SIMULATED**
+  strong supervised reranker. It ranks by the (noisy) graded relevance, the best
+  a perfectly-trained cross-encoder could do. **It is not a real cross-encoder**
+  — it is a deterministic stand-in for a *fair, strong* comparison. A generic
+  supervised reranker is trained for *topical relevance*, not *answer
+  grounding*, so it ranks a contradicted-but-on-topic chunk near the top; that
+  is exactly where interference differentiates.
+
+### Benchmark
+
+```bash
+cargo test -p ruqu-rag --test eval_tests credible_reranking_benchmark -- --nocapture
+```
+
+Builds **200 candidates** (20 RELEVANT, 20 CONTRADICTORY-but-high-cosine-and-
+topically-relevant, 160 DISTRACTORS) with graded relevance labels and a
+contradiction set, then reports the table for **cosine vs simulated-strong vs
+interference** (measured):
+
+| reranker            | nDCG@10 | Recall@10 |   MRR | ctx-prec@10 | contra@10 |
+|---------------------|--------:|----------:|------:|------------:|----------:|
+| cosine (weak)       |   0.755 |     0.250 | 1.000 |       0.400 |     0.600 |
+| supervised (strong) |   1.000 |     0.250 | 1.000 |       0.600 |     0.400 |
+| **interference**    |   0.780 |     0.250 | 1.000 |   **1.000** | **0.000** |
+
+The asserted, **honest** claims:
+
+- **(a)** interference beats the *weak cosine floor* on nDCG@10 **and**
+  context-precision@10;
+- **(b)** vs the *strong* baseline, interference's advantage is specifically
+  **contradiction suppression** — higher context-precision@10 (1.000 vs 0.600)
+  and lower contradiction-rate@10 (0.000 vs 0.400) — **even though the strong
+  supervised baseline wins raw nDCG@10** (1.000 vs 0.780). We do *not* claim an
+  nDCG win; the test asserts the strong baseline is not beaten on nDCG, to keep
+  the comparison honest.
+
+### Legacy test (ADR-258 §22 Test 1)
 
 ```bash
 cargo test -p ruqu-rag --test rag_tests test1_retrieval_coherence_faithfulness -- --nocapture
 ```
 
-The test builds **200 candidates**: 20 RELEVANT (high cosine, no
-contradiction), 20 CONTRADICTORY (**also** high cosine, so plain cosine ranks
-them high, but `contradiction ≈ 1.0` so phase ≈ `π`), and 160 DISTRACTORS (low
-similarity). "Top-10 citation faithfulness" is the fraction of the top-10 that
-are RELEVANT. The test asserts the interference reranker beats plain cosine by
-at least 0.10 (10 percentage points). Measured: **cosine ≈ 0.40 vs interference
-≈ 1.00**.
+The same 200-candidate setup using a simple top-10 faithfulness fraction
+(cosine ≈ 0.40 vs interference ≈ 1.00). Prefer the metric-based benchmark above
+for any external comparison.
+
+## Limitations / future validation
+
+These metrics are **offline implementations and a synthetic harness**, not
+external validation. The strong baseline is *simulated*, not measured. To make a
+publishable claim, validate against the real SOTA named in the
+[SOTA report](../../docs/research/sota-landscape.md):
+
+- **Strong baselines:** a real cross-encoder (BGE-reranker-v2-m3, ~0.66 avg
+  nDCG@10 on BEIR) and **ColBERTv2** (~39.7% MRR@10 on MS MARCO, ~50 nDCG@10 on
+  BEIR) — *not cosine*. Also BM25 + RRF.
+- **Datasets:** **BEIR** / **MS MARCO** for nDCG@10 + Recall@k; report latency
+  for top-100/200 (cross-encoders run ~5–10 ms).
+- **Faithfulness / grounding:** **RAGAS** faithfulness + context-precision.
+- **Contradiction suppression:** **RGB-counterfactual**, **FaithEval**,
+  **RAMDocs** (MADAM-RAG sets a bar of +15.8% on FaithEval).
+
+The interference reranker's *expected* niche, supported by the prior art (the
+Quantum Probability Ranking Principle, Zuccon & Azzopardi 2009/2010), is the
+**contradiction-suppression / grounding** axis — not necessarily raw topical
+nDCG, where a trained supervised reranker is strong.
 
 ## Public API
 
@@ -120,6 +195,10 @@ at least 0.10 (10 percentage points). Measured: **cosine ≈ 0.40 vs interferenc
 - `QuantumRagIndex` — `new(dim)`, `.interference_rounds(n)`, `.phase_kickback(b)`,
   `.add(..)`, `.add_many(..)`, `.search(query, k, seed)`.
 - `SearchResult`, `ScoredCandidate`.
+- `eval` module (additive): `Relevance`, `ndcg_at_k`, `dcg_at_k`,
+  `recall_at_k`, `precision_at_k`, `mrr`, `average_precision`,
+  `context_precision_at_k`, `contradiction_rate_at_k`, and `baseline::{cosine_ranking,
+  supervised_ranking}`.
 
 [`ruqu-possibility`]: ../ruqu-possibility
 ```

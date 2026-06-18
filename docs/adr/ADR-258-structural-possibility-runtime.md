@@ -277,6 +277,56 @@ convergence → keep minority report + contradiction scan; latency spike →
 fallback to standard retrieval / deterministic planner; quantum-branding
 confusion → call it *structural possibility runtime* in enterprise material.
 
+## 13a. Prior art & novelty
+
+The runtime's core mechanic — amplitude+phase **interference over evidence**, so
+that reinforcing evidence amplifies and contradictory evidence cancels — is
+**established prior art, not a new scientific principle.** It must be cited
+openly. The relevant lineage:
+
+- **van Rijsbergen, *The Geometry of Information Retrieval* (2004)** — relevance
+  modeled as a Hilbert-space observable.
+- **Quantum Probability Ranking Principle (Zuccon & Azzopardi, ECIR 2009 / SIGIR
+  2010)** — interference ranking so that diverse/contradictory documents
+  interfere destructively (an early, explicit form of contradiction
+  suppression).
+- **Busemeyer & Bruza, *Quantum Models of Cognition and Decision* (2012/2025)** —
+  superposed, contradictory beliefs that collapse to a decision on measurement.
+- **CNM (Li, Wang & Melucci, NAACL 2019)** — words as complex vectors
+  (magnitude = weight, phase = superposition) with a Born-rule measurement layer.
+- **Kang, "Interaction as Interference" (2025, arXiv:2511.10018)** — Born-rule
+  aggregation with a formal coherent-gain / interference-information metric.
+
+**Defensible novelty = systems integration.** ruqu's contribution is the
+*combination*: interference scoring + a coherence/entropy admissibility gate +
+deterministic collapse + auditable, hash-chained collapse receipts, wired to
+concrete governance hooks. The auditability literature sits separately from the
+interference literature, and no prior source unites them into a deployed runtime.
+Position ruqu as a deployable engineering/IP combination, not as a new principle.
+Full landscape and citations: [`docs/research/sota-landscape.md`](../research/sota-landscape.md).
+
+## 13b. Positioning: governance-first
+
+The strongest, least-contested framing for the runtime is **governance**, not
+physics. The governance hooks map directly onto regulation and standards:
+
+- **DEFER ≈ EU AI Act Article 14** (human oversight — the ability to decide *not*
+  to use, or to step back and hand off to a person).
+- **Collapse / decision receipts ≈ EU AI Act Article 12** (automatic
+  lifetime/event logging); hash-chaining the receipts is a tamper-evidence
+  **value-add** beyond what Article 12 requires.
+- Aligns with **NIST AI RMF** (MEASURE / MANAGE functions) and with
+  **C2PA-style** tamper-evident manifests.
+- The academic grounding for the PERMIT / DEFER / DENY gate is **selective
+  prediction / conformal abstention** (bounded risk via principled refusal to
+  act).
+
+Lead Half-B positioning with these (Art. 12 receipts + Art. 14 DEFER), keeping
+the interference mechanism as the implementation detail beneath an auditable,
+human-overseeable decision layer. See
+[`docs/research/sota-landscape.md`](../research/sota-landscape.md) for the
+supporting analysis.
+
 ## 14. Performance targets
 
 - **Retrieval**: pool 200–1000, 2–5 interference rounds, < 50 ms extra latency,
@@ -284,8 +334,14 @@ confusion → call it *structural possibility runtime* in enterprise material.
 - **Agents**: 3–12 agents, 3–10 rounds, < 2 s consensus (local models),
   −20% contradictions.
 - **Coherence gate**: the `ruqu` README reports 468 ns p99 tick, 260 ns avg,
-  1,026 ns min-cut query, 3.8 M/s throughput. **Treat as repo-reported baselines
-  to verify locally before any external use.**
+  1,026 ns min-cut query, 3.8 M/s throughput. **These are classical
+  structural-health / coherence-gate latencies — *not* QEC syndrome-decoder
+  numbers.** They carry no code distance, noise model, or logical error rate, do
+  not scale with `d`, and must not be presented as competitive decoder latencies
+  (the real decoder baselines are sparse blossom / Fusion Blossom / Micro
+  Blossom; min-cut decoding itself is prior art — Dennis et al. 2002). Treat
+  these figures as repo-reported baselines to verify locally before any external
+  use. See [`docs/research/sota-landscape.md`](../research/sota-landscape.md).
 
 ## 15. Acceptance tests (§22 of the brief)
 

@@ -9,6 +9,7 @@ import { createSwarmPanel } from "./panels/swarm.js";
 import { createSensingPanel } from "./panels/sensing.js";
 import { createReceiptsPanel } from "./panels/receipts.js";
 import { createQuantumPanel } from "./panels/quantum.js";
+import { createCliffordPanel } from "./panels/clifford.js";
 
 const NAV = [
   { id: "overview", label: "Overview", icon: "◎", make: createOverviewPanel },
@@ -18,6 +19,7 @@ const NAV = [
   { id: "sensing", label: "Sensing / Live Gate", icon: "◉", make: createSensingPanel },
   { id: "receipts", label: "Receipts / Audit", icon: "▤", make: createReceiptsPanel },
   { id: "quantum", label: "Quantum", icon: "⚛", make: createQuantumPanel },
+  { id: "clifford", label: "Clifford (large-N)", icon: "⊞", make: createCliffordPanel },
 ];
 
 async function boot() {

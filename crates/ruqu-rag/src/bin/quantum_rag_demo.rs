@@ -11,7 +11,11 @@
 //! cargo run -p ruqu-rag --bin quantum_rag_demo
 //! ```
 
-use ruqu_rag::{cosine_similarity, QuantumRagIndex, RagCandidate};
+use ruqu_rag::{
+    baseline, context_precision_at_k, contradiction_rate_at_k, cosine_similarity, mrr, ndcg_at_k,
+    recall_at_k, QuantumRagIndex, RagCandidate, Relevance,
+};
+use std::collections::HashSet;
 
 /// Embedding dimension for the toy corpus.
 const DIM: usize = 6;
@@ -137,6 +141,64 @@ fn main() -> anyhow::Result<()> {
     println!(
         "Summary: cosine top-1 = {}  vs  interference top-1 = {}",
         cosine[0].0.id, result.selected[0].id
+    );
+
+    // (e) Credible metric table (recommendation #2 of the SOTA report): cosine
+    //     (weak floor) vs a SIMULATED strong supervised reranker vs
+    //     interference, on the same toy corpus. The strong baseline is a noisy
+    //     relevance oracle standing in for a cross-encoder/ColBERTv2 — NOT a
+    //     real model. See docs/research/sota-landscape.md and the eval module.
+    print_metric_table(&index, &query)?;
+
+    Ok(())
+}
+
+/// Print the cosine-vs-strong-vs-interference metric table on the demo corpus.
+fn print_metric_table(index: &QuantumRagIndex, query: &[f64]) -> anyhow::Result<()> {
+    // Graded relevance + contradiction set for the toy corpus. d_current /
+    // d_support are the grounded answer; d_old is contradicted-but-high-cosine;
+    // the rest are distractors.
+    let relevance = Relevance::from_pairs([
+        ("d_current", 3.0),
+        ("d_support", 2.0),
+        ("d_old", 2.0), // topically relevant, but contradicted (below)
+    ]);
+    let contradicted: HashSet<String> = ["d_old".to_string()].into_iter().collect();
+
+    let cosine = baseline::cosine_ranking(query, &index.candidates);
+    let strong = baseline::supervised_ranking(&index.candidates, &relevance, 0.4, 1234);
+    let interference: Vec<String> = index
+        .search(query, index.candidates.len(), 42)?
+        .selected
+        .into_iter()
+        .map(|s| s.id)
+        .collect();
+
+    let k = 3;
+    println!("\n(e) Credible metrics (cosine=weak floor, supervised=SIMULATED strong):");
+    println!(
+        "    {:<14} {:>8} {:>10} {:>7} {:>12} {:>11}",
+        "reranker", "nDCG@3", "Recall@3", "MRR", "ctx-prec@3", "contra@3"
+    );
+    for (name, r) in [
+        ("cosine(weak)", &cosine),
+        ("supervised(str)", &strong),
+        ("interference", &interference),
+    ] {
+        println!(
+            "    {:<14} {:>8.3} {:>10.3} {:>7.3} {:>12.3} {:>11.3}",
+            name,
+            ndcg_at_k(r, &relevance, k),
+            recall_at_k(r, &relevance, k),
+            mrr(r, &relevance),
+            context_precision_at_k(r, &relevance, &contradicted, k),
+            contradiction_rate_at_k(r, &contradicted, k),
+        );
+    }
+    println!(
+        "    Note: the simulated strong baseline is NOT a real cross-encoder; \
+         interference's\n    edge is contradiction suppression (ctx-prec / contra), \
+         not raw nDCG."
     );
 
     Ok(())
