@@ -5,8 +5,6 @@
 //
 // Plain ESM JS: runs as-is via `npx @ruvector/ruqu` with no build step.
 
-import { loadKernel } from '@metaharness/kernel';
-import adapter from '@metaharness/host-claude-code';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -14,6 +12,12 @@ import { dirname, join } from 'node:path';
 const HARNESS_NAME = 'ruqu';
 const require = createRequire(import.meta.url);
 const HERE = dirname(fileURLToPath(import.meta.url));
+async function harness() {
+  const [{loadKernel}, {default:adapter}] = await Promise.all([
+    import('@metaharness/kernel'), import('@metaharness/host-claude-code'),
+  ]);
+  return {loadKernel,adapter};
+}
 
 /** Lazily load the bundled nodejs-target quantum WASM (ruqu-wasm crate). */
 let _wasm;
@@ -41,6 +45,7 @@ function topStates(probs, n, k = 8) {
 
 /** `ruqu init` — boot the agent-harness kernel + host adapter. */
 async function init() {
+  const {loadKernel,adapter} = await harness();
   const kernel = await loadKernel();
   const info = kernel.kernelInfo();
   console.log(`${HARNESS_NAME} — kernel ${info.version} (${kernel.backend}) · host ${adapter.name}`);
@@ -50,6 +55,7 @@ async function init() {
 
 /** `ruqu doctor` — verify the harness kernel AND the quantum WASM end-to-end. */
 async function doctor() {
+  const {loadKernel,adapter} = await harness();
   const kernel = await loadKernel();
   const info = kernel.kernelInfo();
   let maxq = 0;
@@ -86,7 +92,7 @@ function capabilities() {
   console.log(`  state @ max       ~${(mem / 1e6).toFixed(1)} MB`);
   console.log(`  gates             h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`);
   console.log(`  algorithms        simulate · grover · qaoa`);
-  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · version`);
+  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · version`);
   return 0;
 }
 
@@ -133,6 +139,7 @@ function qaoa(args) {
 }
 
 async function version() {
+  const {loadKernel} = await harness();
   const k = await loadKernel();
   console.log(`${HARNESS_NAME} CLI — metaharness kernel ${k.kernelInfo().version} (${k.backend}) · quantum WASM ${quantum().max_qubits()}q`);
   return 0;
@@ -148,8 +155,23 @@ export async function run(argv) {
     case 'simulate': case 'sim': return simulate(rest);
     case 'grover': return grover(rest);
     case 'qaoa': return qaoa(rest);
+    case 'observer-lab': {
+      const lab = require(join(HERE, '..', 'src', 'observer-lab.cjs'));
+      if(rest.length===1 && rest[0]==='--benchmark') {
+        console.log(JSON.stringify(lab.benchmark(),null,2)); return 0;
+      }
+      const options={};
+      for(let i=0;i<rest.length;i+=2) {
+        const key=rest[i];
+        if(!['--count','--seed'].includes(key) || options[key.slice(2)]!==undefined ||
+           !/^[0-9]+$/.test(rest[i+1] ?? '')) throw Error('Usage: observer-lab [--count N --seed N] | --benchmark');
+        options[key.slice(2)]=Number(rest[i+1]);
+      }
+      console.log(JSON.stringify(lab.run(options),null,2)); return 0;
+    }
     case 'version': case '--version': return version();
     case 'help': case '--help':
+      console.log('Observer laboratory: ruqu observer-lab [--count N --seed N] | --benchmark');
       console.log(`Usage: ${HARNESS_NAME} <command>\n\n  init           boot the kernel + host adapter (default)\n  doctor         verify kernel + quantum WASM end-to-end\n  capabilities   list quantum capabilities\n  simulate       run a GHZ/Bell circuit  [--qubits N]\n  grover         Grover search           [--qubits N --target T --seed S]\n  qaoa           QAOA MaxCut on a ring    [--nodes N --p P]\n  version        print versions`);
       return 0;
     default:
@@ -166,5 +188,5 @@ const invokedDirectly = (() => {
   catch { return false; }
 })();
 if (invokedDirectly) {
-  run(argv.slice(2)).then((code) => process.exit(code)).catch((e) => { console.error(e); process.exit(1); });
+  run(argv.slice(2)).then((code) => { process.exitCode = code; }).catch((e) => { console.error(e); process.exitCode = 1; });
 }
