@@ -18,7 +18,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "vitest run",
+    "test": "vitest run __tests__ && node --test tests/*.test.cjs",
+    "test:observer": "node --test tests/*.test.cjs",
+    "bench:observer": "node bin/cli.js observer-lab --benchmark",
     "init": "node ./bin/cli.js init",
     "doctor": "node ./bin/cli.js doctor"
   },

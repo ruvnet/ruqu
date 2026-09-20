@@ -1,0 +1,37 @@
+name: Observer laboratory
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: cli
+      - run: npm test && npm run build && npm audit --omit=dev --audit-level=high
+        working-directory: cli
+      - run: node --test examples/observer-lab/lab.test.cjs
+      - run: node cli/bin/cli.js observer-lab --benchmark
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+      - run: cargo test --workspace --locked
+      - run: cargo fmt --manifest-path integrations/observer-world/Cargo.toml -- --check
+      - run: cargo test --manifest-path integrations/observer-world/Cargo.toml --locked
+      - run: cargo clippy --manifest-path integrations/observer-world/Cargo.toml --locked --all-targets -- -D warnings
+      - run: cargo build --manifest-path integrations/observer-world/Cargo.toml --locked
+      - run: node integrations/observer-world/verify-e2e.cjs

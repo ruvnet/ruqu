@@ -101,6 +101,29 @@ Quantum algorithm research · variational quantum eigensolver (VQE) for quantum 
 combinatorial optimization with QAOA · quantum error-correction (surface codes) experiments ·
 NISQ noise studies · teaching quantum computing · browser-based quantum demos.
 
+## Observer consistency laboratory
+
+Run reproducible two-qubit controls, reversible observer interactions, and separately
+labelled classical memory interventions using the bundled WASM engine:
+
+```bash
+node cli/bin/cli.js observer-lab --count 128 --seed 20260920
+node cli/bin/cli.js observer-lab --benchmark
+node --test cli/tests/observer-lab.test.cjs
+```
+
+The optional [native integration](integrations/observer-world/README.md) validates
+the evidence before projecting it into **actual ruField synthetic events and an
+actual WorldGraph belief graph**, using pinned upstream Rust crates. It requires
+an independently supplied trusted ledger root and rejects physical sensor claims.
+No existing database, sensor or cloud service is changed.
+
+These are software controls of established quantum predictions, **not a QPU run,
+new physics, physical Bell test, or quantum advantage**. See the
+[architecture](docs/adr/ADR-002-observer-world-laboratory.md) and
+[validation evidence](docs/observer-world-validation.md). The new CLI command is
+available from this checkout; this change does not publish a new npm release.
+
 ## License
 
 MIT © Ruvector Team. Part of the [ruvector](https://github.com/ruvnet/ruvector) ecosystem
