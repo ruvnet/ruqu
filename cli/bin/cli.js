@@ -92,7 +92,7 @@ function capabilities() {
   console.log(`  state @ max       ~${(mem / 1e6).toFixed(1)} MB`);
   console.log(`  gates             h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`);
   console.log(`  algorithms        simulate · grover · qaoa`);
-  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · version`);
+  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · boundary-lab · version`);
   return 0;
 }
 
@@ -169,9 +169,14 @@ export async function run(argv) {
       }
       console.log(JSON.stringify(lab.run(options),null,2)); return 0;
     }
+    case 'boundary-lab': {
+      const lab = require(join(HERE, '..', 'src', 'boundary-lab.cjs'));
+      console.log(JSON.stringify(lab.cli(rest), null, 2)); return 0;
+    }
     case 'version': case '--version': return version();
     case 'help': case '--help':
       console.log('Observer laboratory: ruqu observer-lab [--count N --seed N] | --benchmark');
+      console.log('Boundary observatory: ruqu boundary-lab plan | run --protocol-hash HASH | predict --file DATASET | verify|project --file REPORT --trusted-root HASH');
       console.log(`Usage: ${HARNESS_NAME} <command>\n\n  init           boot the kernel + host adapter (default)\n  doctor         verify kernel + quantum WASM end-to-end\n  capabilities   list quantum capabilities\n  simulate       run a GHZ/Bell circuit  [--qubits N]\n  grover         Grover search           [--qubits N --target T --seed S]\n  qaoa           QAOA MaxCut on a ring    [--nodes N --p P]\n  version        print versions`);
       return 0;
     default:

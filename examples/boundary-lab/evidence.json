@@ -1,0 +1,122 @@
+{
+  "schema": "ruqu.boundary.e2e.v1",
+  "evidenceClass": "classical-simulation",
+  "protocolHash": "af87999640efb817dff4b57f9f4187f715a6e9955afe2a44998d7f9cca2f9dc7",
+  "root": "b1a4da50b29f38c7bdaf9ec51b90c058011825605ebd70fa8309fa3c9cf36367",
+  "parameters": {
+    "seed": 20260925,
+    "trials": 100
+  },
+  "trialCount": 400,
+  "separatePredictorMatched": true,
+  "verification": {
+    "verified": true,
+    "root": "b1a4da50b29f38c7bdaf9ec51b90c058011825605ebd70fa8309fa3c9cf36367",
+    "evidenceClass": "classical-simulation"
+  },
+  "metrics": {
+    "sceneAccuracy": {
+      "successes": 90,
+      "total": 100,
+      "estimate": 0.9,
+      "lower": 0.8256343384950865,
+      "upper": 0.9447708629393249
+    },
+    "sourceLocalization": {
+      "successes": 199,
+      "total": 199,
+      "estimate": 1,
+      "interval": "Not reported: sources in a scene are clustered"
+    },
+    "zoneAccuracy": {
+      "successes": 189,
+      "total": 199,
+      "estimate": 0.949748743718593,
+      "interval": "Not reported: sources in a scene are clustered"
+    },
+    "missedSources": 0,
+    "medianErrorM": 0.0324452980062547,
+    "baselineMedianErrorM": 0.07949569381694144,
+    "medianErrorReduction": 0.591860936757555,
+    "errorSummaryScope": "Median over localized sources; missed sources reported separately and included as failures in accuracy",
+    "controls": {
+      "empty": {
+        "interpretation": "Detection without a simulated physical emitter",
+        "falsePositiveRate": {
+          "successes": 0,
+          "total": 100,
+          "estimate": 0,
+          "lower": 0,
+          "upper": 0.03699349820698568
+        },
+        "rejectionRate": {
+          "successes": 100,
+          "total": 100,
+          "estimate": 1,
+          "lower": 0.9630065017930143,
+          "upper": 1
+        }
+      },
+      "single-sensor-injection": {
+        "interpretation": "Detection without a simulated physical emitter",
+        "falsePositiveRate": {
+          "successes": 0,
+          "total": 100,
+          "estimate": 0,
+          "lower": 0,
+          "upper": 0.03699349820698568
+        },
+        "rejectionRate": {
+          "successes": 100,
+          "total": 100,
+          "estimate": 1,
+          "lower": 0.9630065017930143,
+          "upper": 1
+        }
+      },
+      "model-mismatch": {
+        "interpretation": "Acceptance of deliberately distorted data, not proof that no emitter exists",
+        "falsePositiveRate": {
+          "successes": 0,
+          "total": 100,
+          "estimate": 0,
+          "lower": 0,
+          "upper": 0.03699349820698568
+        },
+        "rejectionRate": {
+          "successes": 100,
+          "total": 100,
+          "estimate": 1,
+          "lower": 0.9630065017930143,
+          "upper": 1
+        }
+      }
+    },
+    "gates": {
+      "sceneAccuracy": true,
+      "localization": true,
+      "emptyFalsePositives": true,
+      "injectionRejection": true,
+      "mismatchRejection": true,
+      "baselineImprovement": true
+    },
+    "verdict": "supported-in-model"
+  },
+  "projection": {
+    "fieldEvents": 1200,
+    "nodes": 608,
+    "edges": 806,
+    "integrationStatus": "Local export contract only; not native RuField or WorldGraph serialization and no service writes"
+  },
+  "limits": [
+    "Synthetic RSS power measurements only; zero quantum hardware or physical sensor calls",
+    "One emitter per known frequency; not general object identification or cochannel separation",
+    "Free space inverse square model; no measured indoor multipath, walls, or antenna response",
+    "Blinding is an API boundary, not process isolation; seed and truth are revealed in the final report",
+    "Single sensor injection rejection does not authenticate sensors or reject coordinated spoofing",
+    "Marginal sampling intervals exclude systematic error and do not establish physical performance",
+    "Development seed is public; independent replication requires fresh externally selected trials",
+    "Hash commitments are not signatures, timestamps, or proof of acquisition",
+    "No holography, QMM, new physics, quantum advantage, or Nobel level discovery established"
+  ]
+}

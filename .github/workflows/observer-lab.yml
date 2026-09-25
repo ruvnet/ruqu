@@ -21,6 +21,13 @@ jobs:
         working-directory: cli
       - run: node --test examples/observer-lab/lab.test.cjs
       - run: node cli/bin/cli.js observer-lab --benchmark
+      - run: node examples/boundary-lab/run.cjs
+      - run: node examples/boundary-lab/package-smoke.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r examples/boundary-lab/requirements-reference.txt
+      - run: python examples/boundary-lab/reference.py
   rust:
     runs-on: ubuntu-latest
     steps:
