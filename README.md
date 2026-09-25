@@ -74,6 +74,24 @@ await init();
 
 ## Build
 
+### Boundary Observatory
+
+Run the offline boundary sensing workflow through generation, blinded inference,
+scoring, verification, and synthetic field and graph export:
+
+```sh
+node examples/boundary-lab/run.cjs
+```
+
+Eight perimeter sensors localize up to three spectrally separated emitters in a
+classical propagation model. The default has 100 signal scenes and three separate
+100 trial control arms. Results include a centroid baseline, raw measurements,
+source commitments and exact replay. This is simulation evidence, with no physical
+sensor, QPU or live RuField/WorldGraph service. See the
+[guide](examples/boundary-lab/README.md),
+[architecture](docs/adr/ADR-004-boundary-observatory.md) and
+[validation](docs/boundary-observatory-validation.md).
+
 ```bash
 cargo build --release                            # native
 cargo test                                       # run the test suite

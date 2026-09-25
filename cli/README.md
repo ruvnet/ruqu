@@ -14,6 +14,21 @@ npx @ruvector/ruqu doctor                # verify kernel + quantum WASM
 
 ## Commands
 
+### Boundary Observatory
+
+`ruqu boundary-lab plan`, `run`, `predict`, `verify` and `project` implement an
+offline synthetic RF experiment. Pass the hash from `plan` to
+`run --protocol-hash HASH [--seed N --trials N]`. Trial count is per arm, from 100
+through 500. `predict --file measurements.json` accepts only the strict synthetic
+measurement contract. `verify` and `project` require `--file report.json` and a
+separately retained `--trusted-root ROOT`.
+
+The experiment uses eight perimeter sensors, at most one emitter per frequency,
+a fixed inference grid and three control arms. Graph and field exports are local
+contracts, not native RuField or WorldGraph serialization. No network, hardware
+or automatic publishing is involved. See `examples/boundary-lab/README.md` in
+the repository. This feature is not yet published to npm.
+
 | Command | What it does |
 |---|---|
 | `simulate [--qubits N]` | Run a GHZ/Bell circuit on the WASM state-vector simulator (up to 25 qubits). |
