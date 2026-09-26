@@ -1,0 +1,21 @@
+{
+  "campaign": "field-cognition-20260926",
+  "iteration": 1,
+  "phase": "preregistered before execution; no tuning",
+  "seeds": [101, 211, 307, 401, 503],
+  "steps": 2000,
+  "sensors": 4,
+  "flip_probability": 0.03,
+  "noise_sigma": 1.2,
+  "missing_probability": 0.2,
+  "dt_range": [0.5, 1.5],
+  "field": {"observation_gain": 0.5, "diffusion_rate": 0.12, "decay_rate": 0.02, "bound": 4},
+  "ema_decay": 0.75,
+  "primary": "mean seed decision error on all events versus strongest classical baseline",
+  "secondary": ["first five events after actual state flip", "Brier score", "p50 and p95 prediction latency", "peak process RSS", "throughput"],
+  "acceptance": {"relative_error_reduction": 0.1, "all_correctness_checks": true, "independent_reproduction": true, "promotion": false},
+  "comparators": ["memoryless Gaussian posterior", "scalar EMA", "model informed two state Bayesian filter", "field without diffusion", "field", "field RuQu phase readout", "field phase zero ablation", "classical analytic equivalent of RuQu"],
+  "information": "All methods see the same timestamp, sensor ID and observation. All know fixed generator constants. Labels are available only to scoring. No training. Bayesian filter knows eventwise flip hazard and noise.",
+  "budget": "5 seeds x 2000 events; one qubit and three gates per RuQu prediction; no API inference or paid hardware.",
+  "interpretation": "Synthetic matched model experiment. These seeds become disclosed after this run. Future tuning requires new preregistered test seeds. A negative result is retained. No cognition or consciousness claim."
+}
