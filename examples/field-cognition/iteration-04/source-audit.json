@@ -1,0 +1,25 @@
+{
+  "preregistration_commit": "69b7fb77207d3b0ecf717c50299955eceff98534",
+  "@metaharness/darwin": {
+    "version": "0.10.2",
+    "license": "MIT",
+    "node": ">=20.0.0",
+    "integrity": "sha512-Glczy9YJDLf5x4HlfVuQVbZuPuue45K+8ohfLixZPJ18oc0Q8RR+BcsopHUQsL4hBkvs3YPXUyZ16piDJQp4gw==",
+    "source_commit": "d5833dc6512ac1adeeef91a331c29055cd8a4dbb",
+    "executed_api": "evolveNumeric"
+  },
+  "verified_package_hazards": [
+    "winner may be regressed because NumericArchive.best does not filter the flag",
+    "reusing a workRoot can associate a new score with an old genome after identifier collision",
+    "createdAt timestamps make raw archive bytes nondeterministic",
+    "the package does not enforce campaign promotion or holdout isolation"
+  ],
+  "mitigations": [
+    "independent admissibility filter",
+    "fresh immutable work root",
+    "semantic evidence digest excludes timing",
+    "development seeds only",
+    "independent retain or revert gate"
+  ],
+  "not_executed": ["RuField", "MidStream", "LatentMesh", "Autogenous", "rsi", "holdout evaluator"]
+}

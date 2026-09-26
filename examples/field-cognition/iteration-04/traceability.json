@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    {"requirement":"actual MetaHarness execution","evidence":"adaptation-results.json","status":"met"},
+    {"requirement":"frozen evaluator before adaptation","evidence":"commit 69b7fb77207d3b0ecf717c50299955eceff98534","status":"met"},
+    {"requirement":"holdout outside candidate scope","evidence":["protocol.json","test.mjs"],"status":"met; no holdout evaluation performed"},
+    {"requirement":"propose test validate retain or revert","evidence":["guard.mjs","adaptation-results.json"],"status":"met; candidate reverted"},
+    {"requirement":"fault and numerical divergence handling","evidence":"test.stdout","status":"met"},
+    {"requirement":"stale archive rejection","evidence":"test.stdout","status":"met through fresh root guard"},
+    {"requirement":"rollback","evidence":"test.stdout","status":"met for injected post activation failure"},
+    {"requirement":"deterministic replay","evidence":["test.stdout","verification.json"],"status":"met for genomes, metrics and decision after timing removal"},
+    {"requirement":"ten percent improvement","evidence":"adaptation-results.json","status":"failed; development gain was about 0.60 percent"},
+    {"requirement":"LatentMesh bounded delay and reorder","evidence":"source-audit.json","status":"not executed; no claim"}
+  ]
+}
