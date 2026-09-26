@@ -1,0 +1,118 @@
+{
+  "protocol_sha256": "86f3a0ff80a5dda1117b77b994e1831a10969c622d1a71ea1be7cb83b9004565",
+  "source_sha256": "a539d19f4b169cc09ca15bab46e4be0e4683c41735e9e4f4f7b95ba7cdb4deac",
+  "development_protocol_sha256": "8cdececb0dea6d44181bb6a96429bbaa5ab1c55a8b21c86a74c0c404a476b773",
+  "node": "v20.20.2",
+  "platform": "linux",
+  "cpu": "AMD EPYC",
+  "topology": {
+    "indexType": "flat",
+    "usesHnsw": false,
+    "neighbors": [
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "coords": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        -1
+      ]
+    ],
+    "queryCheck": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "elapsed_s": 1.000739104,
+  "events_per_second": 19985.228837425344,
+  "peak_process_rss_kib": 122428,
+  "timing_scope": "Fixed model order, no warmup; diagnostic. RuQu latency excludes field update. RSS includes raw storage and all models.",
+  "known_new_provider_spend_usd": 0,
+  "existing_compute_cost": "unknown",
+  "strongest_baseline": "scalar_bayes",
+  "field_relative_error_reduction_mean": -0.2428176681503019,
+  "field_relative_error_reduction_95_t_interval": [
+    -0.42850640202810436,
+    -0.05712893427249943
+  ],
+  "max_ruqu_analytic_delta": 4.440892098500626e-16,
+  "acceptance_passed": false,
+  "per_seed": [
+    {
+      "seed": 701,
+      "n": 4000,
+      "event_sha256": "fcce93683fcc699a11078fcc26d942b5a4985c78c3f684c0fe9d014488561197",
+      "prediction_sha256": "c9aa68f28e19fa6c906b324507336fcbf9a42f396c6106c5be70909aa156bbc5",
+      "models": {
+        "memoryless": {
+          "error": 0.262,
+          "brier": 0.178892728069557,
+          "transition_error": 0.38565022421524664,
+          "transition_n": 223,
+          "p50_ns": 240,
+          "p95_ns": 670
+        },
+        "scalar_ema": {
+          "error": 0.10725,
+          "brier": 0.10152851392739536,
+          "transition_error": 0.5919282511210763,
+          "transition_n": 223,
+          "p50_ns": 340,
+          "p95_ns": 960
+        },
+        "scalar_bayes": {
+          "error": 0.1,
+          "brier": 0.08468552891386823,
+          "transition_error": 0.547085201793722,
+          "transition_n": 223,
+          "p50_ns": 340,
+          "p95_ns": 930
+        },
+        "independent_bayes": {
+          "error": 0.1555,
+          "brier": 0.12637734202676185,
+          "transition_error": 0.7219730941704036,
+          "transition_n": 223,
+          "p50_ns": 630,
+          "p95_ns": 1830
+        },
+        "iteration_01_field": {
+          "error": 0.1355,
+          "brier": 0.11775744279569494,
+          "transition_error": 0.7040358744394619,
+          "transition_n": 223,
+          "p50_ns": 890,
+          "p95_ns": 3450
+        },
+        "change_point_field": {
+          "error": 0.13,
+          "brier": 0.10011341177867256,
+          "transition_¢ëiºÛkºwµç

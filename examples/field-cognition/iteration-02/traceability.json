@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    {"requirement": "frozen experiment before holdout", "evidence": ["development-protocol.json", "development-results.json", "protocol.json"], "status": "met"},
+    {"requirement": "asynchronous multi sensor recurrent field", "evidence": ["models.mjs", "test.cjs"], "status": "met with synthetic inputs"},
+    {"requirement": "memoryless and matched recurrent comparators", "evidence": ["benchmark.cjs", "results.json"], "status": "met"},
+    {"requirement": "actual RuVector and RuQu adapters", "evidence": ["models.mjs", "source-audit.json", "test.cjs"], "status": "met; RuVector adapter is flat"},
+    {"requirement": "at least ten percent relative error reduction", "evidence": ["results.json"], "status": "failed; negative result retained"},
+    {"requirement": "five seeds with uncertainty", "evidence": ["protocol.json", "results.json"], "status": "met"},
+    {"requirement": "fault and replay validation", "evidence": ["test.cjs", "test.stdout"], "status": "met for local model boundary"},
+    {"requirement": "LatentMesh synchronization", "evidence": ["source-audit.json"], "status": "not implemented; no claim"},
+    {"requirement": "Autogenous guarded adaptation and MetaHarness evaluator", "evidence": ["source-audit.json"], "status": "not implemented; no claim"},
+    {"requirement": "exact Phi", "evidence": ["ADR-002.md"], "status": "out of scope; no proxy relabeled as Phi"}
+  ]
+}

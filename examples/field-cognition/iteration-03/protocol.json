@@ -1,0 +1,20 @@
+{
+  "status": "frozen after development selection and before holdout execution",
+  "development_protocol_sha256": "f72e252ff554eec076d511464ffe11e3ed0b77664d54fa66d2b71786fddc1b12",
+  "holdout_seeds": [3455300051, 1019182862, 653201376, 2268424172, 3709305038],
+  "events_per_seed": 5000,
+  "forecast_horizon_seconds": 3,
+  "selected_on_development_only": {
+    "scalar_bayes": {"hazardRate": 0.02, "observationTemperature": 0.8},
+    "graph_filter": {"hazardRate": 0.02, "diffusion": 0.1},
+    "velocity_field": {"hazardRate": 0.008, "changeThreshold": 0.55, "secondsPerHop": 3, "maxPending": 32, "transportEnabled": true}
+  },
+  "primary_candidate": "velocity_field",
+  "comparators": ["memoryless", "scalar_bayes", "graph_filter", "velocity_no_transport", "velocity_shuffled_topology"],
+  "secondary": ["ruqu_end_to_end", "ruqu_phase_zero_end_to_end", "ruqu_analytic"],
+  "primary_metric": "mean paired relative decision error reduction versus strongest comparator",
+  "acceptance_threshold": 0.10,
+  "minimum_seeds": 5,
+  "no_post_holdout_tuning": true,
+  "limits": "Synthetic forecast only. No Phi, consciousness, quantum hardware, physical nonlocality, or quantum advantage claim."
+}

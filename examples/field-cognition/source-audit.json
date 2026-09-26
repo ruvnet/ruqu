@@ -1,0 +1,32 @@
+{
+  "ruqu_source_reference": "eb127994aaf8cdb074ebcc3ff32c1a798b79efa8",
+  "ruqu_version": "0.2.0",
+  "package_integrity": "sha512-4k8vUBFjpsMiTuu0V2xbs+pCwS2xg3rkIWcns5Jw8Kb+/8eb2MNdClF9Hy7WOde3VaLQ3d5lq/s69TdM4nysNg==",
+  "wasm_sha256": "732acefef718283535272fcc5f6a8d8a599783a2e7e2f0b6be8f3bbb0f42076f",
+  "licenses": {
+    "ruqu": "MIT",
+    "kernel": "MIT"
+  },
+  "executed": [
+    "RuQu WASM",
+    "Ruflo 3.42.4 hooks route"
+  ],
+  "installed_not_executed": [
+    "MetaHarness kernel 0.1.3",
+    "MetaHarness host 0.1.2"
+  ],
+  "pending": [
+    "actual RuField",
+    "RuVector",
+    "MidStream",
+    "LatentMesh",
+    "Autogenous",
+    "RSI availability audit"
+  ],
+  "existing_native_rufield_adapter": {
+    "repo": "ruvnet/ruqu",
+    "path": "integrations/observer-world",
+    "rufield_revision": "7179a2efc706993ee0d87f0093e6a0e9e3dc5017",
+    "status": "source inspected only; not executed in this iteration"
+  }
+}

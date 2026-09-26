@@ -1,0 +1,222 @@
+{
+  "status": "development_only",
+  "runId": "ruos-final",
+  "protocolDigest": "230bde7d589c3566fe0252a6e066d4b3f2adc45e6f404d6b54f9f2082941ef1c",
+  "sourceDigest": "8851fb1aa24ff5c30b26bbaf8514a0f4b0ec30573b09a961cd0e7d5ad3953cb2",
+  "package": "@metaharness/darwin@0.10.2",
+  "actualDarwinExecuted": true,
+  "holdoutAccess": false,
+  "evaluations": 7,
+  "elapsedMs": 192.791124,
+  "adaptationOverheadMs": 30.688039999999972,
+  "baseline": {
+    "error": 0.22616,
+    "brier": 0.15531854842356263,
+    "n": 12500,
+    "predictionDigest": "836e2f2522f31c10de32fabe23d7b20138da19ba5e977daf02371c3c8b157b52",
+    "elapsedMs": 35.339761
+  },
+  "best": {
+    "id": "g1_v2",
+    "genome": {
+      "hazardRate": 0.008830817815221366,
+      "changeThreshold": 0.5,
+      "transportGain": 1
+    },
+    "metrics": {
+      "error": 0.2248,
+      "brier": 0.1526608727666089,
+      "n": 12500,
+      "predictionDigest": "7269c8c14d3feee06078f3311b20a88c953f0a8d891b8a0ae5024f307890c2b4",
+      "elapsedMs": 11.8479
+    }
+  },
+  "darwinWinner": {
+    "id": "g1_v2",
+    "regressed": false
+  },
+  "decision": {
+    "retain": false,
+    "reasons": [
+      "insufficient improvement"
+    ]
+  },
+  "activation": {
+    "retained": false,
+    "rolledBack": false,
+    "active": {
+      "digest": "4c4a54da28e9c39c5ec80830f4e5a4dc9fa62222be63b7f334fe478390e7edcd",
+      "status": "development_parent"
+    }
+  },
+  "canonicalRecords": [
+    {
+      "id": "baseline",
+      "parentId": null,
+      "generation": 0,
+      "genome": {
+        "hazardRate": 0.008,
+        "changeThreshold": 0.55,
+        "transportGain": 1
+      },
+      "mutatedParams": [],
+      "score": {
+        "primary": -0.22616,
+        "regressed": false,
+        "raw": {
+          "error": 0.22616,
+          "brier": 0.15531854842356263,
+          "n": 12500,
+          "predictionDigest": "836e2f2522f31c10de32fabe23d7b20138da19ba5e977daf02371c3c8b157b52"
+        }
+      }
+    },
+    {
+      "id": "g1_v0",
+      "parentId": "baseline",
+      "generation": 1,
+      "genome": {
+        "hazardRate": 0.0020911634968704537,
+        "changeThreshold": 0.6467059829059887,
+        "transportGain": 1
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold"
+      ],
+      "score": {
+        "primary": -0.22952,
+        "regressed": false,
+        "raw": {
+          "error": 0.22952,
+          "brier": 0.1721312508998364,
+          "n": 12500,
+          "predictionDigest": "ad6447eb679e10bfc644140c308c91ef85ab57dc867b0dec189e0d8dbf428828"
+        }
+      }
+    },
+    {
+      "id": "g1_v1",
+      "parentId": "baseline",
+      "generation": 1,
+      "genome": {
+        "hazardRate": 0.012943901219331146,
+        "changeThreshold": 0.6018684971975662,
+        "transportGain": 1
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold"
+      ],
+      "score": {
+        "primary": -0.23096,
+        "regressed": false,
+        "raw": {
+          "error": 0.23096,
+          "brier": 0.15721239642232993,
+          "n": 12500,
+          "predictionDigest": "9714b1f821d6d2dad7351018a56efe3b961fc835e8cfe22875759fe4dc7037c7"
+        }
+      }
+    },
+    {
+      "id": "g1_v2",
+      "parentId": "baseline",
+      "generation": 1,
+      "genome": {
+        "hazardRate": 0.008830817815221366,
+        "changeThreshold": 0.5,
+        "transportGain": 1
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold"
+      ],
+      "score": {
+        "primary": -0.2248,
+        "regressed": false,
+        "raw": {
+          "error": 0.2248,
+          "brier": 0.1526608727666089,
+          "n": 12500,
+          "predictionDigest": "7269c8c14d3feee06078f3311b20a88c953f0a8d891b8a0ae5024f307890c2b4"
+        }
+      }
+    },
+    {
+      "id": "g2_v0",
+      "parentId": "g1_v2",
+      "generation": 2,
+      "genome": {
+        "hazardRate": 0.0034811904130879947,
+        "changeThreshold": 0.5171774268469882,
+        "transportGain": 0.8821296482395177
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold",
+        "transportGain"
+      ],
+      "score": {
+        "primary": -0.22776,
+        "regressed": false,
+        "raw": {
+          "error": 0.22776,
+          "brier": 0.1538778107921464,
+          "n": 12500,
+          "predictionDigest": "6beef92a760320198b79ad06feed1c7233b38ff8fb1da87cf62662295611c9db"
+        }
+      }
+    },
+    {
+      "id": "g2_v1",
+      "parentId": "g1_v2",
+      "generation": 2,
+      "genome": {
+        "hazardRate": 0.0031342688055653527,
+        "changeThreshold": 0.512154684662672,
+        "transportGain": 1
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold"
+      ],
+      "score": {
+        "primary": -0.22512,
+        "regressed": false,
+        "raw": {
+          "error": 0.22512,
+          "brier": 0.16019805579559243,
+          "n": 12500,
+          "predictionDigest": "f981d827d279b0682b345981743cbca26127dd131616b716121a1d3d5f770e37"
+        }
+      }
+    },
+    {
+      "id": "g2_v2",
+      "parentId": "g1_v2",
+      "generation": 2,
+      "genome": {
+        "hazardRate": 0.013449551343739426,
+        "changeThreshold": 0.7018857721153623,
+        "transportGain": 1
+      },
+      "mutatedParams": [
+        "hazardRate",
+        "changeThreshold"
+      ],
+      "score": {
+        "primary": -0.23216,
+        "regressed": false,
+        "raw": {
+          "error": 0.23216,
+          "brier": 0.16152627512979073,
+          "n": 12500,
+          "predictionDigest": "d4681c9f243717c930c698352c09c5236ce6b6b4e171632523d4cd76eaa19085"
+        }
+      }
+    }
+  ],
+  "ledgerDigest": "4a98d3984b16ce69817b95a04b2ffd13b6244bfe210239021225db1193cd570a",
+  "semanticLedgerDigest": "eaf1554ecb3e6bb0d4db4416b3bd58f85a34c89820695e7f7f40fb4d63a7e256"
+}
