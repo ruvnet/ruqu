@@ -1,0 +1,1 @@
+{"private":true,"dependencies":{"@ruvector/ruqu":"0.2.0"},"scripts":{"test":"node test.cjs","benchmark":"node benchmark.cjs"}}
