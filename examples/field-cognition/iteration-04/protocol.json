@@ -1,0 +1,21 @@
+{
+  "status": "frozen development only evaluator",
+  "campaign": "field-cognition-20260926",
+  "iteration": 4,
+  "component": "@metaharness/darwin 0.10.2",
+  "development_seeds": [425855807, 3158843464, 2241287018, 1348801981, 370015719],
+  "holdout_access": false,
+  "events_per_seed": 2500,
+  "forecast_horizon_seconds": 3,
+  "baseline_genome": {"hazardRate":0.008,"changeThreshold":0.55,"transportGain":1},
+  "genome_spec": {
+    "hazardRate":{"min":0.002,"max":0.03,"scale":"log","type":"float"},
+    "changeThreshold":{"min":0.5,"max":0.95,"scale":"linear","type":"float"},
+    "transportGain":{"min":0,"max":1,"scale":"linear","type":"float"}
+  },
+  "darwin": {"generations":2,"children_per_generation":3,"seed":20260926,"concurrency":1,"mutation_sigma":0.35,"crossover":false},
+  "guard": {"evaluation_timeout_ms":2000,"max_evaluations":7,"required_relative_error_reduction":0.10,"maximum_relative_brier_regression":0.02,"require_finite":true,"fresh_work_root":true},
+  "promotion_scope": "development champion only",
+  "acceptance": "actual Darwin execution, deterministic candidate replay, all injected faults revert, protected digests unchanged, and no holdout material present",
+  "scientific_limits": "No heldout quality claim, no production promotion, no Phi, consciousness, quantum behavior, or autonomous self awareness claim."
+}

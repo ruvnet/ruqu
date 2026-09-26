@@ -115,4 +115,454 @@
     },
     "ruqu_analytic": {
       "error": 0.22347999999999998,
-      "brier": 0.1540158920989¢ëiºÛkºwµç
+      "brier": 0.15401589209895344,
+      "transition_error": 0.6834843537117268,
+      "p50_ns": 862,
+      "p95_ns": 2840,
+      "max_pending": 2.2
+    }
+  },
+  "per_seed": [
+    {
+      "seed": 3455300051,
+      "event_sha256": "a31f1d347064dd2435d0c543755fb81220c1ba3173874183200b718c1c6a25d1",
+      "prediction_sha256": "f756d3d837fe455aa6018a91558163b5432cded8d79071cddfe5625003530eae",
+      "models": {
+        "memoryless": {
+          "error": 0.4872,
+          "brier": 0.22854984875456338,
+          "transition_error": 0.45901639344262296,
+          "transition_n": 305,
+          "p50_ns": 310,
+          "p95_ns": 2330,
+          "max_pending": 0
+        },
+        "scalar_bayes": {
+          "error": 0.0586,
+          "brier": 0.05126224115902902,
+          "transition_error": 0.6786885245901639,
+          "transition_n": 305,
+          "p50_ns": 430,
+          "p95_ns": 1350,
+          "max_pending": 0
+        },
+        "graph_filter": {
+          "error": 0.1068,
+          "brier": 0.09507794586167571,
+          "transition_error": 0.7672131147540984,
+          "transition_n": 305,
+          "p50_ns": 1300,
+          "p95_ns": 4300,
+          "max_pending": 0
+        },
+        "velocity_no_transport": {
+          "error": 0.122,
+          "brier": 0.09508707030168502,
+          "transition_error": 0.7836065573770492,
+          "transition_n": 305,
+          "p50_ns": 610,
+          "p95_ns": 2550,
+          "max_pending": 0
+        },
+        "velocity_shuffled_topology": {
+          "error": 0.1922,
+          "brier": 0.13355011929305183,
+          "transition_error": 0.6852459016393443,
+          "transition_n": 305,
+          "p50_ns": 620,
+          "p95_ns": 2840,
+          "max_pending": 2
+        },
+        "velocity_field": {
+          "error": 0.1936,
+          "brier": 0.13445212286781158,
+          "transition_error": 0.6491803278688525,
+          "transition_n": 305,
+          "p50_ns": 590,
+          "p95_ns": 2320,
+          "max_pending": 2
+        },
+        "ruqu_end_to_end": {
+          "error": 0.1948,
+          "brier": 0.1388470425239865,
+          "transition_error": 0.6754098360655738,
+          "transition_n": 305,
+          "p50_ns": 8570,
+          "p95_ns": 24200,
+          "max_pending": 2
+        },
+        "ruqu_phase_zero_end_to_end": {
+          "error": 0.202,
+          "brier": 0.14213179704814569,
+          "transition_error": 0.6557377049180327,
+          "transition_n": 305,
+          "p50_ns": 7940,
+          "p95_ns": 21830,
+          "max_pending": 2
+        },
+        "ruqu_analytic": {
+          "error": 0.1948,
+          "brier": 0.1388470425239865,
+          "transition_error": 0.6754098360655738,
+          "transition_n": 305,
+          "p50_ns": 950,
+          "p95_ns": 4930,
+          "max_pending": 2
+        }
+      }
+    },
+    {
+      "seed": 1019182862,
+      "event_sha256": "5f8f8329be3f6d50893422d500848023ec3171ca77f741eedd7107b6d1e71a7a",
+      "prediction_sha256": "6ee10f5574ae3d96533245040315172fe66dddba2d65fb835f06aa9275db8579",
+      "models": {
+        "memoryless": {
+          "error": 0.5088,
+          "brier": 0.22918563522160504,
+          "transition_error": 0.49673202614379086,
+          "transition_n": 459,
+          "p50_ns": 230,
+          "p95_ns": 750,
+          "max_pending": 0
+        },
+        "scalar_bayes": {
+          "error": 0.1048,
+          "brier": 0.0832002781454808,
+          "transition_error": 0.7472766884531591,
+          "transition_n": 459,
+          "p50_ns": 390,
+          "p95_ns": 710,
+          "max_pending": 0
+        },
+        "graph_filter": {
+          "error": 0.1428,
+          "brier": 0.11543680576831228,
+          "transition_error": 0.7821350762527233,
+          "transition_n": 459,
+          "p50_ns": 1110,
+          "p95_ns": 3400,
+          "max_pending": 0
+        },
+        "velocity_no_transport": {
+          "error": 0.1936,
+          "brier": 0.1415440206976019,
+          "transition_error": 0.8300653594771242,
+          "transition_n": 459,
+          "p50_ns": 600,
+          "p95_ns": 1460,
+          "max_pending": 0
+        },
+        "velocity_shuffled_topology": {
+          "error": 0.2676,
+          "brier": 0.17740902388504814,
+          "transition_error": 0.6775599128540305,
+          "transition_n": 459,
+          "p50_ns": 600,
+          "p95_ns": 1530,
+          "max_pending": 3
+        },
+        "velocity_field": {
+          "error": 0.278,
+          "brier": 0.17817904430614043,
+          "transition_error": 0.7037037037037037,
+          "transition_n": 459,
+          "p50_ns": 590,
+          "p95_ns": 1360,
+          "max_pending": 3
+        },
+        "ruqu_end_to_end": {
+          "error": 0.2638,
+          "brier": 0.18127254245449895,
+          "transition_error": 0.6884531590413944,
+          "transition_n": 459,
+          "p50_ns": 6920,
+          "p95_ns": 15060,
+          "max_pending": 3
+        },
+        "ruqu_phase_zero_end_to_end": {
+          "error": 0.2742,
+          "brier": 0.1859590963162326,
+          "transition_error": 0.6949891067538126,
+          "transition_n": 459,
+          "p50_ns": 6680,
+          "p95_ns": 13150,
+          "max_pending": 3
+        },
+        "ruqu_analytic": {
+          "error": 0.2638,
+          "brier": 0.18127254245449895,
+          "transition_error": 0.6884531590413944,
+          "transition_n": 459,
+          "p50_ns": 870,
+          "p95_ns": 2210,
+          "max_pending": 3
+        }
+      }
+    },
+    {
+      "seed": 653201376,
+      "event_sha256": "0fbdb635a39066aeddea3fd76e8c42543681679ded4dca0cb7d6803fe92eff9d",
+      "prediction_sha256": "4e17c67b3802f0f2e448c2013e4536a52924ad037fb9b2c544526f0e864da6c0",
+      "models": {
+        "memoryless": {
+          "error": 0.4466,
+          "brier": 0.228422769911169,
+          "transition_error": 0.49303621169916434,
+          "transition_n": 359,
+          "p50_ns": 250,
+          "p95_ns": 680,
+          "max_pending": 0
+        },
+        "scalar_bayes": {
+          "error": 0.0698,
+          "brier": 0.061141774699115525,
+          "transition_error": 0.7325905292479109,
+          "transition_n": 359,
+          "p50_ns": 440,
+          "p95_ns": 860,
+          "max_pending": 0
+        },
+        "graph_filter": {
+          "error": 0.1164,
+          "brier": 0.10034451282840431,
+          "transition_error": 0.8328690807799443,
+          "transition_n": 359,
+          "p50_ns": 1300,
+          "p95_ns": 4220,
+          "max_pending": 0
+        },
+        "velocity_no_transport": {
+          "error": 0.1452,
+          "brier": 0.11136621298757912,
+          "transition_error": 0.8579387186629527,
+          "transition_n": 359,
+          "p50_ns": 640,
+          "p95_ns": 3140,
+          "max_pending": 0
+        },
+        "velocity_shuffled_topology": {
+          "error": 0.2214,
+          "brier": 0.14719947908589057,
+          "transition_error": 0.6908077994428969,
+          "transition_n": 359,
+          "p50_ns": 640,
+          "p95_ns": 3150,
+          "max_pending": 2
+        },
+        "velocity_field": {
+          "error": 0.2242,
+          "brier": 0.14722634998887008,
+          "transition_error": 0.6406685236768802,
+          "transition_n": 359,
+          "p50_ns": 630,
+          "p95_ns": 3110,
+          "max_pending": 2
+        },
+        "ruqu_end_to_end": {
+          "error": 0.2208,
+          "brier": 0.15053443985058865,
+          "transition_error": 0.637883008356546,
+          "transition_n": 359,
+          "p50_ns": 7330,
+          "p95_ns": 16840,
+          "max_pending": 2
+        },
+        "ruqu_phase_zero_end_to_end": {
+          "error": 0.2248,
+          "brier": 0.155380200214925,
+          "transition_error": 0.6545961002785515,
+          "transition_n": 359,
+          "p50_ns": 6790,
+          "p95_ns": 13940,
+          "max_pending": 2
+        },
+        "ruqu_analytic": {
+          "error": 0.2208,
+          "brier": 0.15053443985058865,
+          "transition_error": 0.637883008356546,
+          "transition_n": 359,
+          "p50_ns": 890,
+          "p95_ns": 3610,
+          "max_pending": 2
+        }
+      }
+    },
+    {
+      "seed": 2268424172,
+      "event_sha256": "b3fc40844156190b57ba90db6e267827b315d70947ea3a3f2965394b5becfcf2",
+      "prediction_sha256": "abeb16fbf982d870a818f0da9d59c94747243a98fa61201d5d7d4e484b5a08e4",
+      "models": {
+        "memoryless": {
+          "error": 0.5264,
+          "brier": 0.22996643869217695,
+          "transition_error": 0.5186104218362283,
+          "transition_n": 403,
+          "p50_ns": 200,
+          "p95_ns": 590,
+          "max_pending": 0
+        },
+        "scalar_bayes": {
+          "error": 0.0896,
+          "brier": 0.07234117487934207,
+          "transition_error": 0.7692307692307693,
+          "transition_n": 403,
+          "p50_ns": 390,
+          "p95_ns": 740,
+          "max_pending": 0
+        },
+        "graph_filter": {
+          "error": 0.1246,
+          "brier": 0.10855657801911113,
+          "transition_error": 0.7816377171215881,
+          "transition_n": 403,
+          "p50_ns": 1040,
+          "p95_ns": 2410,
+          "max_pending": 0
+        },
+        "velocity_no_transport": {
+          "error": 0.1444,
+          "brier": 0.11932914329361566,
+          "transition_error": 0.8064516129032258,
+          "transition_n": 403,
+          "p50_ns": 590,
+          "p95_ns": 1130,
+          "max_pending": 0
+        },
+        "velocity_shuffled_topology": {
+          "error": 0.2134,
+          "brier": 0.153475376590423,
+          "transition_error": 0.6575682382133995,
+          "transition_n": 403,
+          "p50_ns": 580,
+          "p95_ns": 1100,
+          "max_pending": 2
+        },
+        "velocity_field": {
+          "error": 0.238,
+          "brier": 0.1604658127817497,
+          "transition_error": 0.749379652605459,
+          "transition_n": 403,
+          "p50_ns": 560,
+          "p95_ns": 1000,
+          "max_pending": 2
+        },
+        "ruqu_end_to_end": {
+          "error": 0.238,
+          "brier": 0.16233875956352317,
+          "transition_error": 0.7543424317617866,
+          "transition_n": 403,
+          "p50_ns": 6600,
+          "p95_ns": 13980,
+          "max_pending": 2
+        },
+        "ruqu_phase_zero_end_to_end": {
+          "error": 0.2372,
+          "brier": 0.16788052450011118,
+          "transition_error": 0.7543424317617866,
+          "transition_n": 403,
+          "p50_ns": 6470,
+          "p95_ns": 12660,
+          "max_pending": 2
+        },
+        "ruqu_analytic": {
+          "error": 0.238,
+          "brier": 0.16233875956352317,
+          "transition_error": 0.7543424317617866,
+          "transition_n": 403,
+          "p50_ns": 800,
+          "p95_ns": 1800,
+          "max_pending": 2
+        }
+      }
+    },
+    {
+      "seed": 3709305038,
+      "event_sha256": "22c622dceed09223e87d99fd705f0f76f072e765560cee27fe938c22473a3baa",
+      "prediction_sha256": "60b2183d80cd979e4b799423fb9580b4d8379a9093fe509e759e1b19830ee9db",
+      "models": {
+        "memoryless": {
+          "error": 0.5516,
+          "brier": 0.22659921738526695,
+          "transition_error": 0.5013333333333333,
+          "transition_n": 375,
+          "p50_ns": 220,
+          "p95_ns": 630,
+          "max_pending": 0
+        },
+        "scalar_bayes": {
+          "error": 0.0658,
+          "brier": 0.05737921282911389,
+          "transition_error": 0.6826666666666666,
+          "transition_n": 375,
+          "p50_ns": 390,
+          "p95_ns": 710,
+          "max_pending": 0
+        },
+        "graph_filter": {
+          "error": 0.1138,
+          "brier": 0.09513310466687559,
+          "transition_error": 0.7813333333333333,
+          "transition_n": 375,
+          "p50_ns": 1050,
+          "p95_ns": 2240,
+          "max_pending": 0
+        },
+        "velocity_no_transport": {
+          "error": 0.1386,
+          "brier": 0.10393053936749265,
+          "transition_error": 0.768,
+          "transition_n": 375,
+          "p50_ns": 590,
+          "p95_ns": 1060,
+          "max_pending": 0
+        },
+        "velocity_shuffled_topology": {
+          "error": 0.22,
+          "brier": 0.14233246672824704,
+          "transition_error": 0.6426666666666667,
+          "transition_n": 375,
+          "p50_ns": 590,
+          "p95_ns": 1080,
+          "max_pending": 2
+        },
+        "velocity_field": {
+          "error": 0.213,
+          "brier": 0.1375328881470131,
+          "transition_error": 0.6613333333333333,
+          "transition_n": 375,
+          "p50_ns": 560,
+          "p95_ns": 990,
+          "max_pending": 2
+        },
+        "ruqu_end_to_end": {
+          "error": 0.2,
+          "brier": 0.1370866761021699,
+          "transition_error": 0.6613333333333333,
+          "transition_n": 375,
+          "p50_ns": 6630,
+          "p95_ns": 13640,
+          "max_pending": 2
+        },
+        "ruqu_phase_zero_end_to_end": {
+          "error": 0.214,
+          "brier": 0.14890567121027984,
+          "transition_error": 0.64,
+          "transition_n": 375,
+          "p50_ns": 6490,
+          "p95_ns": 12140,
+          "max_pending": 2
+        },
+        "ruqu_analytic": {
+          "error": 0.2,
+          "brier": 0.13708667610216993,
+          "transition_error": 0.6613333333333333,
+          "transition_n": 375,
+          "p50_ns": 800,
+          "p95_ns": 1650,
+          "max_pending": 2
+        }
+      }
+    }
+  ],
+  "raw_results_sha256": "123dbb4918baad33a219cfcc22deebbcd0d2de1c5ef37411e770f514f9923a04"
+}
