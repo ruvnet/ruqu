@@ -1,0 +1,118 @@
+{
+  "protocol_sha256": "68ad6d61bb8936111715e716c1a2d3f9a76cbb4b95dd6c0dff83a6b8ee582bdf",
+  "source_sha256": "67ca6ba6d9eacf9ddcfbdf2fc95ee62dc439a275ed3aa2f2ae256c7ed21303c8",
+  "node": "v20.20.2",
+  "platform": "linux",
+  "cpu": "AMD EPYC",
+  "topology": {
+    "indexType": "flat",
+    "usesHnsw": false,
+    "neighbors": [
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "queryCheck": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "seeds": 5,
+  "events": 25000,
+  "elapsed_s": 1.187775368,
+  "events_per_second": 21047.750840376073,
+  "peak_process_rss_kib": 126916,
+  "timing_scope": "End to end update latency, fixed order, no warmup. Diagnostic only. RSS includes every model and raw storage.",
+  "known_new_provider_spend_usd": 0,
+  "existing_compute_cost": "unknown",
+  "strongest_baseline": "scalar_bayes",
+  "field_relative_error_reduction_mean": -2.0123584945520503,
+  "field_relative_error_reduction_95_t_interval": [
+    -2.4200953723442087,
+    -1.6046216167598917
+  ],
+  "max_ruqu_analytic_delta": 5.551115123125783e-16,
+  "acceptance_passed": false,
+  "summary": {
+    "memoryless": {
+      "error": 0.50412,
+      "brier": 0.22854478199295625,
+      "transition_error": 0.493745677291028,
+      "p50_ns": 242,
+      "p95_ns": 996,
+      "max_pending": 0
+    },
+    "scalar_bayes": {
+      "error": 0.07771999999999998,
+      "brier": 0.06506493634241625,
+      "transition_error": 0.7220906356377339,
+      "p50_ns": 408,
+      "p95_ns": 874,
+      "max_pending": 0
+    },
+    "graph_filter": {
+      "error": 0.12087999999999999,
+      "brier": 0.10290978942887581,
+      "transition_error": 0.7890376644483375,
+      "p50_ns": 1160,
+      "p95_ns": 3314,
+      "max_pending": 0
+    },
+    "velocity_no_transport": {
+      "error": 0.14876,
+      "brier": 0.11425139732959486,
+      "transition_error": 0.8092124496840704,
+      "p50_ns": 606,
+      "p95_ns": 1868,
+      "max_pending": 0
+    },
+    "velocity_shuffled_topology": {
+      "error": 0.22292,
+      "brier": 0.1507932931165321,
+      "transition_error": 0.6707697037632677,
+      "p50_ns": 606,
+      "p95_ns": 1940,
+      "max_pending": 2.2
+    },
+    "velocity_field": {
+      "error": 0.22936,
+      "brier": 0.15157124361831698,
+      "transition_error": 0.6808531082376458,
+      "p50_ns": 586,
+      "p95_ns": 1756,
+      "max_pending": 2.2
+    },
+    "ruqu_end_to_end": {
+      "error": 0.22347999999999998,
+      "brier": 0.15401589209895344,
+      "transition_error": 0.6834843537117268,
+      "p50_ns": 7210,
+      "p95_ns": 16744,
+      "max_pending": 2.2
+    },
+    "ruqu_phase_zero_end_to_end": {
+      "error": 0.23044000000000003,
+      "brier": 0.16005145785793887,
+      "transition_error": 0.6799330687424368,
+      "p50_ns": 6874,
+      "p95_ns": 14744,
+      "max_pending": 2.2
+    },
+    "ruqu_analytic": {
+      "error": 0.22347999999999998,
+      "brier": 0.1540158920989¢ëiºÛkºwµç

@@ -1,0 +1,10 @@
+{
+  "preregistration_commit": "1f4fdce71c660e41adb41b25eef99b951daef995",
+  "protocol_sha256": "68ad6d61bb8936111715e716c1a2d3f9a76cbb4b95dd6c0dff83a6b8ee582bdf",
+  "source_sha256": "67ca6ba6d9eacf9ddcfbdf2fc95ee62dc439a275ed3aa2f2ae256c7ed21303c8",
+  "raw_results_sha256": "123dbb4918baad33a219cfcc22deebbcd0d2de1c5ef37411e770f514f9923a04",
+  "local_node_24": {"tests":8,"verify":true,"acceptance":false},
+  "ruos_node_20": {"tests":8,"verify":true,"acceptance":false,"events_per_second":21047.750840376073,"peak_process_rss_kib":126916},
+  "deterministic_outputs_match": true,
+  "nondeterministic_fields": ["latency","throughput","peak RSS","results file hash"]
+}
