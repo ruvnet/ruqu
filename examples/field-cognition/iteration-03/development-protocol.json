@@ -1,0 +1,19 @@
+{
+  "status": "frozen before development search",
+  "campaign": "field-cognition-20260926",
+  "iteration": 3,
+  "task": "forecast node zero state 3 seconds ahead from asynchronous observations",
+  "development_seeds": [2732895788, 1374097762, 2320827604, 3355307739, 4163301755],
+  "holdout_seeds_reserved_unread": [3455300051, 1019182862, 653201376, 2268424172, 3709305038],
+  "events_per_seed": 5000,
+  "generator": {"nodes":4,"wave_probability_per_event":0.012,"seconds_per_hop":3,"forecast_horizon_seconds":3,"missing_probability":0.2,"gaussian_sigma":1.1,"outlier_probability":0.03,"continuous_time_arrivals":true},
+  "equal_search_budget": {
+    "scalar_bayes": {"hazard_rate":[0.002,0.008,0.02],"observation_temperature":[0.8,1,1.2]},
+    "graph_filter": {"hazard_rate":[0.002,0.008,0.02],"diffusion":[0,0.05,0.1]},
+    "velocity_field": {"hazard_rate":[0.002,0.008,0.02],"change_threshold":[0.55,0.7,0.85]}
+  },
+  "selection_metric": "mean development decision error",
+  "holdout_rule": "commit selected configurations and protocol before executing holdout",
+  "acceptance": "at least 10 percent mean paired relative error reduction against strongest comparator over five holdout seeds, with all tests passing",
+  "scientific_limits": "Synthetic state forecasting. Classical simulation only. No Phi, consciousness, quantum advantage, or physical field claim."
+}
