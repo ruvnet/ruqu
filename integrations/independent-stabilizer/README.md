@@ -41,3 +41,15 @@ The CLI uses SplitMix64 with wrapping unsigned 64-bit arithmetic. The initial st
 This CLI is deliberately a small circuit protocol, not a parser for OpenQASM or a replacement for the existing ruqu simulator. No adapter accepting the existing `ruqu_core::QuantumCircuit` type is delivered. Unsupported gates are rejected. Future GPU work needs a separately validated asynchronous executor, device-limit handling, and CPU/GPU correctness tests before any GPU capability claim.
 
 To roll back the experiment, remove this isolated integration directory and its associated integration-only changes. No default backend selection changes are required.
+# Validation and diagnostic timing
+
+Run `cargo test --manifest-path integrations/independent-stabilizer/Cargo.toml --locked --offline`
+from the repository root. The tests include an independent dense oracle, separate
+development and confirmation seeds, sparse analytic checks across packed-word
+boundaries, and the complete circuit CLI. See [ADR.md](ADR.md) for the source
+separation protocol and [EVIDENCE.md](EVIDENCE.md) for verified run outcomes.
+
+For process-inclusive diagnostic timing, build with
+`cargo build --release --manifest-path integrations/independent-stabilizer/Cargo.toml --locked --offline`
+and run `python3 integrations/independent-stabilizer/benchmark.py`.
+This script has no competing simulator baseline and establishes no speedup.
