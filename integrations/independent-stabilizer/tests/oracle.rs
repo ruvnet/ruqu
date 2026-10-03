@@ -118,3 +118,85 @@ fn invalid_gate_indices_are_rejected() {
     for gate in [Gate::H(2),Gate::S(2),Gate::X(2),Gate::Y(2),Gate::Z(2),Gate::Reset(2,false),Gate::Cx(2,0),Gate::Cx(0,2),Gate::Cx(1,1)] { assert!(t.apply(gate).is_err()); }
     assert!(t.measure_z(2,false).is_err());check_dense(&t,&Oracle::new(2));
 }
+
+#[test]
+fn invalid_and_over_budget_dimensions_are_rejected() {
+    let mut empty = Tableau::new(0).unwrap();
+    assert_eq!(empty.qubits(), 0);
+    assert!(empty.row(0).is_none());
+    for gate in [Gate::H(0),Gate::S(0),Gate::X(0),Gate::Y(0),Gate::Z(0),Gate::Cx(0,0),Gate::Reset(0,false)] {
+        assert!(empty.apply(gate).is_err());
+    }
+    assert!(empty.measure_z(0,false).is_err());
+    assert!(empty.measure_z(0,true).is_err());
+    assert_eq!(empty.qubits(), 0);
+    assert!(empty.row(0).is_none());
+    assert!(Tableau::new(usize::MAX).is_err());
+    // Even the packed X/Z payload alone exceeds the 64 MiB allocation cap.
+    assert!(Tableau::new(20_000).is_err());
+}
+
+fn check_sparse_cat(t: &Tableau, bases: &[Vec<bool>; 2], amplitudes: [C; 2]) {
+    let n = t.qubits();
+    for r in n..2*n {
+        let row = t.row(r).unwrap();
+        for branch in 0..2 {
+            let mut output = bases[branch].clone();
+            let mut coefficient = amplitudes[branch];
+            let mut phase = if row.negative { 2 } else { 0 };
+            let mut minus = false;
+            for q in 0..n {
+                let x = bit(row.x, q); let z = bit(row.z, q);
+                phase += usize::from(x && z);
+                minus ^= z && bases[branch][q];
+                output[q] ^= x;
+            }
+            for _ in 0..phase%4 { coefficient = coefficient.i(); }
+            if minus { coefficient = coefficient.scale(-1.); }
+            let target = if output == bases[0] { amplitudes[0] }
+                else if output == bases[1] { amplitudes[1] }
+                else { panic!("cat stabilizer maps outside support: row {r}"); };
+            assert!(coefficient.sub(target).norm2() < 1e-20,
+                "phase-rich cat stabilizer {r}, branch {branch}");
+        }
+    }
+}
+
+#[test]
+fn multiword_phase_rich_cat_and_deterministic_row_products() {
+    for n in [31,32,33,255,256,257] { for random in [false,true] {
+        let mut t = Tableau::new(n).unwrap();
+        t.apply(Gate::H(0)).unwrap();
+        for q in 1..n { t.apply(Gate::Cx(0,q)).unwrap(); }
+        let mut bases = [vec![false;n],vec![true;n]];
+        let mut amplitudes = [C { re: std::f64::consts::FRAC_1_SQRT_2, im: 0. };2];
+        for q in 0..n {
+            t.apply(Gate::S(q)).unwrap();
+            for branch in 0..2 { if bases[branch][q] { amplitudes[branch] = amplitudes[branch].i(); } }
+        }
+        for q in [0,1,30,31,32,33,254,255,256].into_iter().filter(|&q|q<n) {
+            t.apply(Gate::Y(q)).unwrap();
+            for branch in 0..2 {
+                amplitudes[branch] = amplitudes[branch].i().scale(if bases[branch][q] {-1.} else {1.});
+                bases[branch][q] ^= true;
+            }
+            check_sparse_cat(&t,&bases,amplitudes);
+        }
+        check_structure(&t);
+        let measured = t.measure_z(n-1,random).unwrap();
+        assert_eq!(measured,random);
+        let selected = usize::from(bases[0][n-1] != measured);
+        // Each remaining Z outcome is deterministic; many observables are
+        // products of stored rows rather than individual stabilizer generators.
+        for q in (0..n).rev() {
+            assert_eq!(t.measure_z(q,!random).unwrap(),bases[selected][q]);
+        }
+        check_structure(&t);
+        for r in n..2*n {
+            let row=t.row(r).unwrap();
+            assert!(row.x.iter().all(|&w|w==0));
+            let expected=(0..n).fold(false,|parity,q|parity^(bit(row.z,q)&&bases[selected][q]));
+            assert_eq!(row.negative,expected);
+        }
+    }}
+}
