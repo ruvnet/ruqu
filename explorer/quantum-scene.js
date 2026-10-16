@@ -18,7 +18,7 @@ function scene(){if(!ctx)return;const [w,h]=fit(canvas);ctx.clearRect(0,0,w,h);i
 }
 const slider=document.getElementById('phase-angle');
 function waves(){if(!wc)return;const [w,h]=fit(wave);wc.clearRect(0,0,w,h);const phi=Number(slider.value)/100*Math.PI;for(let k=0;k<3;k++){wc.beginPath();for(let x=0;x<=w;x+=2){const a=x/Math.max(w,1)*tau*2-clock;const value=k===0?Math.sin(a):k===1?Math.sin(a+phi):(Math.sin(a)+Math.sin(a+phi))/2;const y=(k+1)*h/4+value*19;x?wc.lineTo(x,y):wc.moveTo(x,y);}wc.strokeStyle=['#6ee8ed','#ae97ff','#f1ca79'][k];wc.lineWidth=2;wc.stroke();} }
-slider.addEventListener('input',()=>{const a=Number(slider.value)/100;document.getElementById('phase-value').textContent=`${a.toFixed(2)}π`;const p=Math.cos(a*Math.PI/2)**2;document.getElementById('phase-probability').textContent=`P(0) ${(p*100).toFixed(1)}% · P(1) ${((1-p)*100).toFixed(1)}%`;dirty=true;});
+slider.addEventListener('input',()=>{const a=Number(slider.value)/100;document.getElementById('phase-value').textContent=`${a.toFixed(2)}π`;const p=Math.cos(a*Math.PI/2)**2;document.getElementById('phase-explanation').textContent=p>.999?'The waves line up. The result is always 0.':p<.001?'The waves cancel for 0. The result is always 1.':`Both answers are possible: about ${Math.round(p*100)} in 100 results would be 0 over many fresh runs.`;document.getElementById('phase-probability').textContent=`P(0) ${(p*100).toFixed(1)}% · P(1) ${((1-p)*100).toFixed(1)}%`;dirty=true;});
 canvas.addEventListener('pointerdown',e=>{dragging={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!dragging)return;yaw+=(e.clientX-dragging.x)*.008;pitch=Math.max(-1.2,Math.min(1.2,pitch+(e.clientY-dragging.y)*.008));dragging={x:e.clientX,y:e.clientY};dirty=true;});
 for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,()=>dragging=null);
@@ -26,5 +26,5 @@ canvas.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','A
 document.getElementById('reset-camera').onclick=()=>{yaw=.35;pitch=.3;dirty=true;};
 new ResizeObserver(()=>dirty=true).observe(canvas);
 new ResizeObserver(()=>dirty=true).observe(wave);
-function frame(t){requestAnimationFrame(frame);if(document.hidden||canvas.closest('.view').hidden){previous=t;return;}const paused=document.body.classList.contains('motion-paused')||reduced.matches;const dt=Math.min((t-previous)/1000,.05);if(t-previous<33&&!dirty)return;previous=t;if(!paused){clock+=dt*.9;if(!dragging)yaw+=dt*.07;}if(dirty||!paused){scene();waves();dirty=false;}}
+function frame(t){requestAnimationFrame(frame);if(document.hidden||canvas.closest('.view').hidden){previous=t;return;}const paused=document.body.classList.contains('motion-paused');const dt=Math.min((t-previous)/1000,.05);if(t-previous<33&&!dirty)return;previous=t;if(!paused){clock+=dt*.9;if(!dragging)yaw+=dt*.07;}if(dirty||!paused){scene();waves();dirty=false;}}
 requestAnimationFrame(frame);
