@@ -1,4 +1,4 @@
-import { saveCloudCircuit } from './cloud-export.js';
+import { saveCloudCircuit, cloudCircuit } from './cloud-export.js';
 import { updateConstellation } from './quantum-scene.js';
 const $ = id => document.getElementById(id);
 const make = (tag, className, content) => {const e=document.createElement(tag);if(className)e.className=className;if(content!==undefined)e.textContent=content;return e;};
@@ -61,3 +61,5 @@ renderCircuit();startWorker();
 document.addEventListener('ruqu-welcome-bell',()=>{navigate('circuit');location.hash='circuit';if(!job)preset('bell');$('run-spatial').scrollIntoView({block:'center'});if(!$('run-spatial').disabled)$('run-spatial').focus();});
 
 $('cloud-export').onclick=()=>{try{saveCloudCircuit(qubits,gates);}catch(e){notify(e.message);}};
+
+$('ai-import').onchange=async()=>{try{if(job)throw Error('Wait for the running experiment.');const file=$('ai-import').files[0];if(!file)return;if(file.size>65536)throw Error('AI proposal exceeds 64 KiB');const data=JSON.parse(await file.text());const plan=data.proposal??data;if(typeof plan.explanation!=='string'||plan.explanation.length>4000)throw Error('Invalid proposal explanation');const clean=cloudCircuit(plan.qubits,plan.gates);if(job)throw Error('Wait for the running experiment.');qubits=clean.qubits;gates=clean.gates;$('qubits').value=qubits;circuitChanged();$('ai-explanation').textContent='AI suggestion, not verified: '+plan.explanation;notify('Proposal loaded. Run the circuit to calculate its results locally.');}catch(e){notify(e.message);}finally{$('ai-import').value='';}};

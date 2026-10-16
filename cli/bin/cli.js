@@ -208,8 +208,19 @@ export async function run(argv) {
       }
       console.log(JSON.stringify(lab.run(options),null,2)); return 0;
     }
+    case 'ai-plan': case 'ai-evaluate': case 'ai-harness': {
+      const ai=await import('../src/cognitum.mjs');
+      if(cmd==='ai-harness'){if(rest.length)throw Error('Usage: ai-harness');console.log(JSON.stringify(await ai.harnessSpec(),null,2));return 0;}
+      const options={};const allowed=cmd==='ai-plan'?['--goal','--model']:['--input'];
+      for(let i=0;i<rest.length;i+=2){if(!allowed.includes(rest[i])||options[rest[i]]!==undefined||rest[i+1]===undefined)throw Error('Invalid AI command options');options[rest[i]]=rest[i+1];}
+      let result;
+      if(cmd==='ai-plan')result=await ai.propose(options['--goal'],options['--model']);
+      else{const {open}=await import('node:fs/promises');const f=await open(options['--input'],'r');let bytes;try{const b=Buffer.alloc(65537);let offset=0;while(offset<b.length){const r=await f.read(b,offset,b.length-offset,null);if(!r.bytesRead)break;offset+=r.bytesRead;}if(offset>65536)throw Error('Plan exceeds 64 KiB');bytes=b.subarray(0,offset);}finally{await f.close();}result=await ai.evaluate(JSON.parse(bytes));}
+      console.log(JSON.stringify(result,null,2));return 0;
+    }
     case 'version': case '--version': return version();
     case 'help': case '--help':
+      console.log('Cognitum: ai-plan --goal TEXT --model MODEL_ID | ai-evaluate --input PLAN.json | ai-harness');
       console.log('Observer laboratory: ruqu observer-lab [--count N --seed N] | --benchmark');
       console.log('Research API: ruqu research [--input file.json | --json JSON] (or JSON stdin)');
       console.log('Research memory: ruqu research-memory export|import|query|recommend --input FILE [--output FILE | --target FILE]');
