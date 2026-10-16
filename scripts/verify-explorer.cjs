@@ -2,6 +2,8 @@
 'use strict';
 // Browser acceptance tests against the committed Rust WASM, served at a project
 // subpath like GitHub Pages. Requires Playwright and its Chromium installation.
+// Optional: PLAYWRIGHT_MODULE=/absolute/path/to/playwright
+// Optional: CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome-headless-shell
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const path = require('node:path');
@@ -40,7 +42,11 @@ async function main() {
     await page.goto(url);
     await page.locator('#run-circuit').waitFor({state:'visible'});
     await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled, null, {timeout:30000});
-    await page.locator('#run-circuit').click();
+    const circuitLocked = await page.locator('#run-circuit').evaluate(button => {
+      button.click();
+      return ['qubits','gate','add-gate','reset-circuit'].every(id=>document.getElementById(id).disabled);
+    });
+    assert.equal(circuitLocked,true);
     await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled && !document.querySelector('#probabilities .empty-state'));
     const bellText = await page.locator('#probabilities').innerText();
     assert.match(bellText,/00/);
@@ -49,6 +55,26 @@ async function main() {
     assert.match(await page.locator('#circuit-meta').innerText(),/2/);
     await fs.mkdir(screenshotDirectory,{recursive:true});
     await page.screenshot({path:path.join(screenshotDirectory,'circuit-desktop.png'),fullPage:true});
+    for (const [preset, expected] of [['ghz',['|000⟩','|111⟩']],['interference',['|01⟩']]]) {
+      await page.locator(`[data-preset="${preset}"]`).click();
+      assert.match(await page.locator('#circuit-result-caption').innerText(),/previous run/i);
+      await page.locator('#run-circuit').click();
+      await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled && !document.querySelector('#circuit-result-caption').textContent.includes('previous run'));
+      assert.deepEqual(await page.locator('#probabilities .basis').allTextContents(),expected);
+    }
+    const gateCount = await page.locator('#gate-list button').count();
+    await page.locator('#gate-list button').first().click();
+    assert.equal(await page.locator('#gate-list button').count(),gateCount-1);
+    await page.locator('#add-gate').click();
+    assert.equal(await page.locator('#gate-list button').count(),gateCount);
+    await page.locator('#gate').selectOption('cnot');
+    await page.locator('#gate-target').selectOption('0');
+    await page.locator('#add-gate').click();
+    assert.match(await page.locator('#toast').innerText(),/must differ/i);
+    assert.equal(await page.locator('#gate-list button').count(),gateCount);
+    await page.locator('#reset-circuit').click();
+    assert.equal(await page.locator('#gate-list button').count(),0);
+    await page.locator('[data-preset="bell"]').click();
     async function navigate(view) {
       const button = page.locator(`[data-view="${view}"]`);
       if (!(await button.isVisible())) await page.locator('#nav-toggle').click();
@@ -90,8 +116,13 @@ async function main() {
     await navigate('cultivation');
     await page.locator('#cultivation-attempts').selectOption('1');
     for(const field of ['#cultivation-gate','#cultivation-prep','#cultivation-measure']) await page.locator(field).fill('0');
-    await page.locator('#cultivation-form button[type=submit]').click();
+    const cultivationLocked = await page.locator('#cultivation-form').evaluate(form => {
+      form.requestSubmit();
+      return ['qubits','gate','add-gate','reset-circuit','cultivation-attempts','factory-error'].every(id=>document.getElementById(id).disabled);
+    });
+    assert.equal(cultivationLocked,true);
     await page.waitForFunction(() => !document.querySelector('#cultivation-results .empty-state') && !document.querySelector('#cultivation-form button[type=submit]').disabled, null, {timeout:120000});
+    assert.equal(await page.locator('#qubits').isEnabled(),true);
     const cultivationText = await page.locator('#cultivation-results').innerText();
     assert.match(cultivationText,/accept/i);
     assert.match(cultivationText,/fidelity/i);
@@ -114,6 +145,17 @@ async function main() {
     }));
     assert.equal(invalidReply.type,'error');
     assert.equal(invalidReply.result,undefined);
+    await navigate('cultivation');
+    await page.locator('#cultivation-attempts').selectOption('32');
+    const cancellationUnlocked = await page.locator('#cultivation-form').evaluate(form => {
+      form.requestSubmit();
+      const locked = document.getElementById('qubits').disabled;
+      document.getElementById('cancel').click();
+      return locked && !document.getElementById('qubits').disabled;
+    });
+    assert.equal(cancellationUnlocked,true);
+    await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled);
+    assert.equal(await page.locator('#cultivation-attempts').isEnabled(),true);
     await page.setViewportSize({width:320,height:800});
     for(const view of ['circuit','factory','cultivation','evidence']) {
       await navigate(view);
@@ -125,7 +167,7 @@ async function main() {
     assert.equal(await page.locator('#motion').getAttribute('aria-pressed'),'true');
     assert.deepEqual(errors,[],`Browser errors: ${errors.join('\n')}`);
     assert.deepEqual(failures,[],`HTTP failures: ${failures.join('\n')}`);
-    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['Bell circuit','factory','native validation','cultivation','evidence download','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
+    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['Bell circuit','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
   } finally {
     if(browser) await browser.close();
     await new Promise(resolve=>server.close(resolve));

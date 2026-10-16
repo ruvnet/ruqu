@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "kind": "local_classical_model_acceptance",
-  "generated_at": "2026-10-16T15:11:33.133Z",
-  "checkout_commit": "e4a7ed3f0ed3c929178888000f5140f6802c7517",
+  "generated_at": "2026-10-16T15:15:10.711Z",
+  "checkout_commit": "6ebec77d3d027a605326db9cb20a68a3a0148762",
   "node": "v24.19.0",
   "rust": "rustc 1.90.0 (1159e78c4 2025-09-14)",
   "platform": "linux/x64",
@@ -71,7 +71,7 @@
     "expectation": 0.7071067811865476,
     "peak_terms": 1,
     "work": 49408,
-    "elapsed_us": 198,
+    "elapsed_us": 196,
     "hardware_run": false
   },
   "correlated_decoder": {
@@ -86,15 +86,15 @@
   "enumerator_benchmark": {
     "benchmark": "magic_state_weight_spectrum",
     "iterations": 500,
-    "cold_dp_total_ns": 32761559,
-    "enumeration_total_ns": 2836389924,
-    "cached_total_ns": 77487,
+    "cold_dp_total_ns": 36942814,
+    "enumeration_total_ns": 2976079272,
+    "cached_total_ns": 122804,
     "matching_spectra": true,
     "build_profile": "debug"
   },
   "file_sha256": {
-    ".github/workflows/quantum-research.yml": "39e69e5a5c39e38f56217cbc89359e7b01a37c675e65ffe76c71670981a090fa",
-    "README.md": "ca58947cadc1ecfd9e121cae6e6cf3825e011bd5211bdfeb203be918bec76694",
+    ".github/workflows/quantum-research.yml": "afbd23e8373273f8a7b68b027971488856687643e7eab7faab71eb76f1add871",
+    "README.md": "a8a9c33bcd3cca1d1ae7e644bd8be878d7eaaf477b4d15d1d64b6cb1830770e0",
     "cli/README.md": "e6fca3b9f395cd1c8d898219ab05ee863877cd304b4fb0e0d9b2c418dc687a77",
     "cli/bin/cli.js": "8937ea09731cb325a0fd798103b7905fecbceca5889bbe1ac2c79bf12d6e9a89",
     "cli/src/magic-factory.cjs": "8686ee18b74f812a2a3aa399fa20b9aebd2b2894c1ad7f732f5fcd1ed3597c98",
@@ -114,7 +114,7 @@
     "docs/assets/ruqu-architecture.svg": "c48b78e26e742dd9963fdcd1346f26397bf33bc252791a26c4f779801f1c3f60",
     "docs/assets/ruqu-introduction.svg": "a238cd0452ea154df46d0d5c842eb27ad9f0b68a5b5d507101e938b8d1eb517d",
     "docs/assets/ruqu-magic-walkthrough.svg": "ee8ef36ba427ac3afb6c9707e8bacf3d5890e509b45ac2fff2af53c5d8d40d81",
-    "docs/research/2026-10-16-quantum-advances.md": "31600b43bb98684d3ae15294588975b8170540dabd1e34e383e30cc88452db58",
+    "docs/research/2026-10-16-quantum-advances.md": "973e154bbc87159f6bd5b0f301fd6e2f2227bef23433d19d94508904fc9703c7",
     "scripts/verify-docs.py": "2fb57437ac3073de21c12d040cf205e7a71613883b10c7e59cf643c39568970e",
     "scripts/verify-research.cjs": "2df6cc10b8b535beba922f0f1d4fab36e72b40e3ed466f739d5b14e993ae9438"
   }

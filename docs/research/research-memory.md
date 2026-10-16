@@ -81,3 +81,7 @@ node --test cli/tests/research-memory.test.cjs
 ```
 
 Acceptance: export genuine measured records, reopen both files in a fresh process, reproduce the exact record hashes and retrieval identities, mutate one byte and observe rejection, then demonstrate that an imported recommendation cannot change the selected backend or satisfy promotion without locally validated paired holdouts.
+
+## Measured software example
+
+Run `node scripts/measure-research-memory.cjs` to measure two seeded Rust WASM factory runs and verify a real RVF roundtrip. [Recorded measurements](ruqu-research-measurement-report.json), [records](ruqu-research-measured.json), [RVF binary](ruqu-research.rvf) and its required [metadata sidecar](ruqu-research.rvf.json) are included. These development runs do not authorize backend promotion. RSS is a process high water bound; resource estimates describe the ideal model, not hardware.

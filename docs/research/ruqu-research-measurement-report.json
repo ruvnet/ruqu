@@ -1,0 +1,195 @@
+{
+  "schema": "ruqu-research-software-measurements/v1",
+  "model": {
+    "model": "ideal_15_to_1_independent_Z",
+    "model_version": 1,
+    "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+    "cost_inputs": {
+      "rounds": 1,
+      "block_qubits": 15,
+      "block_rounds": 10,
+      "raw_qubits": 1,
+      "raw_rounds": 1
+    }
+  },
+  "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+  "wasmSha256": "51010b6b96947ce35e7923c9a881672c0b45692414cfebf8e479fe2e29fdcd6e",
+  "scriptSha256": "d3cd47a61a407d5d9ad24a5d85901db7324fe53d835a31afe61c6b88ee67aadf",
+  "export": {
+    "output": "/workspace/scratch/a7d2bd38eedd/ruqu/docs/research/ruqu-research.rvf",
+    "manifest": "/workspace/scratch/a7d2bd38eedd/ruqu/docs/research/ruqu-research.rvf.json",
+    "records": 2,
+    "rvfSha256": "fe626c1bc6ba16cfa8271afc7a7e92218c0b9cccc6f5e494c79c55e615110196"
+  },
+  "rawRuns": [
+    {
+      "seed": "42",
+      "result": {
+        "assumptions": [
+          "independent input Z faults",
+          "ideal Clifford operations and syndrome checks",
+          "independent outputs between stages",
+          "no noise or latency inferred for hardware"
+        ],
+        "exact": {
+          "acceptance_probability": 0.8600903336704236,
+          "accepted_logical_error_probability": 0.000031038668143127715,
+          "conditional_output_error": 0.0000360876839653233,
+          "input_error": 0.01,
+          "rejected_probability": 0.13990966632957635
+        },
+        "hardware_run": false,
+        "model": "ideal_15_to_1_independent_Z",
+        "physical_cultivation_reproduction": false,
+        "resources": {
+          "block_cost": {
+            "qubits": 15,
+            "rounds": 10
+          },
+          "cost_basis": "illustrative defaults unless caller supplied; expected volume, not peak qubits or wall clock",
+          "expected_qubit_rounds": 191.8403143724041,
+          "expected_raw_states": 17.440028579309462,
+          "expected_stage_attempts": 1.1626685719539642,
+          "output_error_upper_bound": 0.0000360876839653233,
+          "raw_cost": {
+            "qubits": 1,
+            "rounds": 1
+          },
+          "stages": [
+            {
+              "acceptance_probability": 0.8600903336704236,
+              "accepted_logical_error_probability": 0.000031038668143127715,
+              "conditional_output_error": 0.0000360876839653233,
+              "input_error": 0.01,
+              "rejected_probability": 0.13990966632957635
+            }
+          ],
+          "transfer": null
+        },
+        "sample": {
+          "acceptance_estimate": 0.869,
+          "accepted": 869,
+          "attempts": 1000,
+          "conditional_output_error_estimate": 0,
+          "confidence": {
+            "acceptance": [
+              0.8221917387917801,
+              0.9158082612082199
+            ],
+            "conditional_output_error": [
+              0,
+              0.05021258968270009
+            ],
+            "joint_coverage": 0.95,
+            "method": "Hoeffding with union bound for two intervals"
+          },
+          "logical_errors": 0,
+          "rejected": 131,
+          "seed": "42"
+        },
+        "schema_version": 1
+      },
+      "measurement": {
+        "cliElapsedMs": 7.548693999999998,
+        "maxRssBytes": 42336256
+      },
+      "processElapsedMs": 84.478499
+    },
+    {
+      "seed": "43",
+      "result": {
+        "assumptions": [
+          "independent input Z faults",
+          "ideal Clifford operations and syndrome checks",
+          "independent outputs between stages",
+          "no noise or latency inferred for hardware"
+        ],
+        "exact": {
+          "acceptance_probability": 0.8600903336704236,
+          "accepted_logical_error_probability": 0.000031038668143127715,
+          "conditional_output_error": 0.0000360876839653233,
+          "input_error": 0.01,
+          "rejected_probability": 0.13990966632957635
+        },
+        "hardware_run": false,
+        "model": "ideal_15_to_1_independent_Z",
+        "physical_cultivation_reproduction": false,
+        "resources": {
+          "block_cost": {
+            "qubits": 15,
+            "rounds": 10
+          },
+          "cost_basis": "illustrative defaults unless caller supplied; expected volume, not peak qubits or wall clock",
+          "expected_qubit_rounds": 191.8403143724041,
+          "expected_raw_states": 17.440028579309462,
+          "expected_stage_attempts": 1.1626685719539642,
+          "output_error_upper_bound": 0.0000360876839653233,
+          "raw_cost": {
+            "qubits": 1,
+            "rounds": 1
+          },
+          "stages": [
+            {
+              "acceptance_probability": 0.8600903336704236,
+              "accepted_logical_error_probability": 0.000031038668143127715,
+              "conditional_output_error": 0.0000360876839653233,
+              "input_error": 0.01,
+              "rejected_probability": 0.13990966632957635
+            }
+          ],
+          "transfer": null
+        },
+        "sample": {
+          "acceptance_estimate": 0.865,
+          "accepted": 865,
+          "attempts": 1000,
+          "conditional_output_error_estimate": 0,
+          "confidence": {
+            "acceptance": [
+              0.8181917387917801,
+              0.9118082612082199
+            ],
+            "conditional_output_error": [
+              0,
+              0.0503285542475031
+            ],
+            "joint_coverage": 0.95,
+            "method": "Hoeffding with union bound for two intervals"
+          },
+          "logical_errors": 0,
+          "rejected": 135,
+          "seed": "43"
+        },
+        "schema_version": 1
+      },
+      "measurement": {
+        "cliElapsedMs": 10.578163000000004,
+        "maxRssBytes": 42205184
+      },
+      "processElapsedMs": 79.98770800000003
+    }
+  ],
+  "queries": [
+    {
+      "seed": "42",
+      "exactKey": "98e6cfcb939422cd0e99ba35d02a028a8a5a38f71813dfddf4e3aa83ce9b7d0a",
+      "exactDigest": "8be7d1fa7e0d42da5a608551cc8610286a3637afbfe35a55893955b3c6b750fc",
+      "matchingDigestRetrieved": "8be7d1fa7e0d42da5a608551cc8610286a3637afbfe35a55893955b3c6b750fc",
+      "distance": 0
+    },
+    {
+      "seed": "43",
+      "exactKey": "07157e2983786875e5f87516980b2d65bc84ad659627636a173e84274e669520",
+      "exactDigest": "51a1158ac84fad76a9e5ef0e4cc5866b704af7a5eecc80f187de29df83b451de",
+      "matchingDigestRetrieved": "51a1158ac84fad76a9e5ef0e4cc5866b704af7a5eecc80f187de29df83b451de",
+      "distance": 0
+    }
+  ],
+  "verdict": "Both measured software model records exported, imported and retrieved with exact matching keys and digests. No backend promotion or comparative performance claim.",
+  "caveats": [
+    "Ideal 15-to-1 independent-Z software model, not the physical cultivation circuit.",
+    "Cost defaults are illustrative expected resource estimates, not measured hardware costs.",
+    "maxRSS is a cumulative Node process high-water upper bound, not isolated WASM memory.",
+    "Seeds 42 and 43 are development examples, not predeclared holdout trials."
+  ]
+}
