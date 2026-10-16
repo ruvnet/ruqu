@@ -1,0 +1,23 @@
+name: Quantum research acceptance
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  reference-models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+      - run: cargo test -p ruqu-core --locked
+      - run: node --test cli/tests/*.test.cjs
+      - run: node scripts/verify-research.cjs
+      - run: cargo clippy -p ruqu-core --locked --all-targets -- -D warnings
+      - run: rustfmt --edition 2021 --check crates/ruqu-core/src/magic_states.rs crates/ruqu-core/src/hypergraph_decoder.rs crates/ruqu-core/src/pauli_propagation.rs crates/ruqu-core/tests/magic_states.rs crates/ruqu-core/tests/hypergraph_decoder.rs crates/ruqu-core/tests/pauli_propagation.rs crates/ruqu-core/examples/magic_states.rs crates/ruqu-core/examples/hypergraph_decoder.rs crates/ruqu-core/examples/pauli_propagation.rs
+      - run: python3 scripts/verify-docs.py

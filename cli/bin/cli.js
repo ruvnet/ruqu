@@ -92,7 +92,7 @@ function capabilities() {
   console.log(`  state @ max       ~${(mem / 1e6).toFixed(1)} MB`);
   console.log(`  gates             h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`);
   console.log(`  algorithms        simulate · grover · qaoa`);
-  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · version`);
+  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · magic-factory · version`);
   return 0;
 }
 
@@ -155,6 +155,13 @@ export async function run(argv) {
     case 'simulate': case 'sim': return simulate(rest);
     case 'grover': return grover(rest);
     case 'qaoa': return qaoa(rest);
+    case 'magic-factory': {
+      const factory = require(join(HERE, '..', 'src', 'magic-factory.cjs'));
+      const options = factory.parse(rest);
+      const result = options.research ? factory.research() : options.benchmark ? factory.benchmark() : factory.run(options);
+      console.log(JSON.stringify(result, null, 2));
+      return result.pass === false ? 1 : 0;
+    }
     case 'observer-lab': {
       const lab = require(join(HERE, '..', 'src', 'observer-lab.cjs'));
       if(rest.length===1 && rest[0]==='--benchmark') {
@@ -172,6 +179,7 @@ export async function run(argv) {
     case 'version': case '--version': return version();
     case 'help': case '--help':
       console.log('Observer laboratory: ruqu observer-lab [--count N --seed N] | --benchmark');
+      console.log('Magic state factory: ruqu magic-factory [--input-error P --shots N --seed N --rounds N] | --research | --benchmark');
       console.log(`Usage: ${HARNESS_NAME} <command>\n\n  init           boot the kernel + host adapter (default)\n  doctor         verify kernel + quantum WASM end-to-end\n  capabilities   list quantum capabilities\n  simulate       run a GHZ/Bell circuit  [--qubits N]\n  grover         Grover search           [--qubits N --target T --seed S]\n  qaoa           QAOA MaxCut on a ring    [--nodes N --p P]\n  version        print versions`);
       return 0;
     default:

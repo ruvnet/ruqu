@@ -1,0 +1,12 @@
+{
+  "benchmark": "magic_state_weight_spectrum",
+  "iterations": 500,
+  "cold_dp_total_ns": 612129,
+  "enumeration_total_ns": 56928570,
+  "cached_total_ns": 7341,
+  "matching_spectra": true,
+  "build_profile": "release",
+  "hardware_run": false,
+  "scope": "cold weight-spectrum setup only; same host; no end-to-end quantum speed claim",
+  "observed_cold_setup_ratio": 93.00093607719941
+}

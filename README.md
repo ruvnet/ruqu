@@ -1,59 +1,115 @@
-# ruqu — Quantum Computing in Pure Rust + WebAssembly
+# ruqu: Rust Quantum Circuit Simulator, Magic State Estimation and Quantum Error Correction
 
-[![Rust](https://img.shields.io/badge/Rust-2021-orange?logo=rust)](https://www.rust-lang.org)
-[![WebAssembly](https://img.shields.io/badge/WebAssembly-ready-654ff0?logo=webassembly&logoColor=white)](#webassembly)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
+[![ruqu animated introduction](docs/assets/ruqu-introduction.svg)](#quick-start)
 
-**`ruqu`** is a fast, dependency-light **quantum computing toolkit written in pure Rust** — a
-state-vector **quantum circuit simulator** with SIMD acceleration, realistic **noise models**,
-and multi-threading, plus production **quantum algorithms** (VQE, Grover, QAOA, surface-code
-error correction) and a novel **real-time coherence engine**. It runs natively *and* in the
-browser via **WebAssembly**.
+[![Rust](https://img.shields.io/badge/Rust-native-f59e0b?logo=rust)](https://www.rust-lang.org)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-browser-8b5cf6?logo=webassembly&logoColor=white)](#webassembly)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22d3ee.svg)](#license)
 
-> Quantum circuit simulation, VQE quantum chemistry, QAOA optimization, Grover search, surface-code
-> QEC, and 25-qubit in-browser WASM — no Python, no C++, no heavyweight dependencies.
+**ruqu is a Rust quantum computing toolkit for circuit simulation, magic state resource estimation, quantum error correction research and WebAssembly experiments.** Explore noisy quantum circuits, compare distillation yield against output error, and build reproducible software controls with explicit model assumptions.
 
-## Why ruqu
+[Quick start](#quick-start) · [Magic state walkthrough](#magic-state-factory-walkthrough) · [Research and limits](#recent-quantum-research) · [Crates](#rust-crates) · [Observer laboratory](#observer-consistency-laboratory)
 
-- **Pure Rust, no FFI** — portable, memory-safe, easy to embed; compiles to native and `wasm32`.
-- **SIMD + multi-threaded state-vector engine** — high-throughput circuit simulation.
-- **Realistic noise models** — depolarizing, dephasing, amplitude damping for NISQ-style studies.
-- **Batteries-included algorithms** — VQE (chemistry), Grover's search, QAOA (combinatorial
-  optimization), and Surface Code error correction, ready to use.
-- **Runs in the browser** — `ruqu-wasm` exposes circuits, VQE, Grover and QAOA to JavaScript with
-  ~25-qubit support.
-- **Coherence-aware** — a classical "nervous system for quantum machines" that assesses qubit
-  coherence in real time via dynamic min-cut.
+## What you can build
 
-## Crates
+| Task | Available path | Scope |
+| :--- | :--- | :--- |
+| Quantum circuit simulation | `ruqu-core`, `ruqu-wasm`, CLI | State vectors, gates and noise models; memory grows exponentially with qubits. |
+| Quantum optimization and search | `ruqu-algorithms` | VQE, QAOA and Grover experiments. |
+| Magic state factory analysis | `magic-factory`, native example | Ideal 15-to-1 error-pattern enumeration, seeded sampling and resource estimates. |
+| Structured observable simulation | Native Pauli propagation example | Supported Clifford gates, T branching and Pauli noise; branch budgets bound growth. |
+| Correlated syndrome experiments | Native hypergraph decoder example | Bounded small-instance search; explicit resource limits. |
+| Reproducible quantum controls | `observer-lab` | Bundled WASM experiments with seed and evidence ledger. |
+| Quantum and classical research | `ruqu-exotic`, coherence engine | Experimental algorithms; evaluate each model on its own evidence. |
 
-| Crate | What it does |
-|-------|--------------|
-| [`ruqu-core`](crates/ruqu-core) | High-performance state-vector **quantum circuit simulator** — SIMD acceleration, noise models, multi-threading. |
-| [`ruqu-algorithms`](crates/ruqu-algorithms) | Production **quantum algorithms** — **VQE** for chemistry, **Grover's** search, **QAOA** optimization, **Surface Code** error correction. |
-| [`ruqu-exotic`](crates/ruqu-exotic) | Experimental **quantum–classical hybrid** algorithms — quantum memory decay, interference search, reasoning error correction, swarm interference for AI systems. |
-| [`ruqu-wasm`](crates/ruqu-wasm) | **WebAssembly** bindings — run quantum simulations in the browser (25-qubit, VQE/Grover/QAOA). |
-| [`ruqu`](crates/ruQu) | Classical **coherence engine** — real-time coherence assessment for quantum machines via **dynamic min-cut**. |
-
-## Install
-
-```toml
-# Cargo.toml
-[dependencies]
-ruqu-core = "2.2"
-ruqu-algorithms = "2.2"   # VQE, Grover, QAOA, surface-code QEC
-```
-
-```bash
-cargo add ruqu-core ruqu-algorithms
-```
+The magic state, sparse observable propagation and hypergraph additions are available **from this source checkout**. They are classical software models. They do not reproduce Google's full cultivation experiment, implement a hardware control service, or establish quantum advantage.
 
 ## Quick start
+
+```bash
+git clone https://github.com/ruvnet/ruqu.git
+cd ruqu
+
+# Run a source-checkout quantum simulation.
+node cli/bin/cli.js simulate --qubits 4
+
+# Estimate magic state yield with an exact reference and seeded sampling.
+node cli/bin/cli.js magic-factory --input-error 0.01 --shots 100000 --seed 42
+
+# Run native Rust research examples.
+cargo run -p ruqu-core --example magic_states
+cargo run -p ruqu-core --example hypergraph_decoder
+cargo run -p ruqu-core --example pauli_propagation
+```
+
+Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. The source checkout is the reference for new commands; this update does not publish an npm release.
+
+## Magic state factory walkthrough
+
+![Animated magic state walkthrough showing inputs, acceptance checks and resource accounting](docs/assets/ruqu-magic-walkthrough.svg)
+
+1. **Choose the noise assumption.** Supply an independent input error probability. The reference model assumes ideal distillation operations; input error is not a physical two-qubit gate error rate.
+2. **Evaluate accepted and rejected patterns.** An integer dynamic program sums all `2^15 = 32,768` input patterns for the ideal 15-to-1 protocol; exhaustive enumeration independently verifies the spectrum. Seeded sampling provides a statistical comparison.
+3. **Account for yield.** Divide per-attempt resources by acceptance probability. Include failed attempts in expected input consumption and qubit-cycle estimates.
+4. **Check the model boundary.** Hardware leakage, coherent drift, correlated input errors, noisy Clifford operations and code transfer need separate models and validation.
+
+```bash
+# Reproducible sampling against the exact small reference model.
+node cli/bin/cli.js magic-factory --input-error 0.01 --shots 100000 --seed 42
+
+# Include two distillation stages and a fallible code transfer.
+node cli/bin/cli.js magic-factory --input-error 0.01 --rounds 2 --transfer-acceptance 0.9 --transfer-error 0.000001 --transfer-qubits 20 --transfer-rounds 5
+
+# Inspect cited research profiles with missing costs left unknown.
+node cli/bin/cli.js magic-factory --research
+
+# Run the bounded benchmark from the same checkout.
+node cli/bin/cli.js magic-factory --benchmark
+```
+
+At low input error `p`, the ideal 15-to-1 output error begins at `35 p^3`; that asymptotic term does not include hardware execution faults. At `p = 0.01`, the exact ideal model gives approximately `86%` acceptance and `4 × 10^-5` conditional output error. Sampling `100,000` attempts usually observes only a handful of accepted errors at this rate, so the exact result is the useful accuracy reference.
+
+## Architecture and evidence
+
+![Animated ruqu architecture showing a CLI and native entrypoint, bounded models and evidence](docs/assets/ruqu-architecture.svg)
+
+Sparse Heisenberg Pauli propagation supports selected Clifford transformations, T/T-dagger branching, stochastic Pauli faults and postselection. It uses an explicit term budget; non-Clifford branching can still grow exponentially. This standard observable method is independent of the full recent logical magic state simulation algorithms.
+
+CLI experiments and native Rust examples share a scientific contract: state assumptions, preserve rejected attempts, bound computation, and compare results against a checkable reference. The hypergraph decoder is an independent small-instance baseline inspired by search-based QEC research. It is not the upstream Tesseract implementation or a demonstrated replacement for a production surface-code decoder.
+
+## Recent quantum research
+
+Reviewed on **16 October 2026**. [Implementation acceptance and measurements](docs/validation/quantum-research-2026-10-16.md). [Research notes and primary sources](docs/research/2026-10-16-quantum-advances.md) explain implementation status and validation gates. [ADR-003](docs/adr/ADR-003-magic-state-research.md) records the scope decision.
+
+| Primary research | Relevance to ruqu | Status here |
+| :--- | :--- | :--- |
+| [Superconducting magic state cultivation](https://arxiv.org/abs/2512.13908) | Yield and transfer-aware resource accounting | Experimental reference; no hardware reproduction. |
+| [Efficient logical magic state simulation, PRX Quantum 2026](https://arxiv.org/abs/2512.23799) | Specialized exact algorithms under Pauli noise | Research direction; full algorithm not implemented. |
+| [Clifford-stabilizer simulation, September 2026](https://arxiv.org/abs/2609.16929) | Avoid generic state-vector cost for supported protocols | Research direction; no distance-7 reproduction. |
+| [Unfolded distillation for biased noise](https://www.nature.com/articles/s41534-026-01197-z) | Make hardware noise bias explicit in comparisons | Research reference; no device-specific advantage claim. |
+| [Tesseract decoder](https://arxiv.org/abs/2503.10988) and [2026 search acceleration](https://arxiv.org/abs/2609.10056) | Correlated detector faults and search budgets | Independent bounded decoder baseline; full algorithms not ported. |
+
+## Rust crates
+
+| Crate | Purpose |
+| :--- | :--- |
+| [`ruqu-core`](crates/ruqu-core) | Circuit simulation, stabilizer and other backend modules, noise models, magic state analysis and bounded decoding research. |
+| [`ruqu-algorithms`](crates/ruqu-algorithms) | VQE, Grover, QAOA and surface-code experiments. |
+| [`ruqu-exotic`](crates/ruqu-exotic) | Experimental quantum and classical hybrid algorithms. |
+| [`ruqu-wasm`](crates/ruqu-wasm) | Browser and JavaScript WebAssembly bindings. |
+| [`ruqu`](crates/ruQu) | Classical coherence assessment using dynamic min-cut. |
+
+For reproducible development use workspace path dependencies:
+
+```toml
+[dependencies]
+ruqu-core = { path = "crates/ruqu-core" }
+ruqu-algorithms = { path = "crates/ruqu-algorithms" }
+```
 
 ```rust
 use ruqu_algorithms::qaoa::{run_qaoa, Graph, QaoaConfig};
 
-// Solve a MaxCut instance with QAOA on the ruqu state-vector simulator.
 let graph = Graph::from_edges(4, &[(0, 1), (1, 2), (2, 3), (3, 0)]);
 let result = run_qaoa(&graph, &QaoaConfig::default());
 println!("best cut = {:?}", result.best_bitstring);
@@ -62,44 +118,26 @@ println!("best cut = {:?}", result.best_bitstring);
 ## WebAssembly
 
 ```bash
-# build the browser bundle
 wasm-pack build crates/ruqu-wasm --target web
 ```
 
 ```js
-import init, { simulate } from "./pkg/ruqu_wasm.js";
+import init from "./pkg/ruqu_wasm.js";
 await init();
-// run a quantum circuit entirely in the browser — up to ~25 qubits
 ```
 
-## Build
+A state vector of 25 qubits needs about `512 MiB` for amplitudes alone at complex float64 precision; temporary buffers and runtime overhead increase memory use. Actual limits depend on the browser and backend. New native research examples are not automatically exported through WASM bindings.
+
+## Build and verify
 
 ```bash
-cargo build --release                            # native
-cargo test                                       # run the test suite
-wasm-pack build crates/ruqu-wasm --target web    # WASM
+cargo build --release
+cargo test -p ruqu-core
+node --test cli/tests/*.test.cjs
+node scripts/verify-research.cjs
 ```
 
-## Command-line quantum (npx)
-
-Run quantum circuits from your terminal via **[`@ruvector/ruqu`](https://www.npmjs.com/package/@ruvector/ruqu)** —
-the `ruqu-wasm` state-vector simulator compiled to WebAssembly, wrapped in a metaharness agent CLI:
-
-```bash
-npx @ruvector/ruqu simulate --qubits 4    # GHZ state-vector simulation
-npx @ruvector/ruqu grover --qubits 3 --target 5
-npx @ruvector/ruqu qaoa --nodes 4         # QAOA MaxCut on a ring
-npx @ruvector/ruqu capabilities           # gates, algorithms, limits
-npx @ruvector/ruqu doctor                 # verify the quantum WASM
-```
-
-Sources in [`cli/`](cli); the bundled `--target nodejs` WASM runs up to 25 qubits in Node — no native addon.
-
-## Use cases
-
-Quantum algorithm research · variational quantum eigensolver (VQE) for quantum chemistry ·
-combinatorial optimization with QAOA · quantum error-correction (surface codes) experiments ·
-NISQ noise studies · teaching quantum computing · browser-based quantum demos.
+The CLI also supports `grover`, `qaoa`, `capabilities` and `doctor`; see the [CLI guide](cli/README.md). Acceptance requires agreement with exact references, reproducible seeded results and explicit failure when a computational bound is exceeded. Benchmark wall times depend on host, build profile and workload.
 
 ## Observer consistency laboratory
 
@@ -124,7 +162,10 @@ new physics, physical Bell test, or quantum advantage**. See the
 [validation evidence](docs/observer-world-validation.md). The new CLI command is
 available from this checkout; this change does not publish a new npm release.
 
+## Visual assets
+
+The introduction, walkthrough and architecture are native SVG with embedded animation, readable static frames, accessible titles and reduced-motion CSS. No scripts, external fonts or tracking are embedded. Renderers that disable animation still show the complete diagrams.
+
 ## License
 
-MIT © Ruvector Team. Part of the [ruvector](https://github.com/ruvnet/ruvector) ecosystem
-(extracted per ADR-257).
+MIT © Ruvector Team. Part of the [RuVector](https://github.com/ruvnet/ruvector) ecosystem (extracted per ADR-257). Research references retain their original authorship and licenses.

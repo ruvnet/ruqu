@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "kind": "local_classical_model_acceptance",
+  "generated_at": "2026-10-16T14:29:36.494Z",
+  "base_commit": "eb127994aaf8cdb074ebcc3ff32c1a798b79efa8",
+  "node": "v24.19.0",
+  "rust": "rustc 1.90.0 (1159e78c4 2025-09-14)",
+  "platform": "linux/x64",
+  "hardware_run": false,
+  "pass": true,
+  "grid": [
+    {
+      "input_error": 0,
+      "acceptance": 1,
+      "conditional_output_error": 0,
+      "accepted": 1000,
+      "rejected": 0,
+      "logical_errors": 0,
+      "rust_node_agreement": true
+    },
+    {
+      "input_error": 0.001,
+      "acceptance": 0.9851045810483217,
+      "conditional_output_error": 3.5105377957401234e-8,
+      "accepted": 990,
+      "rejected": 10,
+      "logical_errors": 0,
+      "rust_node_agreement": true
+    },
+    {
+      "input_error": 0.01,
+      "acceptance": 0.8600903336704236,
+      "conditional_output_error": 0.0000360876839653233,
+      "accepted": 869,
+      "rejected": 131,
+      "logical_errors": 0,
+      "rust_node_agreement": true
+    },
+    {
+      "input_error": 0.1,
+      "acceptance": 0.2197864000000001,
+      "conditional_output_error": 0.04772674001768992,
+      "accepted": 230,
+      "rejected": 770,
+      "logical_errors": 10,
+      "rust_node_agreement": true
+    },
+    {
+      "input_error": 0.5,
+      "acceptance": 0.0625,
+      "conditional_output_error": 0.5,
+      "accepted": 51,
+      "rejected": 949,
+      "logical_errors": 21,
+      "rust_node_agreement": true
+    },
+    {
+      "input_error": 1,
+      "acceptance": 1,
+      "conditional_output_error": 1,
+      "accepted": 1000,
+      "rejected": 0,
+      "logical_errors": 1000,
+      "rust_node_agreement": true
+    }
+  ],
+  "encoded_t": {
+    "model": "encoded_T_Clifford_observable",
+    "qubits": 128,
+    "acceptance": 1,
+    "expectation": 0.7071067811865476,
+    "peak_terms": 1,
+    "work": 49408,
+    "elapsed_us": 329,
+    "hardware_run": false
+  },
+  "correlated_decoder": {
+    "model": "independent_Bernoulli_hypergraph",
+    "selected_mechanisms": 1,
+    "logical_mask": 1,
+    "log_odds_cost": 3.8918202981106265,
+    "visited_nodes": 7,
+    "logical_coset_marginalization": false,
+    "hardware_run": false
+  },
+  "enumerator_benchmark": {
+    "benchmark": "magic_state_weight_spectrum",
+    "iterations": 500,
+    "cold_dp_total_ns": 39748614,
+    "enumeration_total_ns": 2929572807,
+    "cached_total_ns": 76294,
+    "matching_spectra": true,
+    "build_profile": "debug"
+  },
+  "file_sha256": {
+    ".github/workflows/quantum-research.yml": "41e61cf23278674f311481bfba00146dc951caffd1d9168e5437d7987e457f2c",
+    "README.md": "13f300f404cc341953e463d664c3b943c47d7dc306d9ef7fdcbd4b4d99a77603",
+    "cli/README.md": "e6fca3b9f395cd1c8d898219ab05ee863877cd304b4fb0e0d9b2c418dc687a77",
+    "cli/bin/cli.js": "a232e5e97218adcebdde1956f929df9d740713fa7b2936fc41ec4d4c41db9ce8",
+    "cli/src/magic-factory.cjs": "67ca2a897950f4af1ef6f18429eee04195b93037c9065336615b9b237a72d368",
+    "cli/tests/magic-factory.test.cjs": "cd8117f482283c874fd31e1eb346ae2502182a62cdebaf1035857274778e6492",
+    "crates/ruqu-core/Cargo.toml": "eb51efd34341ba8a11d3d565cb904ad415d74a777e9ba10e0181db05d37d1816",
+    "crates/ruqu-core/examples/hypergraph_decoder.rs": "cff5fa61b7418720d9987bfece60448d93c21ad18e8d2f361ccacf303a961370",
+    "crates/ruqu-core/examples/magic_states.rs": "d333254f4a4af21b323b9c87a93372c3e8b321d2fb43707066f9ca2393484c79",
+    "crates/ruqu-core/examples/pauli_propagation.rs": "c86ead9b17ec513e43610699e09e4fcf5d67b90d8d8e16cb777ed1feb8855cf3",
+    "crates/ruqu-core/src/hypergraph_decoder.rs": "79b73a1b15d647ca9d384ffd71bba66c24929c4e26a88139ef0464df8250ecaa",
+    "crates/ruqu-core/src/lib.rs": "51dc9dc294e922ff63068b324d450f2aa20a9f066c5cbdfbe8149ec2a491306e",
+    "crates/ruqu-core/src/magic_states.rs": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+    "crates/ruqu-core/src/pauli_propagation.rs": "4a2c869327f8ed9d8e213c432d385b42b77b38d6c7d4255a0ad315083556ffe2",
+    "crates/ruqu-core/tests/hypergraph_decoder.rs": "675b8581e7d99cacabb12f8b8267f78a64553aab8bce020d7a2e99e6c8e054c0",
+    "crates/ruqu-core/tests/magic_states.rs": "fe0234462d3ad2112db76e2f2bdcffe045ea377b8efce6a4d420268a0a6eafd9",
+    "crates/ruqu-core/tests/pauli_propagation.rs": "5a1a1aa95c544ba4f75186ec01bfe478402b9e5b837ef5569a7e37c4c630b243",
+    "docs/adr/ADR-003-magic-state-research.md": "4da96d096b6863b0eecf25ada5a508daba410f12754576e3faeec68ed45fed41",
+    "docs/assets/ruqu-architecture.svg": "c48b78e26e742dd9963fdcd1346f26397bf33bc252791a26c4f779801f1c3f60",
+    "docs/assets/ruqu-introduction.svg": "a238cd0452ea154df46d0d5c842eb27ad9f0b68a5b5d507101e938b8d1eb517d",
+    "docs/assets/ruqu-magic-walkthrough.svg": "ee8ef36ba427ac3afb6c9707e8bacf3d5890e509b45ac2fff2af53c5d8d40d81",
+    "docs/research/2026-10-16-quantum-advances.md": "ffe4847a025119e743d8cf9324d85cd69bc0ce774cefef05afec6f33dfc221a6",
+    "scripts/verify-docs.py": "2fb57437ac3073de21c12d040cf205e7a71613883b10c7e59cf643c39568970e",
+    "scripts/verify-research.cjs": "f2bb64dd36aa934448bb91c5f8694ec031e25d2c4ebfc78b3dded5c8a083ba88"
+  }
+}
