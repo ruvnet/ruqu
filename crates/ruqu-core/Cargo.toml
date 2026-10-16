@@ -14,6 +14,7 @@ categories = ["science", "simulation", "algorithms"]
 [features]
 default = ["std"]
 std = []
+serde = []
 parallel = ["rayon"]
 simd = []
 
@@ -21,7 +22,8 @@ simd = []
 web-time = "1.1"
 rand = { workspace = true }
 thiserror = { workspace = true }
-serde = { workspace = true, optional = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
 rayon = { workspace = true, optional = true }
 tracing = { workspace = true, optional = true }
 
@@ -73,7 +75,6 @@ manual_div_ceil = "allow"
 manual_is_multiple_of = "allow"
 manual_range_contains = "allow"
 manual_clamp = "allow"
-manual_checked_ops = "allow"
 manual_let_else = "allow"
 manual_memcpy = "allow"
 manual_repeat_n = "allow"

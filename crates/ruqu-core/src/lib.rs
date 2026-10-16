@@ -58,6 +58,9 @@ pub mod subpoly_decoder;
 
 // -- Benchmark & proof suite --
 pub mod benchmark;
+pub mod magic_states;
+pub mod hypergraph_decoder;
+pub mod pauli_propagation;
 
 /// Re-exports of the most commonly used items.
 pub mod prelude {
@@ -70,3 +73,7 @@ pub mod prelude {
     pub use crate::state::QuantumState;
     pub use crate::types::*;
 }
+
+pub mod research_api;
+
+pub mod cultivation;

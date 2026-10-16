@@ -1,0 +1,198 @@
+[
+  {
+    "digest": "8be7d1fa7e0d42da5a608551cc8610286a3637afbfe35a55893955b3c6b750fc",
+    "key": "98e6cfcb939422cd0e99ba35d02a028a8a5a38f71813dfddf4e3aa83ce9b7d0a",
+    "metrics": {
+      "acceptanceExact": 0.8600903336704236,
+      "accepted": 869,
+      "attempts": 1000,
+      "cliElapsedMs": 7.548693999999998,
+      "costs": {
+        "block_cost": {
+          "qubits": 15,
+          "rounds": 10
+        },
+        "cost_basis": "illustrative defaults unless caller supplied; expected volume, not peak qubits or wall clock",
+        "expected_qubit_rounds": 191.8403143724041,
+        "expected_raw_states": 17.440028579309462,
+        "expected_stage_attempts": 1.1626685719539642,
+        "output_error_upper_bound": 0.0000360876839653233,
+        "raw_cost": {
+          "qubits": 1,
+          "rounds": 1
+        },
+        "stages": [
+          {
+            "acceptance_probability": 0.8600903336704236,
+            "accepted_logical_error_probability": 0.000031038668143127715,
+            "conditional_output_error": 0.0000360876839653233,
+            "input_error": 0.01,
+            "rejected_probability": 0.13990966632957635
+          }
+        ],
+        "transfer": null
+      },
+      "logicalErrorsSampled": 0,
+      "memoryDefinition": "Node process.resourceUsage().maxRSS times 1024: cumulative process resident high-water upper bound, including Node, CLI and WASM; not isolated simulator allocation",
+      "outputError": 0.0000360876839653233,
+      "outputErrorDefinition": "Exact ideal independent-input-Z model conditional output error, not a hardware estimate or sampled zero-error bound",
+      "peakMemoryBytes": 42336256,
+      "rejected": 131,
+      "runtimeDefinition": "Elapsed parent monotonic time for a fresh Node worker invoking the actual CLI run method, including process startup and shutdown",
+      "runtimeMs": 84.478499
+    },
+    "provenance": {
+      "executionKind": "measured-rust-wasm-software-model",
+      "hardware_run": false,
+      "kind": "native-measured",
+      "measuredAt": "2026-10-16T15:14:38.357Z",
+      "partition": "development",
+      "physical_cultivation_reproduction": false,
+      "runId": "ruqu-wasm-factory-42-424e0019-cfa3-453e-9141-8fa39c696e08",
+      "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+      "toolVersion": "0.3.0"
+    },
+    "schema": "ruqu-research-memory/v1",
+    "target": {
+      "backend": "ruqu-core-wasm",
+      "budget": {
+        "maxMemoryBytes": 536870912,
+        "maxOutputError": 0.001,
+        "maxRuntimeMs": 10000,
+        "minAcceptance": 0.75
+      },
+      "circuitSha256": "b56491e1da3b2c9f67edbc6e67074f624ca41dc453f83d9bc6f138e0f46844d5",
+      "circuit_identity_type": "software-protocol-model",
+      "environment": {
+        "architecture": "x64",
+        "manifestSha256": "ca0fd88074f92947e0ff47a4670fa501a199f14c47b7a58486efa668db350e9a",
+        "node": "v24.19.0",
+        "platform": "linux",
+        "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+        "toolVersion": "0.3.0",
+        "wasmSha256": "51010b6b96947ce35e7923c9a881672c0b45692414cfebf8e479fe2e29fdcd6e"
+      },
+      "features": {
+        "qubits": 15
+      },
+      "model": {
+        "cost_inputs": {
+          "block_qubits": 15,
+          "block_rounds": 10,
+          "raw_qubits": 1,
+          "raw_rounds": 1,
+          "rounds": 1
+        },
+        "model": "ideal_15_to_1_independent_Z",
+        "model_version": 1,
+        "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594"
+      },
+      "noise": {
+        "clifford_operations": "ideal",
+        "model": "independent_input_Z",
+        "p": 0.01,
+        "syndrome_checks": "ideal"
+      },
+      "seed": "42",
+      "shots": 1000
+    }
+  },
+  {
+    "digest": "51a1158ac84fad76a9e5ef0e4cc5866b704af7a5eecc80f187de29df83b451de",
+    "key": "07157e2983786875e5f87516980b2d65bc84ad659627636a173e84274e669520",
+    "metrics": {
+      "acceptanceExact": 0.8600903336704236,
+      "accepted": 865,
+      "attempts": 1000,
+      "cliElapsedMs": 10.578163000000004,
+      "costs": {
+        "block_cost": {
+          "qubits": 15,
+          "rounds": 10
+        },
+        "cost_basis": "illustrative defaults unless caller supplied; expected volume, not peak qubits or wall clock",
+        "expected_qubit_rounds": 191.8403143724041,
+        "expected_raw_states": 17.440028579309462,
+        "expected_stage_attempts": 1.1626685719539642,
+        "output_error_upper_bound": 0.0000360876839653233,
+        "raw_cost": {
+          "qubits": 1,
+          "rounds": 1
+        },
+        "stages": [
+          {
+            "acceptance_probability": 0.8600903336704236,
+            "accepted_logical_error_probability": 0.000031038668143127715,
+            "conditional_output_error": 0.0000360876839653233,
+            "input_error": 0.01,
+            "rejected_probability": 0.13990966632957635
+          }
+        ],
+        "transfer": null
+      },
+      "logicalErrorsSampled": 0,
+      "memoryDefinition": "Node process.resourceUsage().maxRSS times 1024: cumulative process resident high-water upper bound, including Node, CLI and WASM; not isolated simulator allocation",
+      "outputError": 0.0000360876839653233,
+      "outputErrorDefinition": "Exact ideal independent-input-Z model conditional output error, not a hardware estimate or sampled zero-error bound",
+      "peakMemoryBytes": 42205184,
+      "rejected": 135,
+      "runtimeDefinition": "Elapsed parent monotonic time for a fresh Node worker invoking the actual CLI run method, including process startup and shutdown",
+      "runtimeMs": 79.98770800000003
+    },
+    "provenance": {
+      "executionKind": "measured-rust-wasm-software-model",
+      "hardware_run": false,
+      "kind": "native-measured",
+      "measuredAt": "2026-10-16T15:14:38.439Z",
+      "partition": "development",
+      "physical_cultivation_reproduction": false,
+      "runId": "ruqu-wasm-factory-43-d3152da1-f778-421d-a35a-5995acc10a2f",
+      "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+      "toolVersion": "0.3.0"
+    },
+    "schema": "ruqu-research-memory/v1",
+    "target": {
+      "backend": "ruqu-core-wasm",
+      "budget": {
+        "maxMemoryBytes": 536870912,
+        "maxOutputError": 0.001,
+        "maxRuntimeMs": 10000,
+        "minAcceptance": 0.75
+      },
+      "circuitSha256": "b56491e1da3b2c9f67edbc6e67074f624ca41dc453f83d9bc6f138e0f46844d5",
+      "circuit_identity_type": "software-protocol-model",
+      "environment": {
+        "architecture": "x64",
+        "manifestSha256": "ca0fd88074f92947e0ff47a4670fa501a199f14c47b7a58486efa668db350e9a",
+        "node": "v24.19.0",
+        "platform": "linux",
+        "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594",
+        "toolVersion": "0.3.0",
+        "wasmSha256": "51010b6b96947ce35e7923c9a881672c0b45692414cfebf8e479fe2e29fdcd6e"
+      },
+      "features": {
+        "qubits": 15
+      },
+      "model": {
+        "cost_inputs": {
+          "block_qubits": 15,
+          "block_rounds": 10,
+          "raw_qubits": 1,
+          "raw_rounds": 1,
+          "rounds": 1
+        },
+        "model": "ideal_15_to_1_independent_Z",
+        "model_version": 1,
+        "sourceSha256": "73931a697652e8db3f1accaeec78223a0ca38ac888827e093dcd6f7d2ae78594"
+      },
+      "noise": {
+        "clifford_operations": "ideal",
+        "model": "independent_input_Z",
+        "p": 0.01,
+        "syndrome_checks": "ideal"
+      },
+      "seed": "43",
+      "shots": 1000
+    }
+  }
+]

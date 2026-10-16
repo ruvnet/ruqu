@@ -325,6 +325,35 @@ function qaoa_maxcut(num_nodes, edges_flat, p, gammas, betas, seed) {
 exports.qaoa_maxcut = qaoa_maxcut;
 
 /**
+ * Execute the same bounded research JSON API used by native Rust and the CLI.
+ * Errors (including exhausted exact-computation budgets) never return partial
+ * or approximate numerical results. No browser networking is performed.
+ * @param {string} request
+ * @returns {string}
+ */
+function research_run_json(request) {
+    let deferred3_0;
+    let deferred3_1;
+    try {
+        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.research_run_json(ptr0, len0);
+        var ptr2 = ret[0];
+        var len2 = ret[1];
+        if (ret[3]) {
+            ptr2 = 0; len2 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred3_0 = ptr2;
+        deferred3_1 = len2;
+        return getStringFromWasm0(ptr2, len2);
+    } finally {
+        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
+    }
+}
+exports.research_run_json = research_run_json;
+
+/**
  * Run a quantum circuit simulation and return the results as a JS object.
  *
  * The returned object has the shape:

@@ -1,0 +1,769 @@
+{
+  "schema": "ruqu-cultivation-independent-validation/v1",
+  "protocol_id": "fold-transversal-surface-f3-2609.16929v1",
+  "trace_sha256": "73e9420828fbadde90d184e3586a4e9f8b8b8ed6238ce77e9a66dcc8a6eb616c",
+  "binary_sha256": "2319328ad9d0793b0a031b6cdf569bfd66f311ccd8d9543f5edb2888cdd7fef5",
+  "oracle_source_sha256": "35e77ed0dcb4cc4b183a14d1dee7aee4ad81a1e9db4913046dc4033f4e0db6e3",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "trace_locations": 253,
+  "physical_qubits": 16,
+  "absolute_tolerance": 2e-11,
+  "comparisons": 29,
+  "max_abs_difference": 5.10702591327572e-15,
+  "wall_seconds": 3.358270029995765,
+  "cases": [
+    {
+      "kind": "ideal",
+      "fault": null,
+      "gate": null,
+      "rust": [
+        1,
+        [
+          0.9999999999999993,
+          0.9999999999999991,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          0.9999999999999996,
+          1.0,
+          4.440892098500626e-16
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "Prepare",
+      "fault": [
+        0,
+        1
+      ],
+      "gate": "Prepare",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 3
+    },
+    {
+      "kind": "Prepare",
+      "fault": [
+        94,
+        1
+      ],
+      "gate": "Prepare",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 9
+    },
+    {
+      "kind": "Prepare",
+      "fault": [
+        248,
+        1
+      ],
+      "gate": "Prepare",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "Measure",
+      "fault": [
+        45,
+        1
+      ],
+      "gate": "Measure",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 1
+    },
+    {
+      "kind": "Measure",
+      "fault": [
+        174,
+        1
+      ],
+      "gate": "Measure",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 16
+    },
+    {
+      "kind": "Measure",
+      "fault": [
+        252,
+        1
+      ],
+      "gate": "Measure",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        19,
+        1
+      ],
+      "gate": "CNOT(0, 3)",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 7
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        19,
+        2
+      ],
+      "gate": "CNOT(0, 3)",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 3
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        19,
+        5
+      ],
+      "gate": "CNOT(0, 3)",
+      "rust": [
+        1,
+        [
+          0.9999999999999993,
+          0.9999999999999991,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          0.9999999999999996,
+          1.0,
+          4.440892098500626e-16
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        19,
+        6
+      ],
+      "gate": "CNOT(0, 3)",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 3
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        19,
+        15
+      ],
+      "gate": "CNOT(0, 3)",
+      "rust": [
+        1,
+        [
+          0.9999999999999993,
+          0.9999999999999991,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          0.9999999999999996,
+          1.0,
+          4.440892098500626e-16
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        251,
+        1
+      ],
+      "gate": "CNOT(12, 13)",
+      "rust": [
+        1,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        251,
+        2
+      ],
+      "gate": "CNOT(12, 13)",
+      "rust": [
+        1,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        251,
+        5
+      ],
+      "gate": "CNOT(12, 13)",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        251,
+        6
+      ],
+      "gate": "CNOT(12, 13)",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CNOT",
+      "fault": [
+        251,
+        15
+      ],
+      "gate": "CNOT(12, 13)",
+      "rust": [
+        1,
+        [
+          1.5820790201687615e-33,
+          5.7176045223996064e-33,
+          4.1355255022308446e-33
+        ]
+      ],
+      "numpy": [
+        0.9999999999999949,
+        [
+          1.1869459682199746e-66,
+          2.3738919364399497e-66,
+          1.186945968219975e-66
+        ]
+      ],
+      "max_abs_difference": 5.10702591327572e-15,
+      "postselections_executed": 30
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        1
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 13
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        2
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 13
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        3
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 14
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        21
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 13
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        42
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 13
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        136,
+        63
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 14
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        1
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 18
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        2
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 17
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        3
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 17
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        21
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 18
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        42
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 17
+    },
+    {
+      "kind": "CCZ",
+      "fault": [
+        170,
+        63
+      ],
+      "gate": "CCZ",
+      "rust": [
+        0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "numpy": [
+        0.0,
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "max_abs_difference": 0.0,
+      "postselections_executed": 17
+    }
+  ],
+  "scope": "Independent NumPy dense-state gate execution and CSS metric oracle on the Rust-exported trace; selected deterministic all-zero branches only. No paper transcription, noisy RNG, recovery, escape stage or distance-three proof."
+}

@@ -92,7 +92,7 @@ function capabilities() {
   console.log(`  state @ max       ~${(mem / 1e6).toFixed(1)} MB`);
   console.log(`  gates             h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`);
   console.log(`  algorithms        simulate · grover · qaoa`);
-  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · version`);
+  console.log(`  commands          init · doctor · capabilities · simulate · grover · qaoa · observer-lab · magic-factory · research · research-memory · version`);
   return 0;
 }
 
@@ -155,6 +155,45 @@ export async function run(argv) {
     case 'simulate': case 'sim': return simulate(rest);
     case 'grover': return grover(rest);
     case 'qaoa': return qaoa(rest);
+    case 'research-memory': {
+      const memory = require(join(HERE, '..', 'src', 'research-memory.cjs'));
+      console.log(JSON.stringify(await memory.runCLI(rest), null, 2));
+      return 0;
+    }
+    case 'research': {
+      // Read at most 1 MiB; reject malformed argument combinations and oversized
+      // files before allocating an unbounded input string.
+      if (!(rest.length === 0 || rest.length === 2 && ['--input','--json'].includes(rest[0]))) throw Error('Usage: research [--input file.json | --json JSON] (or JSON on stdin)');
+      let text;
+      if (rest[0] === '--json') {
+        text = rest[1];
+      } else if (rest.length === 0) {
+        const chunks=[];let size=0;
+        for await (const chunk of process.stdin) {size+=chunk.length;if(size>1048576)throw Error('Research request exceeds 1 MiB');chunks.push(chunk);}
+        text=Buffer.concat(chunks,size).toString('utf8');
+      } else {
+        const {open} = await import('node:fs/promises');
+        const handle = await open(rest[1], 'r');
+        try {
+          const bytes=Buffer.alloc(1048577);let offset=0;
+          while(offset<bytes.length) {const {bytesRead}=await handle.read(bytes,offset,bytes.length-offset,null);if(!bytesRead)break;offset+=bytesRead;}
+          if(offset>1048576)throw Error('Research request exceeds 1 MiB');
+          text=bytes.subarray(0,offset).toString('utf8');
+        } finally { await handle.close(); }
+      }
+      if (Buffer.byteLength(text)>1048576) throw Error('Research request exceeds 1 MiB');
+      // Pass original text to Rust so duplicate JSON fields remain detectable.
+      const result=quantum().research_run_json(text);
+      console.log(JSON.stringify(JSON.parse(result), null, 2));
+      return 0;
+    }
+    case 'magic-factory': {
+      const factory = require(join(HERE, '..', 'src', 'magic-factory.cjs'));
+      const options = factory.parse(rest);
+      const result = options.research ? factory.research() : options.benchmark ? factory.benchmark() : factory.run(options);
+      console.log(JSON.stringify(result, null, 2));
+      return result.pass === false ? 1 : 0;
+    }
     case 'observer-lab': {
       const lab = require(join(HERE, '..', 'src', 'observer-lab.cjs'));
       if(rest.length===1 && rest[0]==='--benchmark') {
@@ -172,6 +211,9 @@ export async function run(argv) {
     case 'version': case '--version': return version();
     case 'help': case '--help':
       console.log('Observer laboratory: ruqu observer-lab [--count N --seed N] | --benchmark');
+      console.log('Research API: ruqu research [--input file.json | --json JSON] (or JSON stdin)');
+      console.log('Research memory: ruqu research-memory export|import|query|recommend --input FILE [--output FILE | --target FILE]');
+      console.log('Magic state factory: ruqu magic-factory [--input-error P --shots N --seed N --rounds N] | --research | --benchmark');
       console.log(`Usage: ${HARNESS_NAME} <command>\n\n  init           boot the kernel + host adapter (default)\n  doctor         verify kernel + quantum WASM end-to-end\n  capabilities   list quantum capabilities\n  simulate       run a GHZ/Bell circuit  [--qubits N]\n  grover         Grover search           [--qubits N --target T --seed S]\n  qaoa           QAOA MaxCut on a ring    [--nodes N --p P]\n  version        print versions`);
       return 0;
     default:

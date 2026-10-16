@@ -23,6 +23,9 @@ npx @ruvector/ruqu doctor                # verify kernel + quantum WASM
 | `observer-lab [--count N --seed S]` | Emit reproducible simulated evidence and separately altered memories as JSON. Count 1..10000, seed 1..4294967295. |
 | `observer-lab --benchmark` | Compare the original and optimized dephasing computation; local timings only. |
 | `init` · `doctor` | Boot / verify the agent-harness kernel **and** the quantum WASM. |
+| `magic-factory [--input-error P --shots N --seed N --rounds N]` | Exact ideal 15-to-1 model, deterministic sampling and retry resource accounting. Source checkout. |
+| `magic-factory --research` | Cited cultivation and biased-noise profiles with missing costs left unknown. |
+| `magic-factory --benchmark` | Bounded synthetic numerical checks. |
 | `version` | Kernel + WASM versions. |
 
 Gates: `h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`. Up to **25 qubits**.
@@ -40,6 +43,18 @@ An optional Rust adapter in `integrations/observer-world` in the repository
 constructs real ruField and WorldGraph types after evidence verification.
 The adapter is not included in the npm package. No npm publication is part of
 this change.
+
+## Magic state factory
+
+```bash
+node bin/cli.js magic-factory --input-error 0.01 --shots 100000 --seed 42
+node bin/cli.js magic-factory --input-error 0.01 --rounds 2 --transfer-acceptance 0.9 --transfer-error 0.000001 --transfer-qubits 20 --transfer-rounds 5
+node bin/cli.js magic-factory --research
+```
+
+The new command is available from this checkout. It uses no provider, network or WASM imports. Sampling accepts 1 to 5,000,000 shots and unsigned 64 bit decimal seeds. Resource estimates accept 1 to 16 distillation rounds. `--block-qubits`, `--block-rounds`, `--raw-qubits`, and `--raw-rounds` set caller costs; defaults are illustrative. Transfer error bounds include possible concentration of upstream errors after selection. Qubit rounds are expected consumed volume, not peak qubits or latency.
+
+The model assumes independent input Z faults and perfect Clifford operations. It does not reproduce a physical cultivation circuit. Rust/Node agreement is checked by `node scripts/verify-research.cjs` from the repository root.
 
 ## License
 
