@@ -24,7 +24,7 @@
 | Reproducible quantum controls | `observer-lab` | Bundled WASM experiments with seed and evidence ledger. |
 | Quantum and classical research | `ruqu-exotic`, coherence engine | Experimental algorithms; evaluate each model on its own evidence. |
 
-The research numerical engine is shared across native Rust, Node.js and browser WebAssembly. These are classical software models, available **from this source checkout**. The cultivation stage is an explicit realization of a published small circuit, with documented syndrome-gadget ordering choices. It does not reproduce Google's full cultivation experiment, implement a hardware control service, or establish quantum advantage.
+The research numerical engine is shared across native Rust, Node.js and browser WebAssembly. These are classical software models, available in the source checkout and published npm packages. The cultivation stage is an explicit realization of a published small circuit, with documented syndrome-gadget ordering choices. It does not reproduce Google's full cultivation experiment, implement a hardware control service, or establish quantum advantage.
 
 ## Quick start
 
@@ -44,7 +44,7 @@ cargo run -p ruqu-core --example hypergraph_decoder
 cargo run -p ruqu-core --example pauli_propagation
 ```
 
-Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. The source checkout is the reference for new commands; this update does not publish an npm release.
+Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. Install the published CLI with `npx @ruvector/ruqu@0.3.0 magic-factory --input-error 0.01 --shots 1000 --seed 42`. Browser bindings are available as [`@ruvector/ruqu-wasm@2.1.0`](https://www.npmjs.com/package/@ruvector/ruqu-wasm/v/2.1.0).
 
 ## Interactive quantum computing Explorer
 
@@ -218,8 +218,7 @@ No existing database, sensor or cloud service is changed.
 These are software controls of established quantum predictions, **not a QPU run,
 new physics, physical Bell test, or quantum advantage**. See the
 [architecture](docs/adr/ADR-002-observer-world-laboratory.md) and
-[validation evidence](docs/observer-world-validation.md). The new CLI command is
-available from this checkout; this change does not publish a new npm release.
+[validation evidence](docs/observer-world-validation.md). The CLI commands are available from this checkout and [`@ruvector/ruqu@0.3.0`](https://www.npmjs.com/package/@ruvector/ruqu/v/0.3.0).
 
 ## Visual assets
 
