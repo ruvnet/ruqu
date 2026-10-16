@@ -23,7 +23,7 @@ The separate analytical phase illustration shows H → Rz(φ) → H with P(0) = 
 
 Build the current `ruqu-wasm` crate with wasm-pack, targeting web and writing output to `explorer/wasm` with the basename `ruqu_wasm`. Serve the repository over HTTP and open `/explorer/`. Do not open `index.html` as a file URL; module workers and WASM loading require HTTP.
 
-The deployment must include `index.html`, `styles.css`, `app.js`, `welcome.js`, `quantum-scene.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
+The deployment must include `index.html`, `styles.css`, `app.js`, `cloud-export.js`, `welcome.js`, `quantum-scene.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
 
 ## Worker contract
 

@@ -1,0 +1,22 @@
+name: Quantum provider compatibility
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/quantum-cloud/**', '.github/workflows/quantum-cloud.yml']
+  pull_request:
+    paths: ['integrations/quantum-cloud/**', '.github/workflows/quantum-cloud.yml']
+permissions:
+  contents: read
+jobs:
+  simulators:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: integrations/quantum-cloud/requirements.lock
+      - run: pip install -r integrations/quantum-cloud/requirements.lock
+      - run: python -m unittest discover -s integrations/quantum-cloud -v

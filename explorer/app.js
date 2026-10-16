@@ -1,3 +1,4 @@
+import { saveCloudCircuit } from './cloud-export.js';
 import { updateConstellation } from './quantum-scene.js';
 const $ = id => document.getElementById(id);
 const make = (tag, className, content) => {const e=document.createElement(tag);if(className)e.className=className;if(content!==undefined)e.textContent=content;return e;};
@@ -58,3 +59,5 @@ const canvas=$('space'),ctx=canvas.getContext('2d');let w=0,h=0,lastFrame=0;cons
 renderCircuit();startWorker();
 
 document.addEventListener('ruqu-welcome-bell',()=>{navigate('circuit');location.hash='circuit';if(!job)preset('bell');$('run-spatial').scrollIntoView({block:'center'});if(!$('run-spatial').disabled)$('run-spatial').focus();});
+
+$('cloud-export').onclick=()=>{try{saveCloudCircuit(qubits,gates);}catch(e){notify(e.message);}};

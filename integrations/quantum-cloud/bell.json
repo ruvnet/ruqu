@@ -1,0 +1,1 @@
+{"schema_version":1,"qubits":2,"gates":[{"name":"h","qubit":0},{"name":"cnot","qubit":0,"target":1}]}

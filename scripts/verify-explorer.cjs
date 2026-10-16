@@ -58,6 +58,11 @@ async function main() {
     assert.equal(await page.locator('#welcome').isVisible(), false);
     await page.locator('#run-circuit').waitFor({state:'visible'});
     await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled, null, {timeout:30000});
+    const cloudDownload=page.waitForEvent('download');
+    await page.locator('#cloud-export').click();
+    const exported=await cloudDownload;
+    const cloudData=JSON.parse(await fs.readFile(await exported.path(),'utf8'));
+    assert.deepEqual(cloudData,{schema_version:1,qubits:2,gates:[{name:'h',qubit:0},{name:'cnot',qubit:0,target:1}]});
     const circuitLocked = await page.locator('#run-circuit').evaluate(button => {
       button.click();
       return ['qubits','gate','add-gate','reset-circuit'].every(id=>document.getElementById(id).disabled);
@@ -196,7 +201,7 @@ async function main() {
     assert.equal(await page.locator('#motion').getAttribute('aria-pressed'),'true');
     assert.deepEqual(errors,[],`Browser errors: ${errors.join('\n')}`);
     assert.deepEqual(failures,[],`HTTP failures: ${failures.join('\n')}`);
-    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['welcome navigation, replay, Escape and persistence','welcome 320px layout','Bell circuit','spatial WASM state','phase interference endpoints','keyboard camera','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
+    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['welcome navigation, replay, Escape and persistence','welcome 320px layout','cloud circuit export','Bell circuit','spatial WASM state','phase interference endpoints','keyboard camera','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
   } finally {
     if(browser) await browser.close();
     await new Promise(resolve=>server.close(resolve));

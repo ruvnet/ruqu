@@ -227,3 +227,7 @@ The introduction, walkthrough and architecture are native SVG with embedded anim
 ## License
 
 MIT © Ruvector Team. Part of the [RuVector](https://github.com/ruvnet/ruvector) ecosystem (extracted per ADR-257). Research references retain their original authorship and licenses.
+
+### AWS and Google quantum integration
+
+Export circuits from the [Explorer](https://ruvnet.github.io/ruqu/explorer/) to the [cloud quantum bridge](integrations/quantum-cloud/README.md). Run both provider SDK simulators locally, or explicitly submit through AWS Braket and approved Google Quantum Engine projects. Credentials remain on the host; Google hardware access is restricted. Local SDK compatibility is tested; live hardware access is not claimed.
