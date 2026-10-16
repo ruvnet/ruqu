@@ -2,6 +2,10 @@
 
 A responsive, animated browser laboratory powered by the real ruqu Rust WebAssembly engine. No framework, external CDN, remote simulator or JavaScript numerical fallback.
 
+## Welcome tour
+
+A first visit opens a three step illustrated introduction. Next and Back control the pace; Skip or Escape closes it. Try Bell pair loads the example without starting computation. Quick tour reopens it. Dismissal is remembered locally when browser storage is available. Native dialog focus containment, reduced motion and a pause control are included.
+
 ## Explore
 
 * Circuit lab: compose H, X, Z, T, S and CNOT gates on 2 to 8 qubits, inspect exact statevector probabilities, load Bell, GHZ and interference examples, and remove individual gates.
@@ -19,7 +23,7 @@ The separate analytical phase illustration shows H → Rz(φ) → H with P(0) = 
 
 Build the current `ruqu-wasm` crate with wasm-pack, targeting web and writing output to `explorer/wasm` with the basename `ruqu_wasm`. Serve the repository over HTTP and open `/explorer/`. Do not open `index.html` as a file URL; module workers and WASM loading require HTTP.
 
-The deployment must include `index.html`, `styles.css`, `app.js`, `quantum-scene.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
+The deployment must include `index.html`, `styles.css`, `app.js`, `welcome.js`, `quantum-scene.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
 
 ## Worker contract
 

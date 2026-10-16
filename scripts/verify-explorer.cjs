@@ -40,6 +40,22 @@ async function main() {
     page.on('response', response => { if(response.status() >= 400) failures.push(`${response.status()} ${response.url()}`); });
     const url = `http://127.0.0.1:${server.address().port}/ruqu/`;
     await page.goto(url);
+    await page.locator('#welcome').waitFor({state:'visible'});
+    assert.match(await page.locator('#welcome-title').innerText(), /tiny lab/);
+    await page.locator('#welcome-next').click();
+    assert.match(await page.locator('#welcome-copy').innerText(), /50%/);
+    assert.equal(await page.locator('[data-welcome-art="1"]').isVisible(),true);
+    assert.equal(await page.locator('[data-welcome-art="0"]').isVisible(),false);
+    await page.locator('#welcome-next').click();
+    await page.locator('#welcome-back').click();
+    await page.locator('#welcome-next').click();
+    await page.locator('#welcome-next').click();
+    assert.equal(await page.locator('#welcome').isVisible(), false);
+    await page.locator('#welcome-replay').click();
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#welcome').isVisible(), false);
+    await page.reload();
+    assert.equal(await page.locator('#welcome').isVisible(), false);
     await page.locator('#run-circuit').waitFor({state:'visible'});
     await page.waitForFunction(() => !document.querySelector('#run-circuit').disabled, null, {timeout:30000});
     const circuitLocked = await page.locator('#run-circuit').evaluate(button => {
@@ -171,11 +187,16 @@ async function main() {
       assert.ok(bounds.width <= bounds.viewport + 1, `${view} overflows mobile width: ${JSON.stringify(bounds)}`);
     }
     await page.screenshot({path:path.join(screenshotDirectory,'mobile-320.png'),fullPage:true});
+    await page.locator('#welcome-replay').click();
+    assert.ok(await page.locator('#welcome').evaluate(e=>e.scrollWidth<=e.clientWidth+1));
+    await page.locator('#welcome-next').click();
+    await page.screenshot({path:path.join(screenshotDirectory,'welcome-mobile.png')});
+    await page.locator('#welcome-close').click();
     assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches),true);
     assert.equal(await page.locator('#motion').getAttribute('aria-pressed'),'true');
     assert.deepEqual(errors,[],`Browser errors: ${errors.join('\n')}`);
     assert.deepEqual(failures,[],`HTTP failures: ${failures.join('\n')}`);
-    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['Bell circuit','spatial WASM state','phase interference endpoints','keyboard camera','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
+    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['welcome navigation, replay, Escape and persistence','welcome 320px layout','Bell circuit','spatial WASM state','phase interference endpoints','keyboard camera','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
   } finally {
     if(browser) await browser.close();
     await new Promise(resolve=>server.close(resolve));
