@@ -18,8 +18,27 @@ jobs:
           node-version: '22'
       - run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt --component clippy
       - run: cargo test -p ruqu-core --locked
+      - run: npm ci --ignore-scripts
+        working-directory: cli
       - run: node --test cli/tests/*.test.cjs
+      - run: node scripts/wasm-manifest.cjs
+      - run: node scripts/verify-wasm-api.cjs
+      - run: pip install numpy==2.2.6
+      - run: python3 scripts/verify-cultivation.py
       - run: node scripts/verify-research.cjs
       - run: cargo clippy -p ruqu-core --locked --all-targets -- -D warnings
       - run: rustfmt --edition 2021 --check crates/ruqu-core/src/magic_states.rs crates/ruqu-core/src/hypergraph_decoder.rs crates/ruqu-core/src/pauli_propagation.rs crates/ruqu-core/tests/magic_states.rs crates/ruqu-core/tests/hypergraph_decoder.rs crates/ruqu-core/tests/pauli_propagation.rs crates/ruqu-core/examples/magic_states.rs crates/ruqu-core/examples/hypergraph_decoder.rs crates/ruqu-core/examples/pauli_propagation.rs
       - run: python3 scripts/verify-docs.py
+  explorer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix /tmp/ruqu-browser --ignore-scripts playwright@1.62.1
+      - run: /tmp/ruqu-browser/node_modules/.bin/playwright install --with-deps chromium
+      - run: node scripts/verify-explorer.cjs
+        env:
+          PLAYWRIGHT_MODULE: /tmp/ruqu-browser/node_modules/playwright

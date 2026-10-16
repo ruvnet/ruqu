@@ -1,0 +1,29 @@
+name: ruqu Explorer Pages
+on:
+  push:
+    branches: [main]
+    paths: ['explorer/**', '.github/workflows/explorer-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/wasm-manifest.cjs
+      - uses: actions/configure-pages@v5
+      - run: mkdir -p _site/explorer && cp -R explorer/. _site/explorer/ && printf '<!doctype html><meta http-equiv="refresh" content="0;url=explorer/"><a href="explorer/">Open ruqu Explorer</a>' > _site/index.html && touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+        id: deployment

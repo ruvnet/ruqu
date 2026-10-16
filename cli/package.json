@@ -1,7 +1,7 @@
 {
   "name": "@ruvector/ruqu",
-  "version": "0.2.0",
-  "description": "Quantum circuit simulator in WebAssembly + agent harness CLI — run state-vector simulation, Grover search, and QAOA MaxCut from your terminal. npx @ruvector/ruqu",
+  "version": "0.3.0",
+  "description": "Quantum circuit simulator in WebAssembly + agent harness CLI \u2014 run state-vector simulation, Grover search, and QAOA MaxCut from your terminal. npx @ruvector/ruqu",
   "type": "module",
   "bin": {
     "ruqu": "bin/cli.js"
@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@metaharness/kernel": "^0.1.0",
-    "@metaharness/host-claude-code": "^0.1.0"
+    "@metaharness/host-claude-code": "^0.1.0",
+    "@ruvector/rvf-wasm": "0.1.9"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

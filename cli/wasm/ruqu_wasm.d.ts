@@ -191,6 +191,13 @@ export function max_qubits(): number;
 export function qaoa_maxcut(num_nodes: number, edges_flat: Uint32Array, p: number, gammas: Float64Array, betas: Float64Array, seed: any): any;
 
 /**
+ * Execute the same bounded research JSON API used by native Rust and the CLI.
+ * Errors (including exhausted exact-computation budgets) never return partial
+ * or approximate numerical results. No browser networking is performed.
+ */
+export function research_run_json(request: string): string;
+
+/**
  * Run a quantum circuit simulation and return the results as a JS object.
  *
  * The returned object has the shape:

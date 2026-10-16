@@ -553,3 +553,11 @@ mod tests {
         assert_eq!(circuit.gate_count(), 0);
     }
 }
+
+/// Execute the same bounded research JSON API used by native Rust and the CLI.
+/// Errors (including exhausted exact-computation budgets) never return partial
+/// or approximate numerical results. No browser networking is performed.
+#[wasm_bindgen]
+pub fn research_run_json(request: &str) -> Result<String, JsValue> {
+    ruqu_core::research_api::run_json(request).map_err(|e| JsValue::from_str(&e))
+}
