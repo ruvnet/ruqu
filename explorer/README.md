@@ -9,11 +9,17 @@ A responsive, animated browser laboratory powered by the real ruqu Rust WebAssem
 * Cultivation: the published fault distance 3 cultivation stage with 13 data qubits and 3 cat ancillas, two verification rounds and bounded circuit level noise trajectories. Escape and the final decoder are excluded.
 * Evidence: export the latest request, model, seed, result and browser timing as JSON. Browser RVF export is not implemented; use the CLI for RVF packaging.
 
+## Spatial observatory
+
+The interactive 3D projection maps WASM basis probabilities to luminous nodes with perspective scaling. Drag or use arrow keys to orbit; reset the view or pause motion. It is a probability layout, not a Bloch sphere or particle trajectory. Dense states retain exact values in the table.
+
+The separate analytical phase illustration shows H → Rz(φ) → H with P(0) = cos²(φ/2), including constructive and destructive interference. It does not infer phases from probabilities. Both canvases respect reduced motion and hidden tabs; rendering is capped near 30 fps and device pixel ratio 2, with no added dependencies.
+
 ## Build and serve
 
 Build the current `ruqu-wasm` crate with wasm-pack, targeting web and writing output to `explorer/wasm` with the basename `ruqu_wasm`. Serve the repository over HTTP and open `/explorer/`. Do not open `index.html` as a file URL; module workers and WASM loading require HTTP.
 
-The deployment must include `index.html`, `styles.css`, `app.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
+The deployment must include `index.html`, `styles.css`, `app.js`, `quantum-scene.js`, `worker.js`, `assets/`, `wasm/ruqu_wasm.js` and `wasm/ruqu_wasm_bg.wasm`. All links are relative for GitHub Pages at `/ruqu/explorer/`.
 
 ## Worker contract
 

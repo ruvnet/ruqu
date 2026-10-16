@@ -53,6 +53,14 @@ async function main() {
     assert.match(bellText,/11/);
     assert.match(bellText,/50(?:\.0*)?\s*%/);
     assert.match(await page.locator('#circuit-meta').innerText(),/2/);
+    assert.match(await page.locator('#spatial-status').innerText(), /2 qubits · 2 populated/);
+    await page.locator('#phase-angle').fill('100');
+    assert.match(await page.locator('#phase-probability').innerText(), /P\(0\) 0.0% · P\(1\) 100.0%/);
+    await page.locator('#phase-angle').fill('50');
+    assert.match(await page.locator('#phase-probability').innerText(), /P\(0\) 50.0% · P\(1\) 50.0%/);
+    await page.locator('#quantum-scene').focus();
+    await page.keyboard.press('ArrowRight');
+    await page.locator('#reset-camera').click();
     await fs.mkdir(screenshotDirectory,{recursive:true});
     await page.screenshot({path:path.join(screenshotDirectory,'circuit-desktop.png'),fullPage:true});
     for (const [preset, expected] of [['ghz',['|000⟩','|111⟩']],['interference',['|01⟩']]]) {
@@ -167,7 +175,7 @@ async function main() {
     assert.equal(await page.locator('#motion').getAttribute('aria-pressed'),'true');
     assert.deepEqual(errors,[],`Browser errors: ${errors.join('\n')}`);
     assert.deepEqual(failures,[],`HTTP failures: ${failures.join('\n')}`);
-    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['Bell circuit','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
+    console.log(JSON.stringify({pass:true,base_path:'/ruqu/',checks:['Bell circuit','spatial WASM state','phase interference endpoints','keyboard camera','GHZ and interference','gate add remove reset','CNOT validation','factory','native validation','cultivation','evidence download','busy control locks','cancel worker restart','320px all views','reduced motion','console errors','HTTP errors'],screenshots:screenshotDirectory,factory_text:factoryText,cultivation_text:cultivationText},null,2));
   } finally {
     if(browser) await browser.close();
     await new Promise(resolve=>server.close(resolve));
