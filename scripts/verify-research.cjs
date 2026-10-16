@@ -19,8 +19,33 @@ for(const input of ['0','0.001','0.01','0.1','0.5','1']){
 const encoded=native('pauli_propagation');assert.equal(encoded.qubits,128);assert.equal(encoded.peak_terms,1);close(encoded.expectation,Math.SQRT1_2);
 const decoder=native('hypergraph_decoder');assert.equal(decoder.selected_mechanisms,1);assert.equal(decoder.logical_mask,1);
 const benchmark=native('magic_states',['--benchmark']);benchmark.build_profile='debug';assert.equal(benchmark.matching_spectra,true);
-const fileNames=[...command('git',['diff','--name-only']).trim().split('\n'),...command('git',['ls-files','--others','--exclude-standard']).trim().split('\n')].filter(Boolean).filter(p=>!p.startsWith('docs/validation/'));
+const fileNames=[
+  ".github/workflows/quantum-research.yml",
+  "README.md",
+  "cli/README.md",
+  "cli/bin/cli.js",
+  "cli/src/magic-factory.cjs",
+  "cli/tests/magic-factory.test.cjs",
+  "crates/ruqu-core/Cargo.toml",
+  "crates/ruqu-core/examples/hypergraph_decoder.rs",
+  "crates/ruqu-core/examples/magic_states.rs",
+  "crates/ruqu-core/examples/pauli_propagation.rs",
+  "crates/ruqu-core/src/hypergraph_decoder.rs",
+  "crates/ruqu-core/src/lib.rs",
+  "crates/ruqu-core/src/magic_states.rs",
+  "crates/ruqu-core/src/pauli_propagation.rs",
+  "crates/ruqu-core/tests/hypergraph_decoder.rs",
+  "crates/ruqu-core/tests/magic_states.rs",
+  "crates/ruqu-core/tests/pauli_propagation.rs",
+  "docs/adr/ADR-003-magic-state-research.md",
+  "docs/assets/ruqu-architecture.svg",
+  "docs/assets/ruqu-introduction.svg",
+  "docs/assets/ruqu-magic-walkthrough.svg",
+  "docs/research/2026-10-16-quantum-advances.md",
+  "scripts/verify-docs.py",
+  "scripts/verify-research.cjs"
+];
 const hashes=Object.fromEntries([...new Set(fileNames)].sort().map(p=>[p,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex')]));
-const report={schema_version:1,kind:'local_classical_model_acceptance',generated_at:new Date().toISOString(),base_commit:command('git',['rev-parse','HEAD']).trim(),node:process.version,rust:command('rustc',['--version']).trim(),platform:`${process.platform}/${process.arch}`,hardware_run:false,pass:true,grid,encoded_t:encoded,correlated_decoder:decoder,enumerator_benchmark:benchmark,file_sha256:hashes};
+const report={schema_version:1,kind:'local_classical_model_acceptance',generated_at:new Date().toISOString(),checkout_commit:command('git',['rev-parse','HEAD']).trim(),node:process.version,rust:command('rustc',['--version']).trim(),platform:`${process.platform}/${process.arch}`,hardware_run:false,pass:true,grid,encoded_t:encoded,correlated_decoder:decoder,enumerator_benchmark:benchmark,file_sha256:hashes};
 if(process.argv.length>2){if(process.argv.length!==4||process.argv[2]!=='--output')throw Error('Usage: node scripts/verify-research.cjs [--output PATH]');fs.writeFileSync(path.resolve(root,process.argv[3]),JSON.stringify(report,null,2)+'\n');}
 console.log(JSON.stringify(report,null,2));

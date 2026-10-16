@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "kind": "local_classical_model_acceptance",
-  "generated_at": "2026-10-16T14:29:36.494Z",
-  "base_commit": "eb127994aaf8cdb074ebcc3ff32c1a798b79efa8",
+  "generated_at": "2026-10-16T14:32:07.157Z",
+  "checkout_commit": "27df46574a38eb99231ad178f7352c7496f55cf9",
   "node": "v24.19.0",
   "rust": "rustc 1.90.0 (1159e78c4 2025-09-14)",
   "platform": "linux/x64",
@@ -71,7 +71,7 @@
     "expectation": 0.7071067811865476,
     "peak_terms": 1,
     "work": 49408,
-    "elapsed_us": 329,
+    "elapsed_us": 198,
     "hardware_run": false
   },
   "correlated_decoder": {
@@ -86,14 +86,14 @@
   "enumerator_benchmark": {
     "benchmark": "magic_state_weight_spectrum",
     "iterations": 500,
-    "cold_dp_total_ns": 39748614,
-    "enumeration_total_ns": 2929572807,
-    "cached_total_ns": 76294,
+    "cold_dp_total_ns": 32288744,
+    "enumeration_total_ns": 3182827709,
+    "cached_total_ns": 131898,
     "matching_spectra": true,
     "build_profile": "debug"
   },
   "file_sha256": {
-    ".github/workflows/quantum-research.yml": "41e61cf23278674f311481bfba00146dc951caffd1d9168e5437d7987e457f2c",
+    ".github/workflows/quantum-research.yml": "c75cd86f08feba83229a8f89216470c9497287b8d1aa50993faf95f2e982fc32",
     "README.md": "13f300f404cc341953e463d664c3b943c47d7dc306d9ef7fdcbd4b4d99a77603",
     "cli/README.md": "e6fca3b9f395cd1c8d898219ab05ee863877cd304b4fb0e0d9b2c418dc687a77",
     "cli/bin/cli.js": "a232e5e97218adcebdde1956f929df9d740713fa7b2936fc41ec4d4c41db9ce8",
@@ -116,6 +116,6 @@
     "docs/assets/ruqu-magic-walkthrough.svg": "ee8ef36ba427ac3afb6c9707e8bacf3d5890e509b45ac2fff2af53c5d8d40d81",
     "docs/research/2026-10-16-quantum-advances.md": "ffe4847a025119e743d8cf9324d85cd69bc0ce774cefef05afec6f33dfc221a6",
     "scripts/verify-docs.py": "2fb57437ac3073de21c12d040cf205e7a71613883b10c7e59cf643c39568970e",
-    "scripts/verify-research.cjs": "f2bb64dd36aa934448bb91c5f8694ec031e25d2c4ebfc78b3dded5c8a083ba88"
+    "scripts/verify-research.cjs": "2df6cc10b8b535beba922f0f1d4fab36e72b40e3ed466f739d5b14e993ae9438"
   }
 }
