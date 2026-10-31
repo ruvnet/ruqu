@@ -1,0 +1,30 @@
+{
+  "base_commit": "eb127994aaf8cdb074ebcc3ff32c1a798b79efa8",
+  "cost": null,
+  "owner": "Codex coordinator",
+  "schema": 1,
+  "sha256": {
+    ".github/workflows/independent-stabilizer.yml": "651cdab88d1d2a5af1abcc59171808f5d36fa3eb88d72d73fbe061527f2acb3a",
+    "integrations/independent-stabilizer/.gitignore": "306fd52e74fca6746e12acc750f232de15e71da917756a1270d74c91f5eb7368",
+    "integrations/independent-stabilizer/ADR.md": "93db3ae3cd4dd96b39b147321f5404ebb9829cc9240b206a1221948ce49d00fb",
+    "integrations/independent-stabilizer/Cargo.lock": "d9e77ecd3c5407c6c816579812b49e3661ac3fc43ef739436a2a5c3965fa9967",
+    "integrations/independent-stabilizer/Cargo.toml": "fa7210708d1dbea6e5b0f6d8c39b38840b819d88e4cd3e00a9b40d8d58f7e572",
+    "integrations/independent-stabilizer/EVIDENCE.md": "30f35d8f3d912705fb809bb1df45ba074b4bf025d88707dcdf6c41c1b29c216e",
+    "integrations/independent-stabilizer/README.md": "94ed8e76cd04c5e990b6fb0ab0332a944d8bfd4ee55ff8d3d8d0c69d11edfcfa",
+    "integrations/independent-stabilizer/benchmark.py": "d3bf1f0a14f6bdb7656843669d2dc28c61038a4557899a48bc008c04f76e5382",
+    "integrations/independent-stabilizer/src/lib.rs": "a8104dd974961042dcae251c5022d52ea424f540b34e32a688bebc92fd2f1572",
+    "integrations/independent-stabilizer/src/main.rs": "6561ca5019930b78dca538872dbff82549ea1891e3af5243c6e9b89e6776a162",
+    "integrations/independent-stabilizer/tests/cli.rs": "94c103a6bc32ff5b60fa1861f12e09f3007f3692597e695a752d5e0e958524f4",
+    "integrations/independent-stabilizer/tests/oracle.rs": "481508cdc87e93079c022ad2d6b00ff331cd5ae02991b632e477795feab8f4cc",
+    "integrations/independent-stabilizer/verify_receipt.py": "4e7023f9c04d790b971f72431e1f594cb8520b555d17cc2899d03775cf8bf9e9"
+  },
+  "signer_trust": "ephemeral self-signed artifact integrity only",
+  "tested_commit": "52a93363ac184d6f8b639ed99623ef963071a3d8",
+  "tests": {
+    "cli": 7,
+    "failures": 0,
+    "generated_operations": 19200,
+    "oracle": 7
+  },
+  "verdict": "ACCEPT experimental CPU correctness only; production INCONCLUSIVE"
+}

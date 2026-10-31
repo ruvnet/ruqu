@@ -1,0 +1,19 @@
+name: Independent stabilizer
+on:
+  pull_request:
+    paths:
+      - 'integrations/independent-stabilizer/**'
+      - '.github/workflows/independent-stabilizer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  oracle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install declared minimum Rust
+        run: rustup toolchain install 1.77.2 --profile minimal
+      - name: Independent oracle and CLI
+        run: cargo +1.77.2 test --manifest-path integrations/independent-stabilizer/Cargo.toml --locked --offline
