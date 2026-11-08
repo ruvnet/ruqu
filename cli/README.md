@@ -56,6 +56,10 @@ The new command is available from this checkout. It uses no provider, network or
 
 The model assumes independent input Z faults and perfect Clifford operations. It does not reproduce a physical cultivation circuit. Rust/Node agreement is checked by `node scripts/verify-research.cjs` from the repository root.
 
+## Works with
+
+- **[ruvector](https://www.npmjs.com/package/ruvector)**: `npx ruvector quantum simulate bell` (alias `npx ruvector ruqu`) runs ruqu circuits from the ruvector CLI. It uses the `@ruvector/ruqu-wasm` engine. ruvector's MCP server also exposes the `quantum_simulate` and `quantum_info` tools, with caps on qubit count, gates and shots. [ruvector README → Quantum (ruqu)](https://github.com/ruvnet/RuVector/tree/main/npm/packages/ruvector#quantum-ruqu)
+
 ## License
 
 MIT © Ruvector Team

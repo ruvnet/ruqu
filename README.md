@@ -224,6 +224,10 @@ new physics, physical Bell test, or quantum advantage**. See the
 
 The introduction, walkthrough and architecture are native SVG with embedded animation, readable static frames, accessible titles and reduced-motion CSS. No scripts, external fonts or tracking are embedded. Renderers that disable animation still show the complete diagrams.
 
+## Works with
+
+- **[ruvector](https://www.npmjs.com/package/ruvector)**: `npx ruvector quantum simulate bell` (alias `npx ruvector ruqu`) runs ruqu circuits from the ruvector CLI. It uses the `@ruvector/ruqu-wasm` engine. ruvector's MCP server also exposes the `quantum_simulate` and `quantum_info` tools, with caps on qubit count, gates and shots. [ruvector README → Quantum (ruqu)](https://github.com/ruvnet/RuVector/tree/main/npm/packages/ruvector#quantum-ruqu)
+
 ## License
 
 MIT © Ruvector Team. Part of the [RuVector](https://github.com/ruvnet/ruvector) ecosystem (extracted per ADR-257). Research references retain their original authorship and licenses.
