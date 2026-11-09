@@ -122,36 +122,56 @@ export class WasmQuantumCircuit {
     }
     /**
      * Apply Rx rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      * @param {number} qubit
      * @param {number} angle
      */
     rx(qubit, angle) {
-        wasm.wasmquantumcircuit_rx(this.__wbg_ptr, qubit, angle);
+        const ret = wasm.wasmquantumcircuit_rx(this.__wbg_ptr, qubit, angle);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Apply Ry rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      * @param {number} qubit
      * @param {number} angle
      */
     ry(qubit, angle) {
-        wasm.wasmquantumcircuit_ry(this.__wbg_ptr, qubit, angle);
+        const ret = wasm.wasmquantumcircuit_ry(this.__wbg_ptr, qubit, angle);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Apply Rz rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      * @param {number} qubit
      * @param {number} angle
      */
     rz(qubit, angle) {
-        wasm.wasmquantumcircuit_rz(this.__wbg_ptr, qubit, angle);
+        const ret = wasm.wasmquantumcircuit_rz(this.__wbg_ptr, qubit, angle);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Apply Rzz (ZZ-rotation) gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      * @param {number} q1
      * @param {number} q2
      * @param {number} angle
      */
     rzz(q1, q2, angle) {
-        wasm.wasmquantumcircuit_rzz(this.__wbg_ptr, q1, q2, angle);
+        const ret = wasm.wasmquantumcircuit_rzz(this.__wbg_ptr, q1, q2, angle);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Apply S (phase) gate to the target qubit.
@@ -349,6 +369,11 @@ export function research_run_json(request) {
 /**
  * Run a quantum circuit simulation and return the results as a JS object.
  *
+ * `seed` is optional. Omit it (or pass `null`/`undefined`) and any
+ * `measure`/`measure_all` operation collapses with OS entropy. Pass an
+ * integer in `0..=Number.MAX_SAFE_INTEGER` and the collapse is
+ * reproducible. Any other seed value throws.
+ *
  * The returned object has the shape:
  * ```typescript
  * {
@@ -360,11 +385,12 @@ export function research_run_json(request) {
  * }
  * ```
  * @param {WasmQuantumCircuit} circuit
+ * @param {number | null} [seed]
  * @returns {any}
  */
-export function simulate(circuit) {
+export function simulate(circuit, seed) {
     _assertClass(circuit, WasmQuantumCircuit);
-    const ret = wasm.simulate(circuit.__wbg_ptr);
+    const ret = wasm.simulate(circuit.__wbg_ptr, !isLikeNone(seed), isLikeNone(seed) ? 0 : seed);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }

@@ -1,6 +1,6 @@
 {
   "name": "@ruvector/ruqu-wasm",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "Rust quantum circuit simulation and bounded magic state research in WebAssembly, with an animated browser explorer",
   "main": "ruqu_wasm.js",
