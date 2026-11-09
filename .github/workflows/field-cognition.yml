@@ -1,0 +1,31 @@
+name: Field cognition evidence
+
+on:
+  pull_request:
+    paths:
+      - 'examples/field-cognition/**'
+      - '.github/workflows/field-cognition.yml'
+  push:
+    paths:
+      - 'examples/field-cognition/**'
+      - '.github/workflows/field-cognition.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            examples/field-cognition/iteration-03/package-lock.json
+            examples/field-cognition/iteration-04/package-lock.json
+      - name: Verify iteration 3
+        working-directory: examples/field-cognition/iteration-03
+        run: npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run verify
+      - name: Verify iteration 4 guards and adaptation
+        working-directory: examples/field-cognition/iteration-04
+        run: npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run adapt -- ci-${{ github.run_id }} && npm run verify

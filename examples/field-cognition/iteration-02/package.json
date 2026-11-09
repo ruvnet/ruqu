@@ -1,0 +1,1 @@
+{"private":true,"dependencies":{"@ruvector/ruqu":"0.2.0","@ruvector/wasm":"0.1.31"},"scripts":{"develop":"node development-search.cjs","test":"node test.cjs","benchmark":"node benchmark.cjs"}}

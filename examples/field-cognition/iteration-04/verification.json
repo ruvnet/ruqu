@@ -1,0 +1,16 @@
+{
+  "preregistration_commit": "69b7fb77207d3b0ecf717c50299955eceff98534",
+  "protocol_sha256": "230bde7d589c3566fe0252a6e066d4b3f2adc45e6f404d6b54f9f2082941ef1c",
+  "field_sha256": "3bc680c9c9d44af818e4d029345498e52e0549f6b664441ad1a5cc5062b26b8c",
+  "guard_sha256": "d83184d4849a1d6192239322dd3fb44a3656b7c1e0e1569c2439832c39ca9179",
+  "adapt_sha256": "c3d849cd37a59203b5e83a22ea24a8eef7b588a55093710439761d03ded58698",
+  "test_sha256": "5b9468755cbb1df9f44e0b19d1aa57f83790fe7a16ccf86717fc8d46d860e210",
+  "lock_sha256": "afcf01b06bb3ddeec7a1685598363f4989a746d26bbb5934e5086f99ca0ef107",
+  "semantic_ledger_sha256": "eaf1554ecb3e6bb0d4db4416b3bd58f85a34c89820695e7f7f40fb4d63a7e256",
+  "local_node_24": {"tests":8,"actual_evaluations":7,"decision":"revert","elapsed_ms":54.852872,"adaptation_overhead_ms":6.127635},
+  "ruos_node_20": {"tests":8,"actual_evaluations":7,"decision":"revert","elapsed_ms":192.791124,"adaptation_overhead_ms":30.68804},
+  "matching": {"candidate_genomes":true,"prediction_digests":true,"metrics_excluding_timing":true,"decision":true,"semantic_ledger_digest":true},
+  "candidate": {"baseline_error":0.22616,"best_error":0.2248,"relative_error_reduction":0.00601344181110718,"baseline_brier":0.15531854842356263,"best_brier":0.1526608727666089},
+  "retained": false,
+  "holdout_opened": false
+}

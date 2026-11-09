@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    {"requirement":"externally timestamped preregistration before holdout","evidence":"commit 1f4fdce71c660e41adb41b25eef99b951daef995","status":"met"},
+    {"requirement":"causal temporal forecast","evidence":["development-protocol.json","models.mjs"],"status":"met for synthetic three second horizon"},
+    {"requirement":"equal development search budget","evidence":"development-results.json","status":"met with nine evaluations per tuned family"},
+    {"requirement":"topology and transport ablations","evidence":"results.json","status":"met"},
+    {"requirement":"actual RuVector and RuQu execution","evidence":["test.stdout","results.json"],"status":"met"},
+    {"requirement":"ten percent relative improvement","evidence":"results.json","status":"failed; candidate regressed"},
+    {"requirement":"five seeds and uncertainty interval","evidence":"results.json","status":"met"},
+    {"requirement":"bounded state, rollback, replay, malformed and resource stress","evidence":"test.mjs","status":"met at model boundary"},
+    {"requirement":"MetaHarness guarded adaptation","evidence":"source-audit.json","status":"audited and deferred; no execution claim"},
+    {"requirement":"LatentMesh synchronization","evidence":"source-audit.json","status":"not implemented; no claim"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "preregistration_commit": "1f4fdce71c660e41adb41b25eef99b951daef995",
+  "repository_base": "a4396fc0ae8491ca7cad51b61978e40d23acc2b7",
+  "executed": {
+    "@ruvector/ruqu": {"version":"0.2.0","license":"MIT","role":"classical one qubit WASM comparator"},
+    "@ruvector/wasm": {"version":"0.1.31","license":"MIT","gitHead":"08c0d742c4afaabeb407e9c4fedffe174d3d21fb","role":"flat spatial neighbor lookup"},
+    "@claude-flow/cli": {"version":"3.25.6","role":"SPARC and swarm routing only"}
+  },
+  "verified_available_not_executed": {
+    "@metaharness/darwin": {"version":"0.10.2","license":"MIT","source_commit":"d5833dc6512ac1adeeef91a331c29055cd8a4dbb","reason":"audited after the development search; deferred to avoid changing the frozen evaluator"}
+  },
+  "not_executed": {
+    "RuField":"Rust source exists at revision 7179a2efc706993ee0d87f0093e6a0e9e3dc5017; executor lacks Rust",
+    "MidStream":"field facing runtime requires Rust and the inspected npm package is incomplete",
+    "LatentMesh":"Rust transport requires unavailable toolchain",
+    "Autogenous":"published Node package unavailable; Rust implementation deferred",
+    "rsi":"not required for this bounded experiment"
+  }
+}

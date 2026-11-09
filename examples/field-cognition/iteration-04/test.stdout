@@ -1,0 +1,13 @@
+
+> test
+> node test.mjs
+
+PASS genome finite bounds and log constraints
+PASS throw NaN and timeout fail closed
+PASS fresh work root rejects archive collision
+PASS actual Darwin replay is deterministic after timestamps removed
+PASS independent filter excludes regressed winner hazard
+PASS no improvement and secondary regression revert
+PASS atomic activation and post activation rollback
+PASS holdout firewall and package scope
+{"tests":8,"passed":true,"tempRoot":"/tmp/field-guard-cSbKWn"}

@@ -1,0 +1,35 @@
+{
+  "repository": "ruvnet/ruqu",
+  "base_commit": "eb127994aaf8cdb074ebcc3ff32c1a798b79efa8",
+  "dependencies": {
+    "@ruvector/ruqu": {
+      "version": "0.2.0",
+      "license": "MIT",
+      "integrity": "sha512-4k8vUBFjpsMiTuu0V2xbs+pCwS2xg3rkIWcns5Jw8Kb+/8eb2MNdClF9Hy7WOde3VaLQ3d5lq/s69TdM4nysNg==",
+      "execution": "one qubit WASM simulation"
+    },
+    "@ruvector/wasm": {
+      "version": "0.1.31",
+      "license": "MIT",
+      "integrity": "sha512-Et8U8iVUNGeLNcc3OLJLpXVI0fCW0wGgWGAm1X1qYyxP6n+KeBGBEvG2SBU9BQgs7PVHd534zDa9FIJ8ZvTdoA==",
+      "execution": "four node spatial lookup; adapter reports flat index and no HNSW"
+    },
+    "@claude-flow/cli": {
+      "version": "3.25.6",
+      "execution": "SPARC routing only; not benchmark evidence"
+    }
+  },
+  "native_rufield_adapter": {
+    "path": "integrations/observer-world",
+    "rufield_revision": "7179a2efc706993ee0d87f0093e6a0e9e3dc5017",
+    "status": "source inspected; unavailable for execution because the live ruOS executor has no Rust toolchain"
+  },
+  "not_executed": {
+    "RuField": "native adapter unavailable on executor",
+    "MidStream": "no verified adapter selected",
+    "LatentMesh": "no verified adapter selected",
+    "Autogenous": "no verified adapter selected",
+    "MetaHarness": "transitive packages installed but not invoked",
+    "rsi": "not required for this bounded iteration"
+  }
+}

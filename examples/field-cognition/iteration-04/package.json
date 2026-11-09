@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"test":"node test.mjs","adapt":"node adapt.mjs","verify":"node verify.mjs"},"devDependencies":{"@metaharness/darwin":"0.10.2"}}

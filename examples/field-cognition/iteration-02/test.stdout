@@ -1,0 +1,13 @@
+
+> test
+> node test.cjs
+
+PASS actual RuVector topology self-query
+PASS published RuVector adapter reports flat index
+PASS RuQu analytic equivalence across 205 circuits
+PASS phase is observable only with a mixing rotation
+PASS invalid and replay events rejected without mutation
+PASS field bounded under extremes and missing sensors
+PASS reset reproduces initial trajectory
+PASS deterministic replay
+{"tests":8,"max_analytic_delta":4.440892098500626e-16,"passed":true,"topology_index":"flat"}

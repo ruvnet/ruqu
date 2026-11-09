@@ -1,0 +1,12 @@
+{
+  "independent_processes": [
+    {"runtime": "local Node 24", "tests": 8, "passed": true, "raw_results_sha256": "f2a84793f4ad62f35cb54cfab93a2b091753b71fea6f12948b56740477b668bb"},
+    {"runtime": "ruOS Node 20", "machine": "328b7188476d3d1448835b031b843a22", "tests": 8, "passed": true, "raw_results_sha256": "f2a84793f4ad62f35cb54cfab93a2b091753b71fea6f12948b56740477b668bb"}
+  ],
+  "protocol_sha256": "86f3a0ff80a5dda1117b77b994e1831a10969c622d1a71ea1be7cb83b9004565",
+  "source_sha256": "a539d19f4b169cc09ca15bab46e4be0e4683c41735e9e4f4f7b95ba7cdb4deac",
+  "deterministic_outputs_match": true,
+  "nondeterministic_fields": ["latency", "throughput", "peak RSS", "results file hash"],
+  "ruos_metrics": {"events_per_second": 19985.228837425344, "peak_process_rss_kib": 122428},
+  "acceptance_passed": false
+}

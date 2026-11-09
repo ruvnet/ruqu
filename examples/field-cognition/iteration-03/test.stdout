@@ -1,0 +1,13 @@
+
+> test
+> node test.mjs
+
+PASS actual RuVector ring lookup
+PASS continuous time generator deterministic and bounded
+PASS mixture likelihood rejects outlier domination
+PASS stale malformed and replay rejected without mutation
+PASS velocity state and queue remain bounded under resource stress
+PASS reset reproduces trajectory
+PASS missing observations perform prediction only
+PASS RuQu matches analytic control in 205 contexts
+{"tests":8,"passed":true,"max_ruqu_analytic_delta":4.440892098500626e-16,"ruvector_index":"flat"}

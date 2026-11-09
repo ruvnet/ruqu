@@ -1,0 +1,28 @@
+{
+  "status": "frozen before holdout execution",
+  "campaign": "field-cognition-20260926",
+  "iteration": 2,
+  "seeds": [701, 709, 719, 727, 733],
+  "events_per_seed": 4000,
+  "generator": {
+    "description": "synthetic asynchronous noisy observations of a four node binary ring field",
+    "wave_probability_per_event": 0.012,
+    "propagation_delay_events_per_hop": 3,
+    "missing_probability": 0.2,
+    "gaussian_sigma": 1.1,
+    "outlier_probability": 0.03
+  },
+  "selected_without_holdout_access": {
+    "diffusion": 0.24,
+    "gain": 0.7,
+    "staleDecay": 0.04,
+    "resetThreshold": 1.5
+  },
+  "comparators": ["memoryless", "scalar_ema", "scalar_bayes", "independent_bayes", "iteration_01_field"],
+  "secondary_readouts": ["ruqu", "ruqu_phase_zero", "ruqu_analytic_equivalent"],
+  "primary_metric": "mean relative decision error reduction of selected field versus strongest comparator",
+  "acceptance": "at least 0.10 mean relative reduction across five fixed seeds with all correctness tests passing",
+  "secondary_metrics": ["absolute decision error", "Brier score", "transition error", "p50 latency", "p95 latency", "throughput", "peak RSS"],
+  "budgets": {"training": "none", "development_candidates": 135, "holdout_evaluations_per_model": 20000, "new_provider_spend_usd": 0},
+  "scientific_limits": "Classical simulation only. No Phi, consciousness, quantum advantage, or physical substrate claim."
+}
