@@ -34,7 +34,7 @@ async function main() {
   const manifestBytes = await fs.readFile(path.join(root,'docs/research/wasm-manifest.json'));
   const manifest = JSON.parse(manifestBytes);
   const sourceSha256 = manifest.sha256['crates/ruqu-core/src/magic_states.rs'];
-  const wasmSha256 = manifest.sha256['cli/wasm/ruqu_wasm_bg.wasm'];
+  const wasmSha256 = manifest.sha256['npm/packages/ruqu-wasm/ruqu_wasm_bg.wasm'];
   const packageJson = JSON.parse(await fs.readFile(path.join(root,'cli/package.json')));
   const model = {model:'ideal_15_to_1_independent_Z',model_version:1,sourceSha256,
     cost_inputs:{rounds:1,block_qubits:15,block_rounds:10,raw_qubits:1,raw_rounds:1}};

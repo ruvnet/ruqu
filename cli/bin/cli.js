@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
 // The `ruqu` CLI — an agent harness over the metaharness kernel PLUS real
-// quantum-circuit execution via the bundled ruqu-wasm WebAssembly module.
+// quantum-circuit execution via the @ruvector/ruqu-wasm WebAssembly package.
 //
 // Plain ESM JS: runs as-is via `npx @ruvector/ruqu` with no build step.
 
@@ -19,11 +19,12 @@ async function harness() {
   return {loadKernel,adapter};
 }
 
-/** Lazily load the bundled nodejs-target quantum WASM (ruqu-wasm crate). */
-let _wasm;
+/** Lazily load the quantum WASM from the @ruvector/ruqu-wasm dependency. */
 function quantum() {
-  if (!_wasm) _wasm = require(join(HERE, '..', 'wasm', 'ruqu_wasm.js'));
-  return _wasm;
+  return require(join(HERE, '..', 'src', 'engine.cjs')).quantum();
+}
+function engineLabel() {
+  return `@ruvector/ruqu-wasm ${require(join(HERE, '..', 'src', 'engine.cjs')).load().version}`;
 }
 
 function arg(args, flag, def) {
@@ -70,7 +71,7 @@ async function doctor() {
   let ok = true;
   for (const [label, pass] of checks) { console.log(`${pass ? 'PASS' : 'FAIL'} ${label}`); if (!pass) ok = false; }
   console.log(ok
-    ? `\n${HARNESS_NAME}: all checks passed (kernel ${info.version} ${kernel.backend}; quantum WASM ${maxq} qubits)`
+    ? `\n${HARNESS_NAME}: all checks passed (kernel ${info.version} ${kernel.backend}; quantum WASM ${maxq} qubits, ${engineLabel()})`
     : `\n${HARNESS_NAME}: doctor found problems`);
   return ok ? 0 : 1;
 }
@@ -141,7 +142,7 @@ function qaoa(args) {
 async function version() {
   const {loadKernel} = await harness();
   const k = await loadKernel();
-  console.log(`${HARNESS_NAME} CLI — metaharness kernel ${k.kernelInfo().version} (${k.backend}) · quantum WASM ${quantum().max_qubits()}q`);
+  console.log(`${HARNESS_NAME} CLI — metaharness kernel ${k.kernelInfo().version} (${k.backend}) · quantum WASM ${quantum().max_qubits()}q (${engineLabel()})`);
   return 0;
 }
 

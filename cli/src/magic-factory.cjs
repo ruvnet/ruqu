@@ -14,8 +14,8 @@ function execute(request) {
   jsonValue(request);
   const encoded=JSON.stringify(request);
   if (Buffer.byteLength(encoded)>1048576) throw Error('Research request exceeds 1 MiB');
-  if (!wasm) wasm=require('../wasm/ruqu_wasm.js');
-  if (typeof wasm.research_run_json !== 'function') throw Error('Bundled WASM lacks the shared research API; reinstall a current package');
+  if (!wasm) wasm=require('./engine.cjs').quantum();
+  if (typeof wasm.research_run_json !== 'function') throw Error('@ruvector/ruqu-wasm lacks the shared research API; reinstall a current package');
   try { return JSON.parse(wasm.research_run_json(encoded)); }
   catch (error) { throw Error(error instanceof Error ? error.message : String(error)); }
 }

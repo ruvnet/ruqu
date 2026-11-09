@@ -17,7 +17,7 @@ const copy = value => JSON.parse(JSON.stringify(value));
 const digest = value => createHash('sha256').update(canonical(value)).digest('hex');
 const cli = path.resolve(__dirname, '../bin/cli.js');
 const wasmDigest = createHash('sha256')
-  .update(readFileSync(path.resolve(__dirname, '../wasm/ruqu_wasm_bg.wasm'))).digest('hex');
+  .update(readFileSync(require.resolve('@ruvector/ruqu-wasm/ruqu_wasm_bg.wasm'))).digest('hex');
 
 test('Bell Z probabilities match the analytical state', () => {
   bell(0, 0).forEach((value, index) => near(value, [0.5, 0, 0, 0.5][index]));

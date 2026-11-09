@@ -34,4 +34,6 @@ jobs:
       - run: cargo test --manifest-path integrations/observer-world/Cargo.toml --locked
       - run: cargo clippy --manifest-path integrations/observer-world/Cargo.toml --locked --all-targets -- -D warnings
       - run: cargo build --manifest-path integrations/observer-world/Cargo.toml --locked
+      - run: npm ci --ignore-scripts
+        working-directory: cli
       - run: node integrations/observer-world/verify-e2e.cjs

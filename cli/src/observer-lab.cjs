@@ -1,13 +1,11 @@
 'use strict';
 const {createHash} = require('node:crypto');
-const {readFileSync} = require('node:fs');
-const path = require('node:path');
-const wasmPath = path.resolve(__dirname, '../wasm/ruqu_wasm.js');
-const {WasmQuantumCircuit, simulate} = require(wasmPath);
+const quantumEngine = require('./engine.cjs').load();
+const {WasmQuantumCircuit, simulate} = quantumEngine.api;
 const {performance} = require('node:perf_hooks');
 const PROTOCOL = 'ruqu.observer.v1';
 const MAX_EVENTS = 10000;
-const engineSha256 = createHash('sha256').update(readFileSync(path.join(path.dirname(wasmPath),'ruqu_wasm_bg.wasm'))).digest('hex');
+const engineSha256 = quantumEngine.sha256;
 function canonical(value) {
   if (Array.isArray(value)) {
     for (let i=0;i<value.length;i++) if (!Object.hasOwn(value,i)) throw Error('Sparse evidence array');
