@@ -4,10 +4,6 @@
   "wasm_bindgen": "0.2.125",
   "sha256": {
     "Cargo.lock": "de9e6b1025863147655dfd1d6c6355f483449b6756e5a0653120ffbac701bdab",
-    "cli/wasm/ruqu_wasm.d.ts": "f8510a73de82fc81cd91c352e26af288b35aa893d3637cda74b4b3d1873b148b",
-    "cli/wasm/ruqu_wasm.js": "b6947fa4dad3a5b445d0535e71133a32624e3bb8a246e1a839e5a3e6b2c8d5e3",
-    "cli/wasm/ruqu_wasm_bg.wasm": "07bbeb49dd3c551921ebf6191a2151d3cb78f014771f606adb950111e405dd46",
-    "cli/wasm/ruqu_wasm_bg.wasm.d.ts": "2d1493a97024563542ca59ffa1c98e734d4939a7e504ae40fc2071eb6502cafd",
     "crates/ruqu-algorithms/src/grover.rs": "87aa96d19bb3fe0af55644e07529129cfc10906b4017add4923bca927747b1c8",
     "crates/ruqu-algorithms/src/lib.rs": "65b49fe5409fe14ac819a654603ad0ece411be2faa44ca3a29415ba991fd3849",
     "crates/ruqu-algorithms/src/qaoa.rs": "f9dec5572ae608b79479290701b6b7859c5323759d7c26e85140820676649331",

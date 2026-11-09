@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 'use strict';
-// Exercise the native executable and both actual generated WASM interfaces.
+// Exercise the native executable, the engine the CLI loads at runtime (the
+// installed @ruvector/ruqu-wasm package, via cli/src/engine.cjs), and the
+// explorer's web build.
 // The web target is initialized from its bytes under Node; this checks its
 // module/API contract, not browser rendering or HTTP MIME configuration.
 const fs=require('node:fs');
@@ -8,7 +10,7 @@ const path=require('node:path');
 const assert=require('node:assert/strict');
 const {spawnSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
-const nodeWasm=require('../cli/wasm/ruqu_wasm.js');
+const nodeWasm=require('../cli/src/engine.cjs').quantum();
 const cargo=process.env.RUQU_CARGO || 'cargo';
 function native(text) {
   const r=spawnSync(cargo,['run','--locked','--quiet','--release','-p','ruqu-core','--example','research_api'],{cwd:root,input:text,encoding:'utf8',timeout:120000,maxBuffer:4*1024*1024});
@@ -74,6 +76,6 @@ async function main(){
   for(const [i,text] of invalid.entries())for(const [backend,outcome] of [['native',native(text)],['Node',wasm(nodeWasm,text)],['web',wasm(web,text)]]){
     assert.equal(outcome.ok,false,`${backend} invalid case ${i} accepted`);assert.ok(outcome.error.length>0,`${backend} missing failure reason`);
   }
-  console.log(JSON.stringify({schema_version:1,pass:true,interfaces:['native-release','nodejs-wasm','web-wasm-initialized-under-node'],successful_requests:passed.length,operations:[...new Set(passed)],rejected_cases:invalid.length,float_comparisons:floatComparisons,max_observed_ulp:Number(maxObservedUlp),float_tolerance_ulp:1,integer_comparison:'exact',hardware_run:false},null,2));
+  console.log(JSON.stringify({schema_version:1,pass:true,interfaces:['native-release','cli-engine-ruqu-wasm-package','web-wasm-initialized-under-node'],successful_requests:passed.length,operations:[...new Set(passed)],rejected_cases:invalid.length,float_comparisons:floatComparisons,max_observed_ulp:Number(maxObservedUlp),float_tolerance_ulp:1,integer_comparison:'exact',hardware_run:false},null,2));
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

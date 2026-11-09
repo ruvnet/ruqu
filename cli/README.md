@@ -32,8 +32,10 @@ Gates: `h x y z s t rx ry rz cnot cz swap rzz measure reset barrier`. Up to **25
 
 ## How it works
 
-The CLI bundles a `--target nodejs` WebAssembly build of the `ruqu-wasm` crate (real state-vector
-simulation in Rust → WASM) and loads it directly in Node — no native addon, no Python. It also boots
+The CLI runs the `ruqu-wasm` crate (real state-vector simulation in Rust → WASM) through its
+[`@ruvector/ruqu-wasm`](https://www.npmjs.com/package/@ruvector/ruqu-wasm) dependency, the same
+package browsers and other tools use. It loads it directly in Node, with no native addon and no
+Python. Node ^20.19 or >=22.12 is required (the package is an ES module loaded with `require`). It also boots
 the metaharness kernel + Claude Code host adapter for the agent-harness commands (`init`/`doctor`).
 
 The observer laboratory is available from this source checkout with

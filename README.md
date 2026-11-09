@@ -21,7 +21,7 @@
 | Structured observable simulation | Shared research API and native example | Supported Clifford gates, T branching and Pauli noise; branch budgets bound growth. |
 | Correlated syndrome experiments | Native hypergraph decoder example | Bounded small-instance search; explicit resource limits. |
 | Research evidence memory | `research-memory` CLI | Official RVF WASM binary packaging, integrity validation and advisory retrieval; imported records cannot authorize promotion. |
-| Reproducible quantum controls | `observer-lab` | Bundled WASM experiments with seed and evidence ledger. |
+| Reproducible quantum controls | `observer-lab` | WASM experiments with seed and evidence ledger. |
 | Quantum and classical research | `ruqu-exotic`, coherence engine | Experimental algorithms; evaluate each model on its own evidence. |
 
 The research numerical engine is shared across native Rust, Node.js and browser WebAssembly. These are classical software models, available in the source checkout and published npm packages. The cultivation stage is an explicit realization of a published small circuit, with documented syndrome-gadget ordering choices. It does not reproduce Google's full cultivation experiment, implement a hardware control service, or establish quantum advantage.
@@ -44,7 +44,7 @@ cargo run -p ruqu-core --example hypergraph_decoder
 cargo run -p ruqu-core --example pauli_propagation
 ```
 
-Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. Install the published CLI with `npx @ruvector/ruqu@0.3.0 magic-factory --input-error 0.01 --shots 1000 --seed 42`. Browser bindings are available as [`@ruvector/ruqu-wasm@2.2.0`](https://www.npmjs.com/package/@ruvector/ruqu-wasm/v/2.2.0).
+Rust and Cargo are required for native examples; Node.js is required for the CLI. Simulator commands run the [`@ruvector/ruqu-wasm`](https://www.npmjs.com/package/@ruvector/ruqu-wasm) engine, which the CLI installs as a dependency. Install the published CLI with `npx @ruvector/ruqu@0.4.0 magic-factory --input-error 0.01 --shots 1000 --seed 42`. Browser bindings are available as [`@ruvector/ruqu-wasm@2.2.0`](https://www.npmjs.com/package/@ruvector/ruqu-wasm/v/2.2.0).
 
 ## Interactive quantum computing Explorer
 
@@ -57,7 +57,7 @@ Numerical work executes Rust WebAssembly in a dedicated browser worker. The brow
 `ruqu_core::research_api::run_json` and the WASM export `research_run_json` execute the same numerical implementations. Supported operations include `magic-factory`, `magic-exact`, `magic-sample`, `magic-resources`, `cultivation`, `pauli-evaluate` and `hypergraph-decode`. Seeds and large bit masks use decimal strings to avoid JavaScript integer precision loss. Invalid fields and oversized requests are rejected.
 
 ```bash
-# The Node adapter calls the bundled Rust WASM implementation.
+# The Node adapter calls the Rust WASM implementation in @ruvector/ruqu-wasm.
 node cli/bin/cli.js research --json '{"op":"magic-exact","input_error":0.01}'
 
 # The same request runs natively through stdin.
@@ -201,7 +201,7 @@ The CLI also supports `grover`, `qaoa`, `capabilities` and `doctor`; see the [CL
 ## Observer consistency laboratory
 
 Run reproducible two-qubit controls, reversible observer interactions, and separately
-labelled classical memory interventions using the bundled WASM engine:
+labelled classical memory interventions using the ruqu WASM engine:
 
 ```bash
 node cli/bin/cli.js observer-lab --count 128 --seed 20260920

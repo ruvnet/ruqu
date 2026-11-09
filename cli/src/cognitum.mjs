@@ -18,7 +18,7 @@ export async function harnessSpec(){
   return {kernel:{...kernel.kernelInfo(),backend:kernel.backend},spec,host:adapter.name,config:adapter.generateConfig(spec)};
 }
 export async function evaluate(plan){
-  validatePlan(plan);const q=require('../wasm/ruqu_wasm.js');const c=new q.WasmQuantumCircuit(plan.qubits);
+  validatePlan(plan);const q=require('./engine.cjs').quantum();const c=new q.WasmQuantumCircuit(plan.qubits);
   let result;try{for(const g of plan.gates)g.name==='cnot'?c.cnot(g.qubit,g.target):c[g.name](g.qubit);result=q.simulate(c);}finally{c.free();}
   const h=await harnessSpec();
   return {schema_version:1,mode:'local-wasm',kernel:h.kernel,circuit_sha256:createHash('sha256').update(JSON.stringify({qubits:plan.qubits,gates:plan.gates})).digest('hex'),proposal:plan,verification:{probabilities:result.probabilities,probability_sum:result.probabilities.reduce((a,b)=>a+b,0),gate_count:plan.gates.length,bit_order:'q[n-1]...q[0]',scope:'Computed measurement probabilities only. Does not verify the explanation, user objective, entanglement or hardware feasibility.'}};
