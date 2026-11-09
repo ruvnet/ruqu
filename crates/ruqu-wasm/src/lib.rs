@@ -123,18 +123,30 @@ impl WasmQuantumCircuit {
     }
 
     /// Apply Rx rotation gate with the given angle (radians).
-    pub fn rx(&mut self, qubit: u32, angle: f64) {
+    ///
+    /// Throws if `angle` is NaN or infinite.
+    pub fn rx(&mut self, qubit: u32, angle: f64) -> Result<(), JsValue> {
+        check_angle("rx", angle).map_err(|e| JsValue::from_str(&e))?;
         self.inner.rx(qubit, angle);
+        Ok(())
     }
 
     /// Apply Ry rotation gate with the given angle (radians).
-    pub fn ry(&mut self, qubit: u32, angle: f64) {
+    ///
+    /// Throws if `angle` is NaN or infinite.
+    pub fn ry(&mut self, qubit: u32, angle: f64) -> Result<(), JsValue> {
+        check_angle("ry", angle).map_err(|e| JsValue::from_str(&e))?;
         self.inner.ry(qubit, angle);
+        Ok(())
     }
 
     /// Apply Rz rotation gate with the given angle (radians).
-    pub fn rz(&mut self, qubit: u32, angle: f64) {
+    ///
+    /// Throws if `angle` is NaN or infinite.
+    pub fn rz(&mut self, qubit: u32, angle: f64) -> Result<(), JsValue> {
+        check_angle("rz", angle).map_err(|e| JsValue::from_str(&e))?;
         self.inner.rz(qubit, angle);
+        Ok(())
     }
 
     // ── Two-qubit gates ─────────────────────────────────────────────────
@@ -155,8 +167,12 @@ impl WasmQuantumCircuit {
     }
 
     /// Apply Rzz (ZZ-rotation) gate with the given angle (radians).
-    pub fn rzz(&mut self, q1: u32, q2: u32, angle: f64) {
+    ///
+    /// Throws if `angle` is NaN or infinite.
+    pub fn rzz(&mut self, q1: u32, q2: u32, angle: f64) -> Result<(), JsValue> {
+        check_angle("rzz", angle).map_err(|e| JsValue::from_str(&e))?;
         self.inner.rzz(q1, q2, angle);
+        Ok(())
     }
 
     // ── Measurement and control ─────────────────────────────────────────
@@ -241,6 +257,11 @@ pub struct WasmMeasurement {
 
 /// Run a quantum circuit simulation and return the results as a JS object.
 ///
+/// `seed` is optional. Omit it (or pass `null`/`undefined`) and any
+/// `measure`/`measure_all` operation collapses with OS entropy. Pass an
+/// integer in `0..=Number.MAX_SAFE_INTEGER` and the collapse is
+/// reproducible. Any other seed value throws.
+///
 /// The returned object has the shape:
 /// ```typescript
 /// {
@@ -252,8 +273,16 @@ pub struct WasmMeasurement {
 /// }
 /// ```
 #[wasm_bindgen]
-pub fn simulate(circuit: &WasmQuantumCircuit) -> Result<JsValue, JsValue> {
-    let result = ruqu_core::simulator::Simulator::run(&circuit.inner)
+pub fn simulate(circuit: &WasmQuantumCircuit, seed: Option<f64>) -> Result<JsValue, JsValue> {
+    let seed = match seed {
+        Some(value) => Some(check_seed(value).map_err(|e| JsValue::from_str(&e))?),
+        None => None,
+    };
+    let config = ruqu_core::simulator::SimConfig {
+        seed,
+        ..Default::default()
+    };
+    let result = ruqu_core::simulator::Simulator::run_with_config(&circuit.inner, &config)
         .map_err(|e| JsValue::from_str(&e.to_string()))?;
 
     let wasm_result = WasmSimResult {
@@ -273,6 +302,31 @@ pub fn simulate(circuit: &WasmQuantumCircuit) -> Result<JsValue, JsValue> {
     };
 
     serde_wasm_bindgen::to_value(&wasm_result).map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Input validation (plain Rust so it is testable off wasm32)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Reject rotation angles that would turn every amplitude into NaN.
+fn check_angle(gate: &str, angle: f64) -> Result<(), String> {
+    if angle.is_finite() {
+        Ok(())
+    } else {
+        Err(format!("{gate}: angle must be a finite number, got {angle}"))
+    }
+}
+
+/// Accept only seeds that a JS number represents exactly.
+fn check_seed(seed: f64) -> Result<u64, String> {
+    const MAX_SAFE_INTEGER: f64 = 9_007_199_254_740_991.0;
+    if seed.is_finite() && seed >= 0.0 && seed.fract() == 0.0 && seed <= MAX_SAFE_INTEGER {
+        Ok(seed as u64)
+    } else {
+        Err(format!(
+            "seed must be an integer in 0..=Number.MAX_SAFE_INTEGER, null, or undefined, got {seed}"
+        ))
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -551,6 +605,60 @@ mod tests {
         let circuit = WasmQuantumCircuit::new(2).expect("2 qubits should succeed");
         assert_eq!(circuit.num_qubits(), 2);
         assert_eq!(circuit.gate_count(), 0);
+    }
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod validation_tests {
+    use super::{check_angle, check_seed};
+
+    #[test]
+    fn finite_angles_pass() {
+        for a in [0.0, -0.0, 1.5, -std::f64::consts::PI, 1e300] {
+            assert!(check_angle("rx", a).is_ok(), "{a}");
+        }
+    }
+
+    #[test]
+    fn non_finite_angles_fail() {
+        for a in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            let err = check_angle("ry", a).unwrap_err();
+            assert!(err.starts_with("ry: angle must be a finite number"), "{err}");
+        }
+    }
+
+    #[test]
+    fn integer_seeds_pass() {
+        assert_eq!(check_seed(0.0), Ok(0));
+        assert_eq!(check_seed(42.0), Ok(42));
+        assert_eq!(check_seed(9_007_199_254_740_991.0), Ok(9_007_199_254_740_991));
+    }
+
+    #[test]
+    fn bad_seeds_fail() {
+        for s in [-1.0, 1.5, f64::NAN, f64::INFINITY, 9_007_199_254_740_992.0] {
+            assert!(check_seed(s).is_err(), "{s}");
+        }
+    }
+
+    #[test]
+    fn seeded_measurement_is_reproducible() {
+        let mut c = ruqu_core::circuit::QuantumCircuit::new(1);
+        c.h(0);
+        c.measure(0);
+        let run = |seed| {
+            let config = ruqu_core::simulator::SimConfig {
+                seed: Some(seed),
+                ..Default::default()
+            };
+            ruqu_core::simulator::Simulator::run_with_config(&c, &config)
+                .unwrap()
+                .measurements[0]
+                .result
+        };
+        let outcomes: Vec<bool> = (0..32).map(run).collect();
+        assert_eq!(outcomes, (0..32).map(run).collect::<Vec<_>>());
+        assert!(outcomes.contains(&true) && outcomes.contains(&false));
     }
 }
 

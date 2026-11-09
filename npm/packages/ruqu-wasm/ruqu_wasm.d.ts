@@ -61,18 +61,26 @@ export class WasmQuantumCircuit {
     reset(qubit: number): void;
     /**
      * Apply Rx rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      */
     rx(qubit: number, angle: number): void;
     /**
      * Apply Ry rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      */
     ry(qubit: number, angle: number): void;
     /**
      * Apply Rz rotation gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      */
     rz(qubit: number, angle: number): void;
     /**
      * Apply Rzz (ZZ-rotation) gate with the given angle (radians).
+     *
+     * Throws if `angle` is NaN or infinite.
      */
     rzz(q1: number, q2: number, angle: number): void;
     /**
@@ -200,6 +208,11 @@ export function research_run_json(request: string): string;
 /**
  * Run a quantum circuit simulation and return the results as a JS object.
  *
+ * `seed` is optional. Omit it (or pass `null`/`undefined`) and any
+ * `measure`/`measure_all` operation collapses with OS entropy. Pass an
+ * integer in `0..=Number.MAX_SAFE_INTEGER` and the collapse is
+ * reproducible. Any other seed value throws.
+ *
  * The returned object has the shape:
  * ```typescript
  * {
@@ -211,7 +224,7 @@ export function research_run_json(request: string): string;
  * }
  * ```
  */
-export function simulate(circuit: WasmQuantumCircuit): any;
+export function simulate(circuit: WasmQuantumCircuit, seed?: number | null): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -225,13 +238,13 @@ export interface InitOutput {
     readonly wasmquantumcircuit_z: (a: number, b: number) => void;
     readonly wasmquantumcircuit_s: (a: number, b: number) => void;
     readonly wasmquantumcircuit_t: (a: number, b: number) => void;
-    readonly wasmquantumcircuit_rx: (a: number, b: number, c: number) => void;
-    readonly wasmquantumcircuit_ry: (a: number, b: number, c: number) => void;
-    readonly wasmquantumcircuit_rz: (a: number, b: number, c: number) => void;
+    readonly wasmquantumcircuit_rx: (a: number, b: number, c: number) => [number, number];
+    readonly wasmquantumcircuit_ry: (a: number, b: number, c: number) => [number, number];
+    readonly wasmquantumcircuit_rz: (a: number, b: number, c: number) => [number, number];
     readonly wasmquantumcircuit_cnot: (a: number, b: number, c: number) => void;
     readonly wasmquantumcircuit_cz: (a: number, b: number, c: number) => void;
     readonly wasmquantumcircuit_swap: (a: number, b: number, c: number) => void;
-    readonly wasmquantumcircuit_rzz: (a: number, b: number, c: number, d: number) => void;
+    readonly wasmquantumcircuit_rzz: (a: number, b: number, c: number, d: number) => [number, number];
     readonly wasmquantumcircuit_measure: (a: number, b: number) => void;
     readonly wasmquantumcircuit_measure_all: (a: number) => void;
     readonly wasmquantumcircuit_reset: (a: number, b: number) => void;
@@ -239,7 +252,7 @@ export interface InitOutput {
     readonly wasmquantumcircuit_num_qubits: (a: number) => number;
     readonly wasmquantumcircuit_gate_count: (a: number) => number;
     readonly wasmquantumcircuit_depth: (a: number) => number;
-    readonly simulate: (a: number) => [number, number, number];
+    readonly simulate: (a: number, b: number, c: number) => [number, number, number];
     readonly estimate_memory: (a: number) => number;
     readonly max_qubits: () => number;
     readonly grover_search: (a: number, b: number, c: number, d: any) => [number, number, number];

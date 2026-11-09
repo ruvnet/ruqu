@@ -44,7 +44,7 @@ cargo run -p ruqu-core --example hypergraph_decoder
 cargo run -p ruqu-core --example pauli_propagation
 ```
 
-Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. Install the published CLI with `npx @ruvector/ruqu@0.3.0 magic-factory --input-error 0.01 --shots 1000 --seed 42`. Browser bindings are available as [`@ruvector/ruqu-wasm@2.1.0`](https://www.npmjs.com/package/@ruvector/ruqu-wasm/v/2.1.0).
+Rust and Cargo are required for native examples; Node.js is required for the CLI. Existing simulator commands use the bundled Node WebAssembly binary. Install the published CLI with `npx @ruvector/ruqu@0.3.0 magic-factory --input-error 0.01 --shots 1000 --seed 42`. Browser bindings are available as [`@ruvector/ruqu-wasm@2.2.0`](https://www.npmjs.com/package/@ruvector/ruqu-wasm/v/2.2.0).
 
 ## Interactive quantum computing Explorer
 
