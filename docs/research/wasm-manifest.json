@@ -3,7 +3,7 @@
   "rust": "1.90.0",
   "wasm_bindgen": "0.2.125",
   "sha256": {
-    "Cargo.lock": "8103b88acfed966b0a5b255bcc8e0efdb8749db8784fd73288290e47e53a6411",
+    "Cargo.lock": "616f5a571c9a6492317876ef4a8c96720b370252d16e8bbccd3a912e95eb982e",
     "crates/ruqu-algorithms/src/grover.rs": "87aa96d19bb3fe0af55644e07529129cfc10906b4017add4923bca927747b1c8",
     "crates/ruqu-algorithms/src/lib.rs": "65b49fe5409fe14ac819a654603ad0ece411be2faa44ca3a29415ba991fd3849",
     "crates/ruqu-algorithms/src/qaoa.rs": "f9dec5572ae608b79479290701b6b7859c5323759d7c26e85140820676649331",
